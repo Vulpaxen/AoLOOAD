@@ -7,6 +7,7 @@ import model.User;
 public class UserController {
 	private ArrayList<User> users;
 	User user;
+	String[] templateRole = {"Admin", "Chef", "Waiter", "Cashier", "Customer"};
 	
 	public void createUser(String userName, String userEmail, String userPassword) {
         if (userName == null || userName.isEmpty()) {
@@ -59,6 +60,17 @@ public class UserController {
         for (User user : users) {
             if (user.userId == userId) {
                 user.userRole = userRole;
+                
+                //Nanti buat validasi kl admin mw ganti role
+                /*
+    			for (String a : templateRole) {
+    				if (a.contains(userRole)) {
+    					System.out.print("Please enter the appropriate role: ");
+    					
+    				}
+    			}
+    			*/
+
                 user.userName = userName;
                 user.userEmail = userEmail;
                 user.userPassword = userPassword;
