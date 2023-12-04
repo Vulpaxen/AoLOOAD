@@ -1,14 +1,60 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class MenuItem {
-	public String menuItemId;
+	public int menuItemId;
 	public String menuItemName;
 	public String menuItemDescription;
 	public int menuItemPrice;
 	
-	public MenuItem(String menuItemName, String menuItemDescription, int menuItemPrice) {
+	public MenuItem(int menuItemId, String menuItemName, String menuItemDescription, int menuItemPrice) {
+		super();
+		this.menuItemId = menuItemId;
 		this.menuItemName = menuItemName;
 		this.menuItemDescription = menuItemDescription;
 		this.menuItemPrice = menuItemPrice;
 	}
+
+	
+
+	
+	
+	public int getMenuItemId() {
+		return menuItemId;
+	}
+
+	public void setMenuItemId(int menuItemId) {
+		this.menuItemId = menuItemId;
+	}
+
+	public String getMenuItemName() {
+		return menuItemName;
+	}
+
+	public void setMenuItemName(String menuItemName) {
+		this.menuItemName = menuItemName;
+	}
+
+	public String getMenuItemDescription() {
+		return menuItemDescription;
+	}
+
+	public void setMenuItemDescription(String menuItemDescription) {
+		this.menuItemDescription = menuItemDescription;
+	}
+
+	public int getMenuItemPrice() {
+		return menuItemPrice;
+	}
+
+	public void setMenuItemPrice(int menuItemPrice) {
+		this.menuItemPrice = menuItemPrice;
+	}
+	
+
 }
