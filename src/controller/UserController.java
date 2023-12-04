@@ -1,129 +1,100 @@
 package controller;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Connect;
 import model.User;
 
 public class UserController {
-	private ArrayList<User> users;
-	User user;
-	String[] templateRole = {"Admin", "Chef", "Waiter", "Cashier", "Customer"};
-	
-	public void createUser(String userName, String userEmail, String userPassword) {
-        if (userName == null || userName.isEmpty()) {
-            System.out.println("Error: Username cannot be empty.");
-            return;
-        }
-
-        if (userEmail == null || userEmail.isEmpty()) {
-            System.out.println("Error: Email cannot be empty.");
-            return;
-        }
-
-        if (!isEmailUnique(userEmail)) {
-            System.out.println("Error: Email must be unique.");
-            return;
-        }
-
-        if (userPassword == null || userPassword.isEmpty()) {
-            System.out.println("Error: Password cannot be empty.");
-            return;
-        }
-
-        if (userPassword.length() < 6) {
-            System.out.println("Error: Password must be at least 6 characters long.");
-            return;
-        }
-        
-        //nnti pas ad viewnya
-        /*
-        if (confirmPassword == null || confirmPassword.isEmpty() || !userPassword.equals(confirmPassword)) {
-            System.out.println("Error: Confirm Password must be the same as Password.");
-            return;
-        }
-        */
-		
-        User newUser = new User(userName, userEmail, userPassword);
-        users.add(newUser);
-	}
-	
-    private boolean isEmailUnique(String userEmail) {
-        for (User user : users) {
-            if (user.userEmail.equals(userEmail)) {
-                return false;
-            }
-        }
-        return true;
-    }
-	
-    public void updateUser(String userId, String userRole, String userName, String userEmail, String userPassword) {
-        for (User user : users) {
-            if (user.userId == userId) {
-                user.userRole = userRole;
-                
-                //Nanti buat validasi kl admin mw ganti role
-                /*
-    			for (String a : templateRole) {
-    				if (a.contains(userRole)) {
-    					System.out.print("Please enter the appropriate role: ");
-    					
-    				}
-    			}
-    			*/
-
-                user.userName = userName;
-                user.userEmail = userEmail;
-                user.userPassword = userPassword;
-                return;
-            }
-            else {
-            	System.out.println("User not found");
-            }
-        }
+    public void createProduct(User user) {
+    	String query = "INSERT INTO users (userRole, userName, userEmail, userPassword) VALUES (?, ?, ?, ?)";
+    	try (Connection connection = Connect.getInstance().getConnection();
+    	  PreparedStatement ps = connection.prepareStatement(query)) { 
+    		ps.setString(1, user.getUserRole());
+    		ps.setString(2, user.getUserName());
+    		ps.setString(3, user.getUserEmail());
+    		ps.setString(4, user.getUserPassword());
+    		ps.executeUpdate();
+    	} catch (SQLException e) {
+    	  e.printStackTrace();
+    	}
     }
     
     public void deleteUser(String userId) {
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (user.userId == userId) {
-                users.remove(i);
-                System.out.println("User deleted: " + user);
-                return;
-            }
+        String query = "DELETE FROM users WHERE userId = ?";
+        try (Connection connection = Connect.getInstance().getConnection();
+        	PreparedStatement ps = connection.prepareStatement(query)) {
+        	ps.setString(1, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        System.out.println("User not found with ID: " + userId);
     }
     
-    public User authenticateUser(String userEmail, String userPassword) {
-        for (User user : users) {
-            if (user.userEmail.equals(userEmail) && user.userPassword.equals(userPassword)) {
-                System.out.println("User authenticated: " + user);
-                return user;
-            }
-        }
-        System.out.println("Authentication failed for email: " + userEmail);
-        return null;
+    public void updateUser(User newUser) {
+    	String query = "UPDATE users SET userRole = ?, userName = ?, userEmail = ?, userPassword = ? WHERE userId = ?";
+    	try (Connection connection = Connect.getInstance().getConnection();
+    		PreparedStatement ps = connection.prepareStatement(query)) { 
+    		ps.setString(1, newUser.getUserRole());
+    		ps.setString(2, newUser.getUserName());
+    		ps.setString(3, newUser.getUserEmail());
+    		ps.setString(4, newUser.getUserPassword());
+    		ps.executeUpdate();
+    	} catch (SQLException e) {
+    	  e.printStackTrace();
+    	}
     }
-	
-	public ArrayList<User> getAllUsers() {
-        ArrayList<User> allUsers = new ArrayList<>(users);
-
-        for (User user : allUsers) {
-            System.out.println("User: " + user.userName + ", Email: " + user.userEmail);
-        }
-
-        return allUsers;
+    
+    public static User getUserByid(int userId) {
+		User user = null;
+		
+		try(Connection connection = Connect.getInstance().getConnection()){
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE userId = ?;");
+			ps.setInt(1,  userId);
+			ResultSet resultSet = ps.executeQuery();
+			
+			if(resultSet.next()){
+				int id = resultSet.getInt("userId");
+				String role = resultSet.getString("UserRole");
+				String name = resultSet.getString("UserName");
+				String email = resultSet.getString("UserEmail");
+				String password = resultSet.getString("UserPassword");
+				user = new User(id, role, name, email, password);
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return user;
 	}
-	
-    public User getUserById(String userId) {
-        for (User user : users) {
-            if (user.userId.equals(userId)) {
-                System.out.println("User found by ID: " + user);
-                return user;
+    
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> userList = new ArrayList<>();
+        String query = "SELECT * FROM users";
+        try (Connection connection = Connect.getInstance().getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            
+            while (resultSet.next()) {
+				int id = resultSet.getInt("userId");
+				String role = resultSet.getString("UserRole");
+				String name = resultSet.getString("UserName");
+				String email = resultSet.getString("UserEmail");
+				String password = resultSet.getString("UserPassword");
+
+                User user = new User(id, role, name, email, password);
+                userList.add(user);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        System.out.println("User not found with ID: " + userId);
-        return null;
+        return userList;
     }
 	
 }
