@@ -24,9 +24,9 @@ public class OrderItemController {
   `quantity` int(11) NOT NULL
 )
     	 */
-    	OrderItem newOrderItem = new OrderItem(orderId, menuItemId, quantity);
-        orderItems.add(newOrderItem);
-        System.out.println("OrderItem created: " + newOrderItem);
+    	// OrderItem newOrderItem = new OrderItem(orderId, menuItemId, quantity);
+     //    orderItems.add(newOrderItem);
+     //    System.out.println("OrderItem created: " + newOrderItem);
         
         String query = "INSERT INTO orderitem (menuItemId, quantity) VALUES (?, ?)";
     	try (Connection connection = Connect.getInstance().getConnection();
@@ -40,14 +40,14 @@ public class OrderItemController {
     }
     
     public void updateOrderItem(int orderId, int menuItemId, int quantity) {
-    	for (OrderItem orderItem : orderItems) {
-            if (orderItem.getOrderId() == orderId && orderItem.getMenuItemId() == (menuItemId)) {
-                orderItem.setQuantity(quantity);
-                System.out.println("Order Item updated: " + orderItem);
-                return;
-            }
-        }
-        System.out.println("Item not found");
+    	// for (OrderItem orderItem : orderItems) {
+     //        if (orderItem.getOrderId() == orderId && orderItem.getMenuItemId() == (menuItemId)) {
+     //            orderItem.setQuantity(quantity);
+     //            System.out.println("Order Item updated: " + orderItem);
+     //            return;
+     //        }
+     //    }
+     //    System.out.println("Item not found");
     	
     	String query = "UPDATE orderitem SET menuItemId = ?, quantity = ? WHERE orderItemId = ?";
     	try (Connection connection = Connect.getInstance().getConnection();
@@ -62,15 +62,16 @@ public class OrderItemController {
     }
     
     public void deleteOrderItem(int orderId, int menuItemId) {
-    	for (int i = 0; i < orderItems.size(); i++) {
-            OrderItem item = orderItems.get(i);
-            if (item.getOrderId() == (orderId)) {
-            	orderItems.remove(i);
-                System.out.println("Order Item deleted: " + item);
-                return;
-            }
-        }
-        System.out.println("Order not found with ID: " + orderId);
+    	// for (int i = 0; i < orderItems.size(); i++) {
+     //        OrderItem item = orderItems.get(i);
+     //        if (item.getOrderId() == (orderId)) {
+     //        	orderItems.remove(i);
+     //            System.out.println("Order Item deleted: " + item);
+     //            return;
+     //        }
+     //    }
+     //    System.out.println("Order not found with ID: " + orderId);
+	    
     	String query = "DELETE FROM orderitem WHERE orderItemId = ?";
         try (Connection connection = Connect.getInstance().getConnection();
         	PreparedStatement ps = connection.prepareStatement(query)) {
@@ -102,9 +103,13 @@ public class OrderItemController {
             while (resultSet.next()) {
 				int id = resultSet.getInt("orderItemId");
 				int menuItemId = resultSet.getInt("menuItemId");
+				
+				MenuItemController menuItemController = new MenuItemController();
+				MenuItem menuItem = menuItemController.getMenuItemById(menuItemId);
+				
 				int quantity = resultSet.getInt("quantity");
 				
-                OrderItem orderItem = new OrderItem(id,menuItemId,quantity);
+                OrderItem orderItem = new OrderItem(id,menuItem,quantity);
                 orderItemsList.add(orderItem);
             }
         } catch (SQLException e) {
@@ -112,5 +117,4 @@ public class OrderItemController {
         }
         return orderItemsList;
     }
-    
 }
