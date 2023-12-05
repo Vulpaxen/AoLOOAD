@@ -2,12 +2,12 @@ package model;
 
 public class OrderItem {
 	private int orderId;
-	private int menuItemId;
+	private MenuItem menuItem;
 	private int quantity;
 	
-	public OrderItem(int orderId, int menuItemId, int quantity) {
+	public OrderItem(int orderId, MenuItem menuItem, int quantity) {
 		this.orderId = orderId;
-		this.menuItemId = menuItemId;
+		this.menuItem = menuItem;
 		this.quantity = quantity;
 	}
 
@@ -19,12 +19,12 @@ public class OrderItem {
 		this.orderId = orderId;
 	}
 
-	public int getMenuItemId() {
-		return menuItemId;
+	public MenuItem getMenuItem() {
+		return menuItem;
 	}
 
-	public void setMenuItem(int menuItemId) {
-		this.menuItemId = menuItemId;
+	public void setMenuItem(MenuItem menuItem) {
+		this.menuItem = menuItem;
 	}
 
 	public int getQuantity() {
