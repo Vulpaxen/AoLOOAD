@@ -12,19 +12,19 @@ public class OrderController {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static String createOrder(User orderUser, ArrayList<OrderItem> orderItems, Date orderDate){
+	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItems, Date orderDate){
+		Order.createOrder(orderUser, orderItems, orderDate);
+	}
+	
+	public static String updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus){
 		if(orderItems.size() == 0) {
 			return "Order Items Empty";
 		}
 		else {
-			Order.createOrder(orderUser, orderItems, orderDate);
-			return "Success Create An Order";
+			Order.updateOrder(orderId, orderItems, orderStatus);
 		}
 		
-	}
-	
-	public static void updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus){
-		Order.updateOrder(orderId, orderItems, orderStatus);
+		return "Order Items Updated Sucessfully!";
 	}
 	
 	public static ArrayList<Order> getOrderByCustomerId(int customerId){

@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Receipt {
 	private int receiptId;
@@ -23,7 +25,11 @@ public class Receipt {
 		this.receiptPaymentType = receiptPaymentType;
 	}
 	
-	public void deleteReceipt(Order orderId) {
+	public static void createReceipt() {
+		
+	}
+	
+	public static void deleteReceipt(Order orderId) {
         String query = "DELETE FROM receipts WHERE orderId = ?";
         try (Connection connection = Connect.getInstance().getConnection();
          PreparedStatement ps = connection.prepareStatement(query)) {
@@ -57,6 +63,29 @@ public class Receipt {
 		
 		return receipt;
 	}
+	
+	public static ArrayList<Receipt> getAllReceipts() {
+        ArrayList<Receipt> receiptList = new ArrayList<>();
+        String query = "SELECT * FROM receipts";
+        try (Connection connection = Connect.getInstance().getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            
+            while (resultSet.next()) {
+            	int id = resultSet.getInt("receiptId");
+				String order = resultSet.getString("receiptOrder");
+				int paymentAmount = resultSet.getInt("receiptPaymentAmount");
+				Date paymentDate = resultSet.getDate("receiptPaymentDate");
+				String paymentType = resultSet.getString("receiptPaymentType");
+
+				Receipt receipt = new Receipt(id, order, paymentAmount, paymentDate, paymentType);
+				receiptList.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return receiptList;
+    }
 
 	public int getReceiptId() {
 		return receiptId;
