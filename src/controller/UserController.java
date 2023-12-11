@@ -8,20 +8,54 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import model.Connect;
+import model.MenuItem;
 import model.Order;
 import model.User;
 
 public class UserController {
-    public void createUser(String userRole, String userName, String userEmail, String userPassword) {
-    	User.createUser( userRole,  userName,  userEmail,  userPassword);
+	
+	private ArrayList<User> userList;
+	private static String[] validUserRoles = { "Admin", "Chef", "Waiter", "Cashier", "Customer" };
+	
+    public String createUser(String userRole, String userName, String userEmail, String userPassword) {
+    	
+        if (userName == null || userName.isEmpty()) {
+            return "Error: Name cannot be empty.";
+        }
+        
+        if (userEmail.isEmpty() || !isEmailUnique(userEmail)) {
+            return "Error: Email must be unique and not empty.";
+        }
+        
+        if(userPassword.length() < 6 || userPassword.isEmpty()) {
+            return "Error: Password must be 6 characters long";
+        }
+        
+    	User.createUser(userRole, userName, userEmail, userPassword);
+    	return "User created successfully!";
+    }
+    
+    private boolean isEmailUnique(String userEmail) {
+        for (User user : userList) {
+            if (user.getUserEmail().equals(userEmail)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     public void deleteUser(String userId) {
         User.deleteUser(userId);
     }
     
-    public static void updateUser(String userId, String userRole, String userName, String userEmail, String userPassword) {
-    	User.updateUser(userId, userRole, userName, userEmail, userPassword);
+    public static String updateUser(String userId, String userRole, String userName, String userEmail, String userPassword) {
+		for (String validRole : validUserRoles) {
+			if (userRole.equals(validRole)) {
+				User.updateUser(userId, userRole, userName, userEmail, userPassword);
+				return "User successfully updated!";
+			}
+		}
+		return "Role must be valid!";
     }
     
     
