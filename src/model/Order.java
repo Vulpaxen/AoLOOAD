@@ -23,7 +23,6 @@ public class Order {
 		this.orderStatus = orderStatus;
 		this.orderDate = orderDate;
 	}
-
 	
 	
 	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItems, Date orderDate){
@@ -61,7 +60,7 @@ public class Order {
 			
 			for (Order order : orders){
 				order.setOrderUser(User.getUserById(order.getOrderUserId()));
-				order.setOrderItems(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
+				order.setOrderItem(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
 				order.setOrderTotal(Order.getTotalByOrderId(order.getOrderId()));
 			}
 		}
@@ -90,7 +89,7 @@ public class Order {
 			
 			for (Order order : orders){
 				order.setOrderUser(User.getUserById(order.getOrderUserId()));
-				order.setOrderItems(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
+				order.setOrderItem(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
 				order.setOrderTotal(Order.getTotalByOrderId(order.getOrderId()));
 			}
 		} 
@@ -117,7 +116,7 @@ public class Order {
 			}
 			resultSet.close();
 			order.setOrderUser(User.getUserById(order.getOrderUserId()));
-			order.setOrderItems(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
+			order.setOrderItem(OrderItem.getAllOrderItemsByOrderId(order.getOrderId()));
 			order.setOrderTotal(Order.getTotalByOrderId(order.getOrderId()));
 		} 
 		catch (SQLException e){
@@ -202,8 +201,6 @@ public class Order {
 		}
 		return orderTotalPrice;
 	}
-	
-
 
 
 	public int getOrderId() {
@@ -278,7 +275,7 @@ public class Order {
 
 
 
-	public int getOrderTotal() {
+	public double getOrderTotal() {
 		return orderTotal;
 	}
 

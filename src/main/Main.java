@@ -6,7 +6,7 @@ public class Main {
 	UserController userController = new UserController();
 	
 	public Main() {
-		userController.createUser("haha", "haha", "haha");
+		userController.createUser("haha", "haha", "haha", "inipw");
 		
 		userController.getAllUsers();
 	}

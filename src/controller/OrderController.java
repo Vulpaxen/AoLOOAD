@@ -17,6 +17,7 @@ public class OrderController {
 			return "Order Items Empty";
 		}
 		else {
+			Order.createOrder(orderUser, orderItems, orderDate);
 			return "Success Create An Order";
 		}
 		
