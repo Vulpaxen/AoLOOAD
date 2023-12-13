@@ -1,19 +1,32 @@
 package main;
 
 import controller.UserController;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
-	UserController userController = new UserController();
+
+public class Main extends Application{
 	
-	public Main() {
-		userController.createUser("haha", "haha", "haha", "inipw");
+	 @Override
+	 public void start(Stage primaryStage) {
 		
-		userController.getAllUsers();
-	}
+	 }
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Main();
-	}
+	 public static void main(String[] args) {
+		 launch(args);
+	 }
+//	UserController userController = new UserController();
+//	
+//	public Main() {
+//		userController.createUser("haha", "haha", "haha", "inipw");
+//		
+//		userController.getAllUsers();
+//	}
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		new Main();
+//	}
 
 }
