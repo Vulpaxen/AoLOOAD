@@ -30,11 +30,11 @@ public class MenuItemController {
             return "Error: Name must be unique.";
         }
         
-        if (menuItemDescription.length() < 10) {
+        if (menuItemDescription.length() <= 10) {
             return "Error: Description must be more than 10 characters.";
         }
         
-        if (menuItemPrice >= 2.5) {
+        if (menuItemPrice < 2.5) {
             return "Error: Price must be greater than or equal to 2.5";
         }
         
