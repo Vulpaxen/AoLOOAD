@@ -55,9 +55,27 @@ public class Authentication extends Stage{
             try {
                 String userEmail = emailField.getText();
                 String userPassword = passwordField.getText();
-                boolean loginSuccessful = UserController.authenticateUser(userEmail, userPassword);
-                if (loginSuccessful) {
-                	statusLabel.setText("Congrats");
+                String userRole = UserController.authenticateUser(userEmail, userPassword);
+
+                if (userRole != null) {
+                    if (userRole.equals("Customer")) {
+                    	CustomerPanel customerPanel = new CustomerPanel();
+                    	customerPanel.show();
+                    } else if(userRole.equals("Chef")) {
+                    	ChefPanel chefPanel = new ChefPanel();
+                        chefPanel.show();
+                    } else if(userRole.equals("Waiter")) {
+                    	WaiterPanel waiterPanel = new WaiterPanel();
+                    	//waiterPanel.show();
+                    } else if(userRole.equals("Cashier")) {
+                    	CashierPanel cashierPanel = new CashierPanel();
+                    	//cashierPanel.show();
+                    } else if(userRole.equals("Admin")) {
+                    	AdminPanel adminPanel = new AdminPanel();
+                    	//adminPanel.show();
+                    }
+                    
+                    ((Stage) loginBtn.getScene().getWindow()).close();
                 } else {
                     statusLabel.setText("Login failed. Please check your credentials.");
                 }

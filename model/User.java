@@ -149,7 +149,7 @@ public class User {
 		return user;
 	}
     
-    public static boolean authenticateUser(String userEmail, String userPassword) {
+    public static String authenticateUser(String userEmail, String userPassword) {
         String query = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
         try (Connection connection = Connect.getInstance().getConnection();
              PreparedStatement ps = connection.prepareStatement(query)) {
@@ -158,12 +158,16 @@ public class User {
             ps.setString(2, userPassword);
 
             try (ResultSet resultSet = ps.executeQuery()) {
-                return resultSet.next();
+                if (resultSet.next()) {
+                    return resultSet.getString("userRole");
+                } else {
+                    return null;
+                }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 }
