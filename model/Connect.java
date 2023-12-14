@@ -18,7 +18,7 @@ public class Connect {
             String password = "";
             this.connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException("Error connecting to the database", e);
         }
     }
@@ -40,8 +40,20 @@ public class Connect {
                 connectToDatabase();
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("Error checking connection status", e);
         }
         return connection;
+    }
+
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error closing the connection", e);
+        }
     }
 }

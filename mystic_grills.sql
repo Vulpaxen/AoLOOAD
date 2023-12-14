@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2023 at 02:42 PM
+-- Generation Time: Dec 14, 2023 at 05:47 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -41,7 +41,6 @@ CREATE TABLE `menuitem` (
 --
 
 CREATE TABLE `orderitem` (
-  `orderItemId` int(11) NOT NULL,
   `orderId` int(11) NOT NULL,
   `menuItemId` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
@@ -56,8 +55,10 @@ CREATE TABLE `orderitem` (
 CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
+  `orderItemId` int(11) NOT NULL,
   `orderStatus` varchar(20) NOT NULL,
-  `orderDate` date NOT NULL
+  `orderDate` date NOT NULL,
+  `orderTotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -85,8 +86,16 @@ CREATE TABLE `users` (
   `userRole` varchar(10) NOT NULL,
   `userName` varchar(30) NOT NULL,
   `userEmail` varchar(30) NOT NULL,
-  `userPasword` varchar(30) NOT NULL
+  `userPassword` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`userId`, `userRole`, `userName`, `userEmail`, `userPassword`) VALUES
+(1, 'Customer', 'asd', 'cust', '123123'),
+(2, 'Chef', 'def', 'chef', '123123');
 
 --
 -- Indexes for dumped tables
@@ -102,16 +111,17 @@ ALTER TABLE `menuitem`
 -- Indexes for table `orderitem`
 --
 ALTER TABLE `orderitem`
-  ADD PRIMARY KEY (`orderItemId`),
+  ADD PRIMARY KEY (`orderId`) USING BTREE,
   ADD KEY `fk_menu_item_ids` (`menuItemId`),
-  ADD KEY `fk_order_id` (`orderId`);
+  ADD KEY `orderId` (`orderId`);
 
 --
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`orderId`),
-  ADD KEY `fk_user_id` (`userId`);
+  ADD KEY `userId` (`userId`),
+  ADD KEY `orderItemId` (`orderItemId`);
 
 --
 -- Indexes for table `receipt`
@@ -137,16 +147,10 @@ ALTER TABLE `menuitem`
   MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orderitem`
---
-ALTER TABLE `orderitem`
-  MODIFY `orderItemId` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `receipt`
@@ -158,7 +162,7 @@ ALTER TABLE `receipt`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -175,7 +179,10 @@ ALTER TABLE `orderitem`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`userId`) REFERENCES `users` (`userID`);
+  ADD CONSTRAINT `FK_userId` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`);
 
 --
 -- Constraints for table `receipt`
