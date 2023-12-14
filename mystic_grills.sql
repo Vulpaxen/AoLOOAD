@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2023 at 05:47 PM
+-- Generation Time: Dec 14, 2023 at 07:12 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -34,6 +34,13 @@ CREATE TABLE `menuitem` (
   `menuItemPrice` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `menuitem`
+--
+
+INSERT INTO `menuitem` (`menuItemId`, `menuItemName`, `menuItemDescription`, `menuItemPrice`) VALUES
+(1, 'Ayam', 'enak', 200);
+
 -- --------------------------------------------------------
 
 --
@@ -45,6 +52,13 @@ CREATE TABLE `orderitem` (
   `menuItemId` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orderitem`
+--
+
+INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -60,6 +74,13 @@ CREATE TABLE `orders` (
   `orderDate` date NOT NULL,
   `orderTotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`orderId`, `userId`, `orderItemId`, `orderStatus`, `orderDate`, `orderTotal`) VALUES
+(1, 1, 1, 'Pending', '2023-12-13', 1);
 
 -- --------------------------------------------------------
 
@@ -144,7 +165,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `menuitem`
 --
 ALTER TABLE `menuitem`
-  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `orders`
