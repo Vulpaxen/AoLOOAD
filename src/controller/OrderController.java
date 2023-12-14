@@ -8,9 +8,6 @@ import model.OrderItem;
 import model.User;
 
 public class OrderController {
-	public OrderController(){
-		// TODO Auto-generated constructor stub
-	}
 	
 	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItems, Date orderDate){
 		Order.createOrder(orderUser, orderItems, orderDate);

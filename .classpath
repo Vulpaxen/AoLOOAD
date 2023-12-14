@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.base.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.controls.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.fxml.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.graphics.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.media.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.swing.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx.web.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/javafx-swt.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/jfxtras-labs-9.0-r1.jar" sourcepath="C:/Users/derpy/eclipse-workspace/openjfx-16_windows-x64_bin-sdk/javafx-sdk-16/lib/src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/derpy/eclipse-workspace/mysql-connector/mysql-connector-java-8.0.24.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

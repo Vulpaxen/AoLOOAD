@@ -1,19 +1,18 @@
 package main;
 
-import controller.UserController;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import view.Authentication;
 
-public class Main {
-	UserController userController = new UserController();
-	
-	public Main() {
-		userController.createUser("haha", "haha", "haha", "inipw");
-		
-		userController.getAllUsers();
-	}
+public class Main extends Application {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Main();
-	}
+    public static void main(String[] args) {
+        launch(args);
+    }
 
+    @Override
+    public void start(Stage primaryStage) {
+        Authentication authentication = new Authentication();
+        authentication.show();
+    }
 }

@@ -15,11 +15,15 @@ import model.Receipt;
 
 public class ReceiptController {
 	
-	public void deleteReceipt(Order orderId) {
+	public static void createReceipt(Order order, String receiptPaymentType, int receiptPaymentAmount, Date receiptPaymentDate) {
+		Receipt.createReceipt(order, receiptPaymentType, receiptPaymentAmount, receiptPaymentDate);
+	}
+	
+	public static void deleteReceipt(Order orderId) {
         Receipt.deleteReceipt(orderId);
     }
 	
-	public Receipt getReceiptByid(int receiptId) {
+	public static Receipt getReceiptByid(int receiptId) {
 		return Receipt.getReceiptByid(receiptId);
 	}
 	

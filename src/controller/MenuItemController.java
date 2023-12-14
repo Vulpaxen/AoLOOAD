@@ -52,19 +52,19 @@ public class MenuItemController {
         return true;
     }
     
-    public void updateMenuItem(int menuItemId, String menuItemName, String menuItemDescription, double menuItemPrice) {
+    public static void updateMenuItem(int menuItemId, String menuItemName, String menuItemDescription, double menuItemPrice) {
     	MenuItem.updateMenuItem(menuItemId, menuItemName, menuItemDescription, menuItemPrice);
     }
     
-    public void deleteMenuItem(int menuItemId) {
+    public static void deleteMenuItem(int menuItemId) {
     	MenuItem.deleteMenuItem(menuItemId);
     }
     
-    public MenuItem getMenuItemById(int menuItemId) {
+    public static MenuItem getMenuItemById(int menuItemId) {
     	return MenuItem.getMenuItemById(menuItemId);
     }
 
-    public ArrayList<MenuItem> getAllMenuItems() {
+    public static ArrayList<MenuItem> getAllMenuItems() {
         return MenuItem.getAllMenuItems();
     }
     

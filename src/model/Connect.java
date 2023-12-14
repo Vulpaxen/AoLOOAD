@@ -18,6 +18,7 @@ public class Connect {
             String password = "";
             this.connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
+        	e.printStackTrace();
             throw new RuntimeException("Error connecting to the database", e);
         }
     }

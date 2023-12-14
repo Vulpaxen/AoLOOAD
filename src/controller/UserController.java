@@ -14,11 +14,10 @@ import model.User;
 
 public class UserController {
 	
-	private ArrayList<User> userList;
+	private static ArrayList<User> userList = new ArrayList<>();
 	private static String[] validUserRoles = { "Admin", "Chef", "Waiter", "Cashier", "Customer" };
 	
-    public String createUser(String userRole, String userName, String userEmail, String userPassword) {
-    	
+    public static String createUser(String userRole, String userName, String userEmail, String userPassword) {
         if (userName == null || userName.isEmpty()) {
             return "Error: Name cannot be empty.";
         }
@@ -35,7 +34,7 @@ public class UserController {
     	return "User created successfully!";
     }
     
-    private boolean isEmailUnique(String userEmail) {
+    private static boolean isEmailUnique(String userEmail) {
         for (User user : userList) {
             if (user.getUserEmail().equals(userEmail)) {
                 return false;
@@ -44,7 +43,7 @@ public class UserController {
         return true;
     }
     
-    public void deleteUser(String userId) {
+    public static void deleteUser(String userId) {
         User.deleteUser(userId);
     }
     
@@ -65,6 +64,10 @@ public class UserController {
     
 	public static User getUserById(int userId){
 		return User.getUserById(userId);
+	}
+
+	public static boolean authenticateUser(String userEmail, String userPassword) {
+		return User.authenticateUser(userEmail, userPassword);
 	}
 	
 }

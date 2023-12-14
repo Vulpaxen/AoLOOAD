@@ -1,5 +1,6 @@
 package view;
 
+import controller.UserController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -31,7 +32,7 @@ public class Authentication extends Stage{
         root.setPadding(new Insets(10));
         root.setAlignment(Pos.TOP_CENTER);
         
-        this.setTitle("Nama App");
+        this.setTitle("Mystic Grills");
         showLoginPage();
 	}
 
@@ -47,9 +48,22 @@ public class Authentication extends Stage{
         
         Button loginBtn = new Button("Login");
         loginBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        statusLabel.setTextFill(Color.BLACK);
 		
         loginBtn.setOnAction(e -> {
-        	//TODO: masukin validasi login dan function disini
+            try {
+                String userEmail = emailField.getText();
+                String userPassword = passwordField.getText();
+                boolean loginSuccessful = UserController.authenticateUser(userEmail, userPassword);
+                if (loginSuccessful) {
+                	statusLabel.setText("Congrats");
+                } else {
+                    statusLabel.setText("Login failed. Please check your credentials.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         
 		Label registerLink = new Label("I don't have an account");
@@ -63,7 +77,7 @@ public class Authentication extends Stage{
         VBox container = new VBox(10);
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
-        container.getChildren().addAll(titleLabel, marginTitle, emailField, passwordField, loginBtn, registerLink);
+        container.getChildren().addAll(titleLabel, marginTitle, emailField, passwordField, loginBtn, registerLink, statusLabel);
         
         root.getChildren().clear();
         root.getChildren().add(container);
@@ -82,9 +96,23 @@ public class Authentication extends Stage{
         
         Button regBtn = new Button("Register");
         regBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        statusLabel.setTextFill(Color.BLACK);
 		
         regBtn.setOnAction(e -> {
-        	//TODO: masukin validasi login dan function disini
+            try {
+                String userRole = "Customer";
+                String userName = usernameField.getText();
+                String userEmail = emailField.getText();
+                String userPassword = passwordField.getText();
+                String confirmPassword = confirmPasswordField.getText();
+
+                String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword);
+                showLoginPage();
+                statusLabel.setText(registrationResult);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         
         Label loginLink = new Label("I already have an account");
@@ -97,7 +125,7 @@ public class Authentication extends Stage{
 		VBox container = new VBox(10);
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
-        container.getChildren().addAll(titleLabel, usernameField, emailField,passwordField, confirmPasswordField, regBtn, loginLink);
+        container.getChildren().addAll(titleLabel, usernameField, emailField,passwordField, confirmPasswordField, regBtn, loginLink, statusLabel);
         
         root.getChildren().clear();
         root.getChildren().add(container);
