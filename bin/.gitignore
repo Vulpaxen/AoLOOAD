@@ -1,4 +1,7 @@
+/.classpath
+/mystic_grills.sql
 /controller/
+/src/
 /main/
-/model/
 /view/
+/model/
