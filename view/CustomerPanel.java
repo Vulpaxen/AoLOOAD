@@ -37,7 +37,8 @@ import model.User;
 public class CustomerPanel extends Stage {
 	
 	private BorderPane borderPane = new BorderPane();
-    private VBox root = new VBox(25);
+    private VBox root1 = new VBox(15);
+    private VBox root2 = new VBox(15);
     private Scene scene;
     private MenuBar menuBar = new MenuBar();
     
@@ -47,7 +48,7 @@ public class CustomerPanel extends Stage {
         super(StageStyle.DECORATED);
         this.setTitle("Customer Dashboard");
                         
-        scene = new Scene(borderPane, 1000, 600);
+        scene = new Scene(borderPane, 1000, 800);
         this.setScene(scene);
         
         Menu addOrderMenu = new Menu("Add Order");
@@ -75,11 +76,16 @@ public class CustomerPanel extends Stage {
         	viewOrdered();
         });
         
-        borderPane.setCenter(root);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: lightgray;");
-        borderPane.setCenter(root);
+        borderPane.setLeft(root1);
+        root1.setAlignment(Pos.CENTER);
+        root1.setPadding(new Insets(20));
+        root1.setPrefHeight(getMaxHeight());
+        root1.setStyle("-fx-background-color: lightgray;");
+        
+        borderPane.setCenter(root2);
+        root2.setAlignment(Pos.CENTER);
+        root2.setPadding(new Insets(20));
+       
                       
        
         
@@ -92,39 +98,53 @@ public class CustomerPanel extends Stage {
     private TextField ItemPrice = new TextField();
     private TextField ItemQuantity= new TextField();
     
+    
     TableView<OrderItem> createdCartTable = createCartTable();
+    
     private void addOrder() {
     	//buat hilangin tampilan isi sebelumnya
-    	root.getChildren().clear();
+    	root1.getChildren().clear();
     	
     	//buat tampilan baru
     	TableView<MenuItem> tableMenuItem = createMenuItemTable();
     	tableMenuItem.setStyle("-fx-background-color: lightblue;");
     	GridPane form = createOrderForm(tableMenuItem);
-       	root.getChildren().addAll(tableMenuItem, form, createdCartTable);
-    	
-
+       	root1.getChildren().addAll(tableMenuItem, form, createdCartTable);
+    	root2.getChildren().addAll(form, createdCartTable);
 	}
     
 	private TableView<MenuItem> createMenuItemTable() {
     	TableView<MenuItem> table = new TableView<>();
     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     	
-    	TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Item Name");
+    	TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Name");
     	menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
-    	menuItemName.setPrefWidth(200);
     	
-    	TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Item Description");
+    	
+    	TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Desc");
     	menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
-    	menuItemName.setPrefWidth(200);
     	
-    	TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Item Price");
+    	
+    	TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Price");
     	menuItemPrice.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
-    	menuItemName.setPrefWidth(200);
+    	
     	
     	table.getColumns().add(menuItemName);
     	table.getColumns().add(menuItemDesc);
     	table.getColumns().add(menuItemPrice);
+    	
+    	menuItemName.setPrefWidth(100);
+    	menuItemName.setPrefWidth(100);
+    	menuItemName.setPrefWidth(100);
+    	
+    	table.setPrefHeight(1200);
+
+    	table.setMinHeight(700);
+    	table.setMinWidth(400);
+    	
+    	
+    	
+    	
     	
     	table.setItems(FXCollections.observableArrayList(MenuItem.getAllMenuItems()));
     	
@@ -145,21 +165,22 @@ public class CustomerPanel extends Stage {
 	
 	private TableView<OrderItem> createCartTable() {
 	    TableView<OrderItem> table = new TableView<>();
-
+	    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    	
+       	
 	    // Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
-	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
-	    itemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+//	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Order Id");
+//	    itemName.setCellValueFactory(new PropertyValueFactory<>("orderId"));
 
-	    TableColumn<OrderItem, String> itemDesc = new TableColumn<>("Item Description");
-	    itemDesc.setCellValueFactory(new PropertyValueFactory<>("itemDescription"));
-
-	    TableColumn<OrderItem, Double> itemPrice = new TableColumn<>("Item Price");
-	    itemPrice.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
-
+	    TableColumn<OrderItem, String> itemId = new TableColumn<>("Items Id ");
+	    itemId.setCellValueFactory(new PropertyValueFactory<>("menuItemId"));
+	    itemId.setPrefWidth(50);
+	    
 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
 	    itemQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-
-	    table.getColumns().addAll(itemName, itemDesc, itemPrice, itemQuantity);
+	    itemQuantity.setPrefWidth(50);
+	    
+	    table.getColumns().addAll(itemId, itemQuantity);
 	    
 	    
 	    return table;
@@ -188,6 +209,7 @@ public class CustomerPanel extends Stage {
         form.add(new Label("Quantity:"), 0, 3);
         form.add(ItemQuantity, 1, 3);
         form.add(addItemButton, 0, 4);
+        form.add(makeOrderButton, 0, 5);
              
        
         addItemButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -227,11 +249,11 @@ public class CustomerPanel extends Stage {
     
     private void viewOrdered() {
 		// TODO Auto-generated method stub
-    	root.getChildren().clear();
+    	root1.getChildren().clear();
     	
     	//buat tampilan baru
     	TableView<Order> tableOrdered = createOrderedTable();
-    	root.getChildren().add(tableOrdered);
+    	root1.getChildren().add(tableOrdered);
     	
     	//biar bisa select data-data
     	tableOrdered.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
