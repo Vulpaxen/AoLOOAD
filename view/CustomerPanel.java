@@ -36,8 +36,6 @@ import model.User;
 
 public class CustomerPanel extends Stage {
 	
-	
-	
     private VBox menu = new VBox(25);
     private VBox root = new VBox(25);
     private Scene scene;
@@ -89,9 +87,7 @@ public class CustomerPanel extends Stage {
     private TextField ItemQuantity= new TextField();
     
     private void addOrder() {
-		// TODO Auto-generated method stub
     	//buat hilangin tampilan isi sebelumnya
-    
     	root.getChildren().clear();
     	
     	//buat tampilan baru
@@ -120,15 +116,12 @@ public class CustomerPanel extends Stage {
     	
     	TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Item Name");
     	menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
-//    	menuItemName.setPrefWidth(100);
     	
     	TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Item Description");
     	menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
-//    	menuItemDesc.setPrefWidth(100);
     	
     	TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Item Price");
     	menuItemPrice.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
-//    	menuItemName.setPrefWidth(100);
     	
     	table.getColumns().add(menuItemName);
     	table.getColumns().add(menuItemDesc);
@@ -224,19 +217,15 @@ public class CustomerPanel extends Stage {
     	    
         TableColumn<Order, Integer> orderID = new TableColumn<>("Order ID");
         orderID.setCellValueFactory(new PropertyValueFactory<>("orderId"));
-
         
         TableColumn<Order, String> orderStatus= new TableColumn<>("Status");
         orderStatus.setCellValueFactory(new PropertyValueFactory<>("orderStatus"));
-
         
         TableColumn<Order, Date> orderDate = new TableColumn<>("Date");
         orderDate.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
-   
        
         table.getColumns().addAll(orderID, orderStatus, orderDate);
-        //get user id nya
-        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(4)));
+        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
         
         return table;
 	}
