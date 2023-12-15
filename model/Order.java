@@ -24,19 +24,28 @@ public class Order {
 		this.orderDate = orderDate;
 	}
 
-	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate) {
-		String query = "INSERT INTO orders (orderId, userId, orderStatus, orderDate, orderTotal) VALUES (?, ?, ?, ? );";
+	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate) {
+		String query = "INSERT INTO orders (userId, orderStatus, orderDate) VALUES (?, ?, ? );";
 
 		try (Connection connection = Connect.getInstance().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setInt(1, 1);
-			ps.setInt(2, orderUser.getUserId());
-			ps.setString(3, "Pending");
-			ps.setDate(4, orderDate);
+		
+			ps.setInt(1, orderUser.getUserId());
+			ps.setString(2, "Pending");
+			ps.setDate(3, orderDate);
 			ps.executeUpdate();
+			
+			ResultSet generatedKeys = ps.getGeneratedKeys();
+	        if (generatedKeys.next()) {
+	             int orderId = generatedKeys.getInt(1);
+	             return orderId;
+	        }
+	        
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return -1;
 	}
 
 	public static ArrayList<Order> getOrdersByCustomerId(int customerId) {

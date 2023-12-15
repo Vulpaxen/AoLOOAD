@@ -14,8 +14,9 @@ import model.User;
 
 public class OrderController {
 	
-	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate){
-		Order.createOrder(orderUser, orderItem, orderDate);
+	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate){
+		int orderId = Order.createOrder(orderUser, orderItem, orderDate);
+		return orderId;
 	}
 	
 	public static String updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus){

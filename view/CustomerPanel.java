@@ -94,10 +94,7 @@ public class CustomerPanel extends Stage {
         borderPane.setCenter(root2);
         root2.setAlignment(Pos.CENTER);
         root2.setPadding(new Insets(20));
-       
-                      
-       
-        
+                                        
     }
     
     //variabel nyimpen select dan form
@@ -113,6 +110,7 @@ public class CustomerPanel extends Stage {
     private void addOrder() {
     	//buat hilangin tampilan isi sebelumnya
     	root1.getChildren().clear();
+    	root2.getChildren().clear();
     	
     	//buat tampilan baru
     	TableView<MenuItem> tableMenuItem = createMenuItemTable();
@@ -238,7 +236,7 @@ public class CustomerPanel extends Stage {
                 	tempCart.add(orderItem);
                 	createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
                 	
-                	orderItemController.createOrderItem(0, orderItem.getMenuItem(), orderItem.getQuantity());
+         
 
                 }
             }
@@ -249,10 +247,10 @@ public class CustomerPanel extends Stage {
             public void handle(ActionEvent event) {
                 if (tempCart != null) {
                 	Date date = new Date(System.currentTimeMillis());
-                	orderController.createOrder(User.getUserById(0), tempCart, date);
+                	int orderId = orderController.createOrder(User.getUserById(1), tempCart, date);
 			                	
                 	for (OrderItem orderItem : tempCart) {
-                		orderItemController.createOrderItem(0, orderItem.getMenuItem(), orderItem.getQuantity());
+                		orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
 						
 					}
                 	tempCart.clear();
