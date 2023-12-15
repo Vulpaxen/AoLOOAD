@@ -22,12 +22,13 @@ public class MenuItem {
 	
     public static String createMenuItem(String menuItemName, String menuItemDescription, double menuItemPrice) {
     	
-        String query = "INSERT INTO menuitem (menuItemName, menuItemDescription, menuItemPrice) VALUES (?, ?, ?)";
+        String query = "INSERT INTO menuitem (menuItemId, menuItemName, menuItemDescription, menuItemPrice) VALUES (?, ?, ?, ?)";
     	try (Connection connection = Connect.getInstance().getConnection();
     	  PreparedStatement ps = connection.prepareStatement(query)) { 
-    		ps.setString(1, menuItemName);
-    		ps.setString(2, menuItemDescription);
-    		ps.setDouble(3, menuItemPrice);
+    		ps.setInt(1, 0);
+    		ps.setString(2, menuItemName);
+    		ps.setString(3, menuItemDescription);
+    		ps.setDouble(4, menuItemPrice);
     		ps.executeUpdate();
     	} catch (SQLException e) {
     	  e.printStackTrace();
@@ -85,13 +86,13 @@ public class MenuItem {
 	
     public static MenuItem getMenuItemById(int menuItemId) {
 //      for (MenuItem menuItem : menuItems) {
-//          if (menuItem.menuItemId.equals(menuItemId)) {
+//          if (menuItem.menuIt`emId.equals(menuItemId)) {
 //              System.out.println("Menu Item found by ID: " + menuItem);
 //              return menuItem;
 //          }
 //      }
 //      System.out.println("Menu Item not found with ID: " + menuItemId);
-  	MenuItem menuItem = null;
+    	MenuItem menuItem = null;
 		
 		try(Connection connection = Connect.getInstance().getConnection()){
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM menuitem WHERE menuItemId = ?;");

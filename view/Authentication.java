@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.User;
 
 public class Authentication extends Stage {
 	private VBox root = new VBox(10);

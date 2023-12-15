@@ -17,9 +17,9 @@ public class OrderItem {
 	
 	private MenuItem menuItem;
 
-	public OrderItem(int orderId, int menuItemId, int quantity) {
+	public OrderItem(int orderId, MenuItem menuItem, int quantity) {
 		this.orderId = orderId;
-		this.menuItemId = menuItemId;
+		this.menuItem = menuItem;
 		this.quantity = quantity;
 	}
 
@@ -54,6 +54,12 @@ public class OrderItem {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+	
+	public String getMenuItemName() {
+	    return menuItem.getMenuItemName();
+	}
+
+
 
 	public static void createOrderItem(int orderId, MenuItem menuItem, int quantity) {
 		String query = "INSERT INTO orderitem (orderId, menuItemId, quantity) VALUES (?, ?, ?)";
@@ -81,12 +87,12 @@ public class OrderItem {
 		}
 	}
 
-	public static void deleteOrderItem(int orderId, MenuItem menuItem) {
+	public static void deleteOrderItem(int orderId, int menuItemId) {
 		String query = "DELETE FROM orderitem WHERE orderId = ? AND menuItemId = ?";
 		try (Connection connection = Connect.getInstance().getConnection();
 				PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setInt(1, orderId);
-			ps.setInt(2, menuItem.getMenuItemId());
+			ps.setInt(2, menuItemId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -102,20 +108,20 @@ public class OrderItem {
 	         PreparedStatement ps = connection.prepareStatement(query)) {
 
 	        ps.setInt(1, orderId);
-
+	        
+	        
 	        try (ResultSet resultSet = ps.executeQuery()) {
 	            while (resultSet.next()) {
 	            	int id = resultSet.getInt("orderId");
 					int menuItemId = resultSet.getInt("menuItemId");
 					int quantity = resultSet.getInt("quantity");
-					orderItemList.add(new OrderItem(id, menuItemId, quantity));
-	               
-	                OrderItem orderItem = new OrderItem(orderId, menuItemId, quantity);
-	                
-	                for (OrderItem oi : orderItemList)
-	    			{
-	    				oi.setMenuItem(MenuItem.getMenuItemById(orderItem.getMenuItemId()));
-	    			}
+//					orderItemList.add(new OrderItem(id, menuItemId, quantity));
+//	               
+	              	                
+//	                for (OrderItem oi : orderItemList)
+//	    			{
+//	    				oi.setMenuItem(MenuItem.getMenuItemById(orderItem.getMenuItemId()));
+//	    			}
 	            }
 	        }
 	    } catch (SQLException e) {

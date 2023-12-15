@@ -15,7 +15,7 @@ public class OrderItemController {
     	OrderItem.updateOrderItem(orderId, menuItem, quantity);
     }
     
-    public static void deleteOrderItem(int orderId, MenuItem menuItemId) {
+    public static void deleteOrderItem(int orderId, int menuItemId) {
     	OrderItem.deleteOrderItem(orderId, menuItemId);
     }
     

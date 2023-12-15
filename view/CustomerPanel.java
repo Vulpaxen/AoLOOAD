@@ -5,6 +5,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import controller.OrderController;
+import controller.OrderItemController;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -42,11 +46,16 @@ public class CustomerPanel extends Stage {
     private Scene scene;
     private MenuBar menuBar = new MenuBar();
     
+    
+    private OrderController orderController = new OrderController();
+    private OrderItemController orderItemController = new OrderItemController();
+    
    
     public CustomerPanel() {
     	
         super(StageStyle.DECORATED);
         this.setTitle("Customer Dashboard");
+        
                         
         scene = new Scene(borderPane, 1000, 800);
         this.setScene(scene);
@@ -169,18 +178,23 @@ public class CustomerPanel extends Stage {
     	
        	
 	    // Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
-//	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Order Id");
-//	    itemName.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
+	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
+	    itemName.setPrefWidth(150);
+	    
+//	    TableColumn<OrderItem, String> itemId = new TableColumn<>("Items Id ");
+//	    itemId.setCellValueFactory(new PropertyValueFactory<>("menuItemId"));
+//	    itemId.setPrefWidth(50);
+//	    TableColumn<OrderItem, Integer> itemId = new TableColumn<>("Items Id ");
+//	    itemId.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getMenuItemId()).asObject());
+//	    itemId.setPrefWidth(50);
 
-	    TableColumn<OrderItem, String> itemId = new TableColumn<>("Items Id ");
-	    itemId.setCellValueFactory(new PropertyValueFactory<>("menuItemId"));
-	    itemId.setPrefWidth(50);
 	    
 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
 	    itemQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 	    itemQuantity.setPrefWidth(50);
 	    
-	    table.getColumns().addAll(itemId, itemQuantity);
+	    table.getColumns().addAll(itemName, itemQuantity);
 	    
 	    
 	    return table;
@@ -210,16 +224,22 @@ public class CustomerPanel extends Stage {
         form.add(ItemQuantity, 1, 3);
         form.add(addItemButton, 0, 4);
         form.add(makeOrderButton, 0, 5);
-             
+        
+        
+        
        
         addItemButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
-                if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
-                	tempCart.add(new OrderItem(0, selectedMenuItem.getMenuItemId(), Integer.parseInt(ItemQuantity.getText())));
+                if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
+                	
+                	OrderItem orderItem = new OrderItem(0, selectedMenuItem, Integer.parseInt(ItemQuantity.getText()));
+                	tempCart.add(orderItem);
                 	createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
                 	
+                	orderItemController.createOrderItem(0, orderItem.getMenuItem(), orderItem.getQuantity());
+
                 }
             }
         });
@@ -228,12 +248,13 @@ public class CustomerPanel extends Stage {
             @Override
             public void handle(ActionEvent event) {
                 if (tempCart != null) {
-                	LocalDate currentDate = LocalDate.now();
-                	DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-					String formattedDate = currentDate.format(formatDate);
-					Date date = Date.valueOf(formattedDate);
+                	Date date = new Date(System.currentTimeMillis());
+                	orderController.createOrder(User.getUserById(0), tempCart, date);
 			                	
-                	Order.createOrder(User.getUserById(0), tempCart, date);
+                	for (OrderItem orderItem : tempCart) {
+                		orderItemController.createOrderItem(0, orderItem.getMenuItem(), orderItem.getQuantity());
+						
+					}
                 	tempCart.clear();
                 	
                 }
