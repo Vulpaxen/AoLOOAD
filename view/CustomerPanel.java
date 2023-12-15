@@ -55,7 +55,6 @@ public class CustomerPanel extends Stage {
         menuBar.getMenus().addAll(viewOrderedMenu);
         addOrderMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 1;");
         viewOrderedMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 0;");
-//        root.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
 
         addOrderMenu.setOnAction(e -> {
         	addOrder();
@@ -69,11 +68,6 @@ public class CustomerPanel extends Stage {
 
         root.setPadding(new Insets(25));
         root.setAlignment(Pos.CENTER);
-
-       
-        
- 
-    	
         
     }
     
@@ -160,9 +154,9 @@ public class CustomerPanel extends Stage {
             public void handle(ActionEvent event) {
                 MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
                 if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
-                	OrderItem orderItem = new OrderItem();
-                	orderItem.createOrderItem();
-                	tempCart.add(orderItem);
+                	//OrderItem orderItem = new OrderItem();
+                	//orderItem.createOrderItem();
+                	//tempCart.add(orderItem);
                 }
             }
         });
