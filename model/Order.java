@@ -24,7 +24,7 @@ public class Order {
 		this.orderDate = orderDate;
 	}
 
-	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItems, Date orderDate) {
+	public static void createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate) {
 		String query = "INSERT INTO orders (orderId, userId, orderStatus, orderDate, orderTotal) VALUES (?, ?, ?, ? );";
 
 		try (Connection connection = Connect.getInstance().getConnection()) {
@@ -32,7 +32,7 @@ public class Order {
 			ps.setInt(1, 1);
 			ps.setInt(2, orderUser.getUserId());
 			ps.setString(3, "Pending");
-			ps.setDate(4, (java.sql.Date) orderDate);
+			ps.setDate(4, orderDate);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class Order {
 	}
 
 	public static ArrayList<Order> getOrdersByCustomerId(int customerId) {
-		ArrayList<Order> orders = new ArrayList<Order>();
+		ArrayList<Order> order = new ArrayList<Order>();
 		String query = "SELECT * FROM orders WHERE userId = ?;";
 
 		try (Connection connection = Connect.getInstance().getConnection()) {
@@ -52,13 +52,21 @@ public class Order {
 				int userId = resultSet.getInt("userId");
 				String status = resultSet.getString("orderStatus");
 				Date date = resultSet.getDate("orderDate");
-				orders.add(new Order(id, userId, status, date));
+				order.add(new Order(id, userId, status, date));
 			}
 			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return orders;
+		
+		for (Order orders : order)
+		{
+			orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+			orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+			orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+		}
+		
+		return order;
 	}
 
 	public static ArrayList<Order> getAllOrders() {
@@ -104,31 +112,35 @@ public class Order {
 		}
 		return order;
 	}
-
-	public static void updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
-		String deleteOrderItemsQuery = "DELETE FROM orders WHERE orderId = ?";
-		try (Connection connection = Connect.getInstance().getConnection()) {
-			PreparedStatement ps = connection.prepareStatement(deleteOrderItemsQuery);
-			ps.setInt(1, orderId);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		String reinsertOrderItemsQuery = "INSERT INTO orderitems (orderId, menuItemId, quantity) VALUES (?, ?, ?);";
-		try (Connection connection = Connect.getInstance().getConnection()) {
-			PreparedStatement ps = connection.prepareStatement(reinsertOrderItemsQuery);
-			for (OrderItem orderItem : orderItems) {
-				ps.setInt(1, orderId);
-				ps.setInt(2, orderItem.getMenuItem().getMenuItemId());
-				ps.setInt(3, orderItem.getQuantity());
-				ps.executeUpdate();
-
+	
+	public static double getTotalByOrderId(int orderId)
+	{
+		int orderTotalPrice = 0;
+		String query = "SELECT * FROM orderitem JOIN menuitem ON orderitem.menuItemId = menuitem.menuItemId WHERE orderitem.orderId = ?;";
+		  
+		try (Connection connection = Connect.getInstance().getConnection())
+		{
+			PreparedStatement prep = connection.prepareStatement(query);
+			prep.setInt(1, orderId);
+			ResultSet resultSet = prep.executeQuery();
+			
+			while(resultSet.next())
+			{
+				int quantity = resultSet.getInt("quantity");
+				double menuItemPrice = resultSet.getDouble("menuItemPrice");
+				orderTotalPrice += (double) quantity * menuItemPrice;
 			}
-		} catch (SQLException e) {
+			resultSet.close();
+		}
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
+		return orderTotalPrice;
+	}
 
+	
+	public static void updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
 		String statusQuery = "UPDATE orders SET orderStatus = ? WHERE orderId = ?;";
 		try (Connection connection = Connect.getInstance().getConnection()) {
 			PreparedStatement prep = connection.prepareStatement(statusQuery);
@@ -151,6 +163,8 @@ public class Order {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	public int getOrderId() {
 		return orderId;

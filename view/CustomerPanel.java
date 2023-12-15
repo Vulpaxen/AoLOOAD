@@ -24,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -36,7 +37,7 @@ import model.User;
 
 public class CustomerPanel extends Stage {
 	
-    private VBox menu = new VBox(25);
+	private BorderPane borderPane = new BorderPane();
     private VBox root = new VBox(25);
     private Scene scene;
     private MenuBar menuBar = new MenuBar();
@@ -46,35 +47,32 @@ public class CustomerPanel extends Stage {
     	
         super(StageStyle.DECORATED);
         this.setTitle("Customer Dashboard");
-        
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(menuBar);
-        borderPane.setCenter(root);
-        
+                        
         scene = new Scene(borderPane, 1000, 600);
         this.setScene(scene);
         
-//        menu.setPadding(new Insets(15,12,15,12));
-//        menu.setSpacing(10);
-//        menu.setStyle("-fx-background-color: #336699;");
         Menu addOrderMenu = new Menu("Add Order");
         Menu viewOrderedMenu = new Menu("View Ordered (History)");
         menuBar.getMenus().addAll(addOrderMenu);
         menuBar.getMenus().addAll(viewOrderedMenu);
         
-        menu.getChildren().addAll(menuBar);
-             
-//        addOrderMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 1;");
-//        viewOrderedMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 0;");
-
-        addOrderMenu.setOnAction(e -> {
+        borderPane.setTop(menuBar);
+               
+        addOrderMenu.setOnAction(e ->{
         	addOrder();
         });
         
+             
         viewOrderedMenu.setOnAction(e -> {
         	viewOrdered();
         });
-              
+        
+        borderPane.setCenter(root);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+        root.setStyle("-fx-background-color: lightgray;");
+        borderPane.setCenter(root);
+                      
        
         
     }
@@ -87,28 +85,31 @@ public class CustomerPanel extends Stage {
     private TextField ItemQuantity= new TextField();
     
     private void addOrder() {
-    	//buat hilangin tampilan isi sebelumnya
-    	root.getChildren().clear();
-    	
-    	//buat tampilan baru
-    	TableView<MenuItem> tableMenuItem = createMenuItemTable();
-    	root.getChildren().add(tableMenuItem);
-    	
-    	//biar bisa select data-data
-    	tableMenuItem.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-	        if (newSelection != null) {
-	        	ItemId.setText(newSelection.getMenuItemId() + "");
-	        	ItemName.setText(newSelection.getMenuItemName());
-	        	ItemDesc.setText(newSelection.getMenuItemDescription());
-	        	ItemPrice.setText(String.valueOf(newSelection.getMenuItemPrice()));
-	        	ItemQuantity.setText("0");
-	        }
-	    });
-  
-    	
-    	GridPane form = createOrderForm(tableMenuItem);
-    	root.getChildren().add(form);
-	}
+        // Clear the existing content in the VBox
+        root.getChildren().clear();
+
+        // Create a new VBox to hold the table and form
+        VBox contentVBox = new VBox(25);
+
+        // Create the TableView
+        TableView<MenuItem> tableMenuItem = createMenuItemTable();
+
+        // Add the table to the VBox
+        contentVBox.getChildren().add(tableMenuItem);
+
+        // Create the form
+        GridPane form = createOrderForm(tableMenuItem);
+
+        // Add the form to the VBox
+        contentVBox.getChildren().add(form);
+
+        // Set VBox constraints (optional)
+        VBox.setVgrow(tableMenuItem, Priority.ALWAYS);
+
+        // Add the content VBox to the root VBox
+        root.getChildren().add(contentVBox);
+    }
+
     
 	private TableView<MenuItem> createMenuItemTable() {
     	TableView<MenuItem> table = new TableView<>();
@@ -128,6 +129,18 @@ public class CustomerPanel extends Stage {
     	table.getColumns().add(menuItemPrice);
     	
     	table.setItems(FXCollections.observableArrayList(MenuItem.getAllMenuItems()));
+    	
+    	//biar bisa select data-data
+    	table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+	        if (newSelection != null) {
+	        	ItemId.setText(newSelection.getMenuItemId() + "");
+	        	ItemName.setText(newSelection.getMenuItemName());
+	        	ItemDesc.setText(newSelection.getMenuItemDescription());
+	        	ItemPrice.setText(String.valueOf(newSelection.getMenuItemPrice()));
+	        	ItemQuantity.setText("0");
+	        }
+	    });
+  
     	
 		return table;
 	}
