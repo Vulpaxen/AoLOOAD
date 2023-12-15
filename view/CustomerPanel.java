@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -35,9 +36,11 @@ import model.User;
 
 public class CustomerPanel extends Stage {
 	
+	
+	
     private VBox menu = new VBox(25);
     private VBox root = new VBox(25);
-    private Scene scene = new Scene(menu, 1000, 600);
+    private Scene scene;
     private MenuBar menuBar = new MenuBar();
     
    
@@ -45,16 +48,26 @@ public class CustomerPanel extends Stage {
     	
         super(StageStyle.DECORATED);
         this.setTitle("Customer Dashboard");
+        
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(root);
+        
+        scene = new Scene(borderPane, 1000, 600);
         this.setScene(scene);
         
+//        menu.setPadding(new Insets(15,12,15,12));
+//        menu.setSpacing(10);
+//        menu.setStyle("-fx-background-color: #336699;");
         Menu addOrderMenu = new Menu("Add Order");
         Menu viewOrderedMenu = new Menu("View Ordered (History)");
-        menu.getChildren().addAll(menuBar);
-        
         menuBar.getMenus().addAll(addOrderMenu);
         menuBar.getMenus().addAll(viewOrderedMenu);
-        addOrderMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 1;");
-        viewOrderedMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 0;");
+        
+        menu.getChildren().addAll(menuBar);
+             
+//        addOrderMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 1;");
+//        viewOrderedMenu.setStyle("-fx-border-color: black; -fx-border-width: 0 1 0 0;");
 
         addOrderMenu.setOnAction(e -> {
         	addOrder();
@@ -63,11 +76,8 @@ public class CustomerPanel extends Stage {
         viewOrderedMenu.setOnAction(e -> {
         	viewOrdered();
         });
-        
-        
-
-        root.setPadding(new Insets(25));
-        root.setAlignment(Pos.CENTER);
+              
+       
         
     }
     
@@ -81,6 +91,7 @@ public class CustomerPanel extends Stage {
     private void addOrder() {
 		// TODO Auto-generated method stub
     	//buat hilangin tampilan isi sebelumnya
+    
     	root.getChildren().clear();
     	
     	//buat tampilan baru
@@ -100,7 +111,9 @@ public class CustomerPanel extends Stage {
   
     	
     	GridPane form = createOrderForm(tableMenuItem);
+    	root.getChildren().add(form);
 	}
+    
 	private TableView<MenuItem> createMenuItemTable() {
     	TableView<MenuItem> table = new TableView<>();
 //    	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -121,6 +134,8 @@ public class CustomerPanel extends Stage {
     	table.getColumns().add(menuItemDesc);
     	table.getColumns().add(menuItemPrice);
     	
+    	table.setItems(FXCollections.observableArrayList(MenuItem.getAllMenuItems()));
+    	
 		return table;
 	}
     
@@ -138,7 +153,7 @@ public class CustomerPanel extends Stage {
         ItemName.setDisable(true);
         form.add(new Label("Desc:"), 0, 1);
         form.add(ItemDesc, 1, 1);
-       ItemDesc.setDisable(true);
+        ItemDesc.setDisable(true);
         form.add(new Label("Price:"), 0, 2);
         form.add(ItemPrice, 1, 2);
         ItemPrice.setDisable(true);
@@ -153,11 +168,11 @@ public class CustomerPanel extends Stage {
             @Override
             public void handle(ActionEvent event) {
                 MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
-                if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
-                	//OrderItem orderItem = new OrderItem();
-                	//orderItem.createOrderItem();
-                	//tempCart.add(orderItem);
-                }
+//                if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
+//                	OrderItem orderItem = new OrderItem();
+//                	orderItem.createOrderItem();
+//                	tempCart.add(orderItem);
+//                }
             }
         });
         
@@ -184,7 +199,46 @@ public class CustomerPanel extends Stage {
     
     private void viewOrdered() {
 		// TODO Auto-generated method stub
+    	root.getChildren().clear();
+    	
+    	//buat tampilan baru
+    	TableView<Order> tableOrdered = createOrderedTable();
+    	root.getChildren().add(tableOrdered);
+    	
+    	//biar bisa select data-data
+    	tableOrdered.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+	        if (newSelection != null) {
+	        	
+	        }
+	    });
+  
+    	
+    	
 
+	}
+    
+    private TableView<Order> createOrderedTable() {
+		// TODO Auto-generated method stunt
+    	TableView<Order> table = new TableView<>();
+//    	tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    	    
+        TableColumn<Order, Integer> orderID = new TableColumn<>("Order ID");
+        orderID.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+
+        
+        TableColumn<Order, String> orderStatus= new TableColumn<>("Status");
+        orderStatus.setCellValueFactory(new PropertyValueFactory<>("orderStatus"));
+
+        
+        TableColumn<Order, Date> orderDate = new TableColumn<>("Date");
+        orderDate.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
+   
+       
+        table.getColumns().addAll(orderID, orderStatus, orderDate);
+        //get user id nya
+        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(4)));
+        
+        return table;
 	}
     
    

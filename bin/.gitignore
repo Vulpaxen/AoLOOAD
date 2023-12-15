@@ -1,9 +1,4 @@
 /.classpath
 /mystic_grills.sql
-/.gitignore
-/.project
-/README.md
-/controller/
 /main/
-/model/
 /view/
