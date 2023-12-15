@@ -13,14 +13,14 @@ import model.OrderItem;
 import model.User;
 
 public class MenuItemController {
-    private ArrayList<MenuItem> menuItems;
+    private static ArrayList<MenuItem> menuItems;
     /*CREATE TABLE `menuitem` (
   `menuItemId` int(11) NOT NULL,
   `menuItemName` varchar(30) NOT NULL,
   `menuItemDescription` varchar(100) NOT NULL,
   `menuItemPrice` double NOT NULL
 )*/
-    public String createMenuItem(String menuItemName, String menuItemDescription, double menuItemPrice) {
+    public static String createMenuItem(String menuItemName, String menuItemDescription, double menuItemPrice) {
     	
         if (menuItemName == null || menuItemName.isEmpty()) {
             return "Error: Name cannot be empty.";
@@ -43,7 +43,7 @@ public class MenuItemController {
         return "Menu Item created: " + menuItemName;
     }
     
-    private boolean isNameUnique(String menuItemName) {
+    private static boolean isNameUnique(String menuItemName) {
         for (MenuItem item : menuItems) {
             if (item.getMenuItemName().equals(menuItemName)) {
                 return false;
