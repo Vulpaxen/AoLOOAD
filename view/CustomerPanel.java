@@ -24,7 +24,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -52,18 +51,27 @@ public class CustomerPanel extends Stage {
         this.setScene(scene);
         
         Menu addOrderMenu = new Menu("Add Order");
+        javafx.scene.control.MenuItem AddOrderMenuItem = new javafx.scene.control.MenuItem("Go To Add Order");
+        addOrderMenu.getItems().addAll(AddOrderMenuItem);
+        
         Menu viewOrderedMenu = new Menu("View Ordered (History)");
+        javafx.scene.control.MenuItem viewOrderedMenuItem = new javafx.scene.control.MenuItem("Go to View Ordered");
+        viewOrderedMenu.getItems().addAll(viewOrderedMenuItem);
+        
         menuBar.getMenus().addAll(addOrderMenu);
         menuBar.getMenus().addAll(viewOrderedMenu);
         
         borderPane.setTop(menuBar);
-               
-        addOrderMenu.setOnAction(e ->{
+       
+        
+        addOrder();
+        
+        AddOrderMenuItem.setOnAction(e ->{
         	addOrder();
         });
         
              
-        viewOrderedMenu.setOnAction(e -> {
+        viewOrderedMenuItem.setOnAction(e -> {
         	viewOrdered();
         });
         
@@ -84,45 +92,35 @@ public class CustomerPanel extends Stage {
     private TextField ItemPrice = new TextField();
     private TextField ItemQuantity= new TextField();
     
+    TableView<OrderItem> createdCartTable = createCartTable();
     private void addOrder() {
-        // Clear the existing content in the VBox
-        root.getChildren().clear();
+    	//buat hilangin tampilan isi sebelumnya
+    	root.getChildren().clear();
+    	
+    	//buat tampilan baru
+    	TableView<MenuItem> tableMenuItem = createMenuItemTable();
+    	tableMenuItem.setStyle("-fx-background-color: lightblue;");
+    	GridPane form = createOrderForm(tableMenuItem);
+       	root.getChildren().addAll(tableMenuItem, form, createdCartTable);
+    	
 
-        // Create a new VBox to hold the table and form
-        VBox contentVBox = new VBox(25);
-
-        // Create the TableView
-        TableView<MenuItem> tableMenuItem = createMenuItemTable();
-
-        // Add the table to the VBox
-        contentVBox.getChildren().add(tableMenuItem);
-
-        // Create the form
-        GridPane form = createOrderForm(tableMenuItem);
-
-        // Add the form to the VBox
-        contentVBox.getChildren().add(form);
-
-        // Set VBox constraints (optional)
-        VBox.setVgrow(tableMenuItem, Priority.ALWAYS);
-
-        // Add the content VBox to the root VBox
-        root.getChildren().add(contentVBox);
-    }
-
+	}
     
 	private TableView<MenuItem> createMenuItemTable() {
     	TableView<MenuItem> table = new TableView<>();
-//    	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     	
     	TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Item Name");
     	menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
+    	menuItemName.setPrefWidth(200);
     	
     	TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Item Description");
     	menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
+    	menuItemName.setPrefWidth(200);
     	
     	TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Item Price");
     	menuItemPrice.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
+    	menuItemName.setPrefWidth(200);
     	
     	table.getColumns().add(menuItemName);
     	table.getColumns().add(menuItemDesc);
@@ -137,15 +135,39 @@ public class CustomerPanel extends Stage {
 	        	ItemName.setText(newSelection.getMenuItemName());
 	        	ItemDesc.setText(newSelection.getMenuItemDescription());
 	        	ItemPrice.setText(String.valueOf(newSelection.getMenuItemPrice()));
-	        	ItemQuantity.setText("0");
+	        	ItemQuantity.setText("1");
 	        }
 	    });
   
     	
 		return table;
 	}
+	
+	private TableView<OrderItem> createCartTable() {
+	    TableView<OrderItem> table = new TableView<>();
+
+	    // Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
+	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
+	    itemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+
+	    TableColumn<OrderItem, String> itemDesc = new TableColumn<>("Item Description");
+	    itemDesc.setCellValueFactory(new PropertyValueFactory<>("itemDescription"));
+
+	    TableColumn<OrderItem, Double> itemPrice = new TableColumn<>("Item Price");
+	    itemPrice.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
+
+	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
+	    itemQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+	    table.getColumns().addAll(itemName, itemDesc, itemPrice, itemQuantity);
+	    
+	    
+	    return table;
+	}
     
     
+	ArrayList<OrderItem> tempCart = new ArrayList<>();;;
+	
     private GridPane createOrderForm(TableView<MenuItem> tableMenuItem) {
     	GridPane form = new GridPane();
     	form.setVgap(20);
@@ -166,19 +188,17 @@ public class CustomerPanel extends Stage {
         form.add(new Label("Quantity:"), 0, 3);
         form.add(ItemQuantity, 1, 3);
         form.add(addItemButton, 0, 4);
-        form.add(makeOrderButton, 1, 4);
-        
-        
-        ArrayList<OrderItem> tempCart = new ArrayList<>();;
+             
+       
         addItemButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
-//                if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
-//                	OrderItem orderItem = new OrderItem();
-//                	orderItem.createOrderItem();
-//                	tempCart.add(orderItem);
-//                }
+                if (selectedMenuItem != null && ItemQuantity.equals("0") == false) {
+                	tempCart.add(new OrderItem(0, selectedMenuItem.getMenuItemId(), Integer.parseInt(ItemQuantity.getText())));
+                	createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+                	
+                }
             }
         });
         
@@ -190,8 +210,10 @@ public class CustomerPanel extends Stage {
                 	DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 					String formattedDate = currentDate.format(formatDate);
 					Date date = Date.valueOf(formattedDate);
-                	
+			                	
                 	Order.createOrder(User.getUserById(0), tempCart, date);
+                	tempCart.clear();
+                	
                 }
             }
         });
