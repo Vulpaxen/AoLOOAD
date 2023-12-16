@@ -69,7 +69,6 @@ INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
 CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `orderItemId` int(11) NOT NULL,
   `orderStatus` varchar(20) NOT NULL,
   `orderDate` date NOT NULL,
   `orderTotal` int(11) NOT NULL
