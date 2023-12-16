@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import controller.OrderController;
 import controller.OrderItemController;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -116,8 +117,11 @@ public class CustomerPanel extends Stage {
     	TableView<MenuItem> tableMenuItem = createMenuItemTable();
     	tableMenuItem.setStyle("-fx-background-color: lightblue;");
     	GridPane form = createOrderForm(tableMenuItem);
-       	root1.getChildren().addAll(tableMenuItem, form, createdCartTable);
-    	root2.getChildren().addAll(form, createdCartTable);
+       	root1.getChildren().addAll(tableMenuItem);
+       	
+        Label totalLabel = new Label("Total Price: 0");
+    	root2.getChildren().addAll(form, createdCartTable, totalLabel );
+    	updateTotalLabel();
 	}
     
 	private TableView<MenuItem> createMenuItemTable() {
@@ -149,10 +153,6 @@ public class CustomerPanel extends Stage {
     	table.setMinHeight(700);
     	table.setMinWidth(400);
     	
-    	
-    	
-    	
-    	
     	table.setItems(FXCollections.observableArrayList(MenuItem.getAllMenuItems()));
     	
     	//biar bisa select data-data
@@ -173,33 +173,39 @@ public class CustomerPanel extends Stage {
 	private TableView<OrderItem> createCartTable() {
 	    TableView<OrderItem> table = new TableView<>();
 	    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    	
-       	
+
 	    // Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
 	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
 	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
 	    itemName.setPrefWidth(150);
-	    
-//	    TableColumn<OrderItem, String> itemId = new TableColumn<>("Items Id ");
-//	    itemId.setCellValueFactory(new PropertyValueFactory<>("menuItemId"));
-//	    itemId.setPrefWidth(50);
-//	    TableColumn<OrderItem, Integer> itemId = new TableColumn<>("Items Id ");
-//	    itemId.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getMenuItemId()).asObject());
-//	    itemId.setPrefWidth(50);
 
-	    
 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
-	    itemQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+	    itemQuantity.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
 	    itemQuantity.setPrefWidth(50);
-	    
-	    table.getColumns().addAll(itemName, itemQuantity);
-	    
-	    
+
+	    // New TableColumn for itemTotalPrice
+	    TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
+	    itemTotalPrice.setPrefWidth(100);
+
+	    table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+
 	    return table;
 	}
+	
+	private void updateTotalLabel() {
+	    orderTotal = tempCart.stream()
+	            .mapToDouble(orderItem -> orderItem.getQuantity() * orderItem.getMenuItem().getMenuItemPrice())
+	            .sum();
+
+	    Label totalLabel = new Label("Total Price: " + orderTotal);
+	    root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);  // Update the last child (total label)
+	}
+
     
     
-	ArrayList<OrderItem> tempCart = new ArrayList<>();;;
+	ArrayList<OrderItem> tempCart = new ArrayList<>();
+	double orderTotal = 0;
 	
     private GridPane createOrderForm(TableView<MenuItem> tableMenuItem) {
     	GridPane form = new GridPane();
@@ -208,6 +214,7 @@ public class CustomerPanel extends Stage {
         
         Button addItemButton = new Button("Add Item");
         Button makeOrderButton = new Button("Make Order");
+        Button resetOrderButton = new Button("Reset Order");
         
         form.add(new Label("Name:"), 0, 0);
         form.add(ItemName, 1, 0);
@@ -221,7 +228,8 @@ public class CustomerPanel extends Stage {
         form.add(new Label("Quantity:"), 0, 3);
         form.add(ItemQuantity, 1, 3);
         form.add(addItemButton, 0, 4);
-        form.add(makeOrderButton, 0, 5);
+        form.add(makeOrderButton, 0, 6);
+        form.add(resetOrderButton, 13, 6);
         
         
         
@@ -232,10 +240,33 @@ public class CustomerPanel extends Stage {
                 MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
                 if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
                 	
-                	OrderItem orderItem = new OrderItem(0, selectedMenuItem, Integer.parseInt(ItemQuantity.getText()));
-                	tempCart.add(orderItem);
-                	createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+                	 // Check if the selected item is already in the cart
+                    OrderItem existingOrderItem = tempCart.stream()
+                            .filter(orderItem -> orderItem.getMenuItem().getMenuItemId() == selectedMenuItem.getMenuItemId())
+                            .findFirst()
+                            .orElse(null);
+
+                    if (existingOrderItem != null) {
+                    	 // If the item is already in the cart, update the quantity
+                        int newQuantity = existingOrderItem.getQuantity() + Integer.parseInt(ItemQuantity.getText());
+                        existingOrderItem.setQuantity(newQuantity);
+
+                        createdCartTable.refresh();
+                    } else {
+                        // If the item is not in the cart, add a new OrderItem
+                        OrderItem orderItem = new OrderItem(0, selectedMenuItem, Integer.parseInt(ItemQuantity.getText()));
+                        tempCart.add(orderItem);
+                    }
                 	
+                	createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+                	updateTotalLabel();
+                	
+                	ItemName.clear();
+                    ItemDesc.clear();
+                    ItemPrice.clear();
+                    ItemQuantity.clear();
+                    
+                    tableMenuItem.getSelectionModel().clearSelection();
          
 
                 }
@@ -247,15 +278,31 @@ public class CustomerPanel extends Stage {
             public void handle(ActionEvent event) {
                 if (tempCart != null) {
                 	Date date = new Date(System.currentTimeMillis());
-                	int orderId = orderController.createOrder(User.getUserById(1), tempCart, date);
+                	int orderId = orderController.createOrder(User.getUserById(1), tempCart, date, orderTotal);
 			                	
                 	for (OrderItem orderItem : tempCart) {
                 		orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
 						
 					}
                 	tempCart.clear();
+                	createdCartTable.setItems(FXCollections.observableArrayList(tempCart)); // Clear the table
                 	
+                	Label totalLabel = new Label("Total Price: 0");
+                	root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
                 }
+            }
+        });
+        
+        resetOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+               
+               	tempCart.clear();
+               	createdCartTable.setItems(FXCollections.observableArrayList(tempCart)); // Clear the table
+                
+               	Label totalLabel = new Label("Total Price: 0.0");
+            	root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
+                
             }
         });
         
@@ -266,9 +313,12 @@ public class CustomerPanel extends Stage {
     
     
     
+    
+    
     private void viewOrdered() {
 		// TODO Auto-generated method stub
     	root1.getChildren().clear();
+    	root2.getChildren().clear();
     	
     	//buat tampilan baru
     	TableView<Order> tableOrdered = createOrderedTable();
@@ -289,7 +339,7 @@ public class CustomerPanel extends Stage {
     private TableView<Order> createOrderedTable() {
 		// TODO Auto-generated method stunt
     	TableView<Order> table = new TableView<>();
-//    	tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     	    
         TableColumn<Order, Integer> orderID = new TableColumn<>("Order ID");
         orderID.setCellValueFactory(new PropertyValueFactory<>("orderId"));
@@ -311,24 +361,4 @@ public class CustomerPanel extends Stage {
 }
 
 
-//private void showCustomerOptions() {
-//Button viewMenuButton = new Button("View Menu Items and Add Order");
-//viewMenuButton.setOnAction(e -> {
-//  // Code to navigate to View Menu Items and Add Order page
-//  // You can create a new stage or update the current stage's scene
-//});
-//
-//Button viewOrderedItemsButton = new Button("View Ordered Menu Items and Update Ordered Menu Items");
-//viewOrderedItemsButton.setOnAction(e -> {
-//  // Code to navigate to View Ordered Menu Items and Update Ordered Menu Items page
-//});
-//
-//Button viewOrderDetailsButton = new Button("View Order Details and Process Order Payment");
-//viewOrderDetailsButton.setOnAction(e -> {
-//  // Code to navigate to View Order Details and Process Order Payment page
-//});
-//
-//root.getChildren().clear();
-//root.getChildren().addAll(viewMenuButton, viewOrderedItemsButton, viewOrderDetailsButton);
-//}
 

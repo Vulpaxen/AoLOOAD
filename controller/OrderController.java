@@ -14,8 +14,8 @@ import model.User;
 
 public class OrderController {
 	
-	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate){
-		int orderId = Order.createOrder(orderUser, orderItem, orderDate);
+	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate, double orderTotal){
+		int orderId = Order.createOrder(orderUser, orderItem, orderDate, orderTotal);
 		return orderId;
 	}
 	

@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,29 +25,37 @@ public class Order {
 		this.orderDate = orderDate;
 	}
 
-	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate) {
-		String query = "INSERT INTO orders (userId, orderStatus, orderDate) VALUES (?, ?, ? );";
+	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate, double OrderTotal) {
+	    String query = "INSERT INTO orders (userId, orderStatus, orderDate, orderTotal) VALUES (?, ?, ?, ?);";
 
-		try (Connection connection = Connect.getInstance().getConnection()) {
-			PreparedStatement ps = connection.prepareStatement(query);
-		
-			ps.setInt(1, orderUser.getUserId());
-			ps.setString(2, "Pending");
-			ps.setDate(3, orderDate);
-			ps.executeUpdate();
-			
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-	        if (generatedKeys.next()) {
-	             int orderId = generatedKeys.getInt(1);
-	             return orderId;
+	    try (Connection connection = Connect.getInstance().getConnection();
+	         PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+	        ps.setInt(1, orderUser.getUserId());
+	        ps.setString(2, "Pending");
+	        ps.setDate(3, orderDate);
+	        ps.setDouble(4, OrderTotal);
+
+	        int affectedRows = ps.executeUpdate();
+
+	        if (affectedRows == 0) {
+	            throw new SQLException("Creating order failed, no rows affected.");
 	        }
-	        
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return -1;
+
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                int orderId = generatedKeys.getInt(1);
+	                return orderId;
+	            } else {
+	                throw new SQLException("Creating order failed, no ID obtained.");
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return -1;
 	}
+
 
 	public static ArrayList<Order> getOrdersByCustomerId(int customerId) {
 		ArrayList<Order> order = new ArrayList<Order>();

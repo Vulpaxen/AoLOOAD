@@ -23,42 +23,7 @@ public class OrderItem {
 		this.quantity = quantity;
 	}
 
-	public int getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
-	}
 	
-	public int getMenuItemId() {
-		return menuItemId;
-	}
-
-	public void setMenuItemId(int menuItemId) {
-		this.menuItemId = menuItemId;
-	}
-	
-	public MenuItem getMenuItem() {
-		return menuItem;
-	}
-
-	public void setMenuItem(MenuItem menuItem) {
-		this.menuItem = menuItem;
-	}	
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-	
-	public String getMenuItemName() {
-	    return menuItem.getMenuItemName();
-	}
-
 
 
 	public static void createOrderItem(int orderId, MenuItem menuItem, int quantity) {
@@ -131,6 +96,41 @@ public class OrderItem {
 	    return orderItemList;
 	}
 
+	public int getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
 	
+	public int getMenuItemId() {
+		return menuItemId;
+	}
+
+	public void setMenuItemId(int menuItemId) {
+		this.menuItemId = menuItemId;
+	}
+	
+	public MenuItem getMenuItem() {
+		return menuItem;
+	}
+
+	public void setMenuItem(MenuItem menuItem) {
+		this.menuItem = menuItem;
+	}	
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
+	public String getMenuItemName() {
+	    return menuItem.getMenuItemName();
+	}
+
 
 }
