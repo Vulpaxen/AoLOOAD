@@ -67,7 +67,8 @@ public class OrderItem {
 	public static ArrayList<OrderItem> getAllOrderItemsByOrderId(int orderId) {
 	    ArrayList<OrderItem> orderItemList = new ArrayList<>();
 
-	    String query = "SELECT * FROM orderitem WHERE orderId = ?";
+	    String query = "SELECT * FROM orderitem "
+	    		+ "JOIN menuItem ON menuItem.menuItemid = orderItem.menuItemId WHERE orderId = ?";
 
 	    try (Connection connection = Connect.getInstance().getConnection();
 	         PreparedStatement ps = connection.prepareStatement(query)) {
@@ -80,15 +81,18 @@ public class OrderItem {
 	            	int id = resultSet.getInt("orderId");
 					int menuItemId = resultSet.getInt("menuItemId");
 					int quantity = resultSet.getInt("quantity");
+					String menuItemName = resultSet.getString("menuItemName");
+					String menuItemDescription = resultSet.getString("menuItemDescription");
+		            double menuItemPrice = resultSet.getDouble("menuItemPrice");
 					
-					
-					MenuItem menuItem = MenuItemController.getMenuItemById(menuItemId);
+					MenuItem menuItem = new MenuItem(menuItemId, menuItemName,menuItemDescription, menuItemPrice);
 					orderItemList.add(new OrderItem(id, menuItem, quantity));
-					
-	               
+					            
 	              	                
 
 	            }
+	            
+	            
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();

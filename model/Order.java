@@ -111,7 +111,7 @@ public class Order {
 
 	public static Order getOrderByOrderId(int orderId) {
 		Order order = null;
-		String query = "SELECT * FROM orders WHERE orderId = ?;";
+		String query = "SELECT * FROM `orders` WHERE orderId = ?;";
 
 		try (Connection connection = Connect.getInstance().getConnection()) {
 			PreparedStatement prep = connection.prepareStatement(query);

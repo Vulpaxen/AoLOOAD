@@ -42,8 +42,8 @@ import model.User;
 public class CustomerPanel extends Stage {
 	
 	private BorderPane borderPane = new BorderPane();
-    private VBox root1 = new VBox(15);
-    private VBox root2 = new VBox(15);
+    private VBox root1 = new VBox(20);
+    private VBox root2 = new VBox(20);
     private Scene scene;
     private MenuBar menuBar = new MenuBar();
     
@@ -363,13 +363,14 @@ public class CustomerPanel extends Stage {
  	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
  	    itemTotalPrice.setPrefWidth(100);
 
- 	    table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+ 	   
  	    
  	   ArrayList<OrderItem> orderItem = orderItemController.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
  	   System.out.println("Number of order items: " + orderItem.size());
  	   table.setItems(FXCollections.observableArrayList(orderItem));
  	   
- 	   
+ 	  table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+ 	  
  	    return table;
     	
 		
