@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2023 at 07:12 PM
+-- Generation Time: Dec 15, 2023 at 05:24 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -69,7 +69,6 @@ INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
 CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `orderItemId` int(11) NOT NULL,
   `orderStatus` varchar(20) NOT NULL,
   `orderDate` date NOT NULL,
   `orderTotal` int(11) NOT NULL
@@ -132,7 +131,6 @@ ALTER TABLE `menuitem`
 -- Indexes for table `orderitem`
 --
 ALTER TABLE `orderitem`
-  ADD PRIMARY KEY (`orderId`) USING BTREE,
   ADD KEY `fk_menu_item_ids` (`menuItemId`),
   ADD KEY `orderId` (`orderId`);
 
