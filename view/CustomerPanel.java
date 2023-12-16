@@ -106,8 +106,9 @@ public class CustomerPanel extends Stage {
     private TextField ItemQuantity= new TextField();
     
     
+    //Tampilan Customer Untuk Add Order
+    //Tabel Menu Order Item, Form buat Nambah Item, Tabel Cart Item yang udah ditambahin 
     TableView<OrderItem> createdCartTable = createCartTable();
-    
     private void addOrder() {
     	//buat hilangin tampilan isi sebelumnya
     	root1.getChildren().clear();
@@ -116,14 +117,16 @@ public class CustomerPanel extends Stage {
     	//buat tampilan baru
     	TableView<MenuItem> tableMenuItem = createMenuItemTable();
     	tableMenuItem.setStyle("-fx-background-color: lightblue;");
-    	GridPane form = createOrderForm(tableMenuItem);
        	root1.getChildren().addAll(tableMenuItem);
        	
+       	GridPane form = createOrderForm(tableMenuItem);
         Label totalLabel = new Label("Total Price: 0");
     	root2.getChildren().addAll(form, createdCartTable, totalLabel );
     	updateTotalLabel();
 	}
     
+    
+    //Buat Table Menu Item
 	private TableView<MenuItem> createMenuItemTable() {
     	TableView<MenuItem> table = new TableView<>();
     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -170,6 +173,8 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 	
+	
+	//Buat tabel keranjang
 	private TableView<OrderItem> createCartTable() {
 	    TableView<OrderItem> table = new TableView<>();
 	    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -193,6 +198,8 @@ public class CustomerPanel extends Stage {
 	    return table;
 	}
 	
+	
+	//Label Total Price di bawah Tabel Keranjang
 	private void updateTotalLabel() {
 	    orderTotal = tempCart.stream()
 	            .mapToDouble(orderItem -> orderItem.getQuantity() * orderItem.getMenuItem().getMenuItemPrice())
@@ -207,6 +214,8 @@ public class CustomerPanel extends Stage {
 	ArrayList<OrderItem> tempCart = new ArrayList<>();
 	double orderTotal = 0;
 	
+	
+	//Form buat nambahin Keranjang
     private GridPane createOrderForm(TableView<MenuItem> tableMenuItem) {
     	GridPane form = new GridPane();
     	form.setVgap(20);
@@ -232,8 +241,7 @@ public class CustomerPanel extends Stage {
         form.add(resetOrderButton, 13, 6);
         
         
-        
-       
+       //button tambahin item ke keranjang       
         addItemButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -273,6 +281,7 @@ public class CustomerPanel extends Stage {
             }
         });
         
+        //button buat Order dari Tabel Keranjang
         makeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -293,6 +302,7 @@ public class CustomerPanel extends Stage {
             }
         });
         
+        //Reset Keranjang jika ingin mengcancel order
         resetOrderButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -317,30 +327,39 @@ public class CustomerPanel extends Stage {
 
 
     
+    //=========================================================
+    //Customer Panel untuk View Ordered / History Order
     
     
-
-
+    TableView<Order> tableOrdered = createOrderedTable();
+    //Berisi Tabel Order List,
     private void viewOrdered() {
 		// TODO Auto-generated method stub
     	root1.getChildren().clear();
     	root2.getChildren().clear();
     	
     	//buat tampilan baru
-    	TableView<Order> tableOrdered = createOrderedTable();
-    	root1.getChildren().add(tableOrdered);
+       	root1.getChildren().add(tableOrdered);
     	
     	
-    	
-    	if (!tableOrdered.getItems().isEmpty()) {
-    		selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
+    	// Menampilkan label petunjuk jika belum ada pesanan yang dipilih
+        if (tableOrdered.getSelectionModel().isEmpty()) {
+            Label selectOrderLabel = new Label("Select an order from the table to see order details.");
+            root2.getChildren().add(selectOrderLabel);
+        } else {
+            // Jika ada pesanan yang dipilih, tampilkan detail pesanan
+            selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
             showOrderDetails(selectedOrder);
-            
         }
-  
     	
-    	 
-
+    	
+  
+//     	GridPane form = createOrderForm(tableMenuItem);
+       
+//    	root2.getChildren().addAll(form, createdCartTable, totalLabel );
+//    	updateTotalLabel();
+    	
+    	
 	}
     
     
@@ -366,22 +385,35 @@ public class CustomerPanel extends Stage {
  	   
  	    
  	   ArrayList<OrderItem> orderItem = orderItemController.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
- 	   System.out.println("Number of order items: " + orderItem.size());
+// 	   System.out.println("Number of order items: " + orderItem.size());
  	   table.setItems(FXCollections.observableArrayList(orderItem));
  	   
- 	  table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+ 	   table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
  	  
+ 	   
  	    return table;
     	
 		
     }
     
+    Label totalUpdateLabel;
     private void showOrderDetails(Order selectedOrder) {
-        root2.getChildren().clear(); // Bersihkan root2
+    	TableView<OrderItem> orderItemTable = null;
+        root2.getChildren().clear(); //
         if (selectedOrder != null) {
-            TableView<OrderItem> orderItemTable = createOrdersByOrderIdTable(selectedOrder);
+        	orderItemTable = createOrdersByOrderIdTable(selectedOrder);
             root2.getChildren().add(orderItemTable);
+            
+            double totalOrderPrice = selectedOrder.getOrderTotal();
+            totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
+            root2.getChildren().add(totalUpdateLabel);
+            
+            root2.getChildren().add(createUpdateOrderForm(orderItemTable));
         }
+        
+       
+        
+        
     }
 
     
@@ -429,6 +461,97 @@ public class CustomerPanel extends Stage {
         return table;
 	}
     
+    private void refreshOrderedTable() {
+        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+    }
+    
+  //variabel nyimpen select dan form untuk update product
+  //variabel nyimpen select dan form untuk update product
+    private TextField UpdateItemName = new TextField();
+    private TextField UpdateItemDesc = new TextField();
+    private TextField UpdateItemPrice = new TextField();
+    private TextField UpdateItemQuantity = new TextField();
+
+    private GridPane createUpdateOrderForm(TableView<OrderItem> orderItemTable) {
+        GridPane form = new GridPane();
+        form.setVgap(20);
+        form.setHgap(10);
+
+        Button updateItemButton = new Button("Update Order");
+
+        form.add(new Label("Name:"), 0, 0);
+        form.add(UpdateItemName, 1, 0);
+        UpdateItemName.setDisable(true);
+        
+     
+
+        form.add(new Label("Price:"), 0, 1);
+        form.add(UpdateItemPrice, 1, 1);
+        UpdateItemPrice.setDisable(true);
+
+        form.add(new Label("Quantity:"), 0, 2);
+        form.add(UpdateItemQuantity, 1, 2);
+
+        form.add(updateItemButton, 0, 3);
+        
+        orderItemTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                // Populate the form fields with the data from the selected OrderItem
+                UpdateItemName.setText(newSelection.getMenuItemName());
+                               UpdateItemPrice.setText(String.valueOf(newSelection.getMenuItem().getMenuItemPrice()));
+                UpdateItemQuantity.setText(String.valueOf(newSelection.getQuantity()));
+
+                // Enable fields for editing
+                UpdateItemName.setDisable(true);
+                UpdateItemPrice.setDisable(true);
+            }
+        });
+        //button untuk update item di keranjang
+        updateItemButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
+                if (selectedOrderItem != null) {
+                    int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
+                    System.out.println(selectedOrderItem.getOrderId());
+                    System.out.println(selectedOrderItem.getMenuItemId());
+                    
+                    if (newQuantity == 0) {
+                        // If the new quantity is 0, delete the order item
+                        selectedOrderItem.deleteOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItemId());
+
+                        // Refresh the orderItemTable
+                        orderItemTable.getItems().remove(selectedOrderItem);
+
+                        totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
+
+                        refreshOrderedTable();
+                    } else if (newQuantity <= 1) {
+                        // Handle other conditions if needed
+                    } else {
+                        // Update the selected order item with the new quantity
+                        selectedOrderItem.setQuantity(newQuantity);
+                        selectedOrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(), newQuantity);
+
+                        // Refresh the orderItemTable
+                        orderItemTable.refresh();
+
+                        totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
+
+                        refreshOrderedTable();
+                    }
+
+                    UpdateItemName.clear();
+                    UpdateItemPrice.clear();
+                    UpdateItemQuantity.clear();
+                }
+            }
+        });
+
+        
+
+        return form;
+    }
 
 
 }

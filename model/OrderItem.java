@@ -110,7 +110,7 @@ public class OrderItem {
 	}
 	
 	public int getMenuItemId() {
-		return menuItemId;
+		return menuItem.getMenuItemId();
 	}
 
 	public void setMenuItemId(int menuItemId) {
