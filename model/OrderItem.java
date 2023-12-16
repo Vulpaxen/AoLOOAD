@@ -80,13 +80,14 @@ public class OrderItem {
 	            	int id = resultSet.getInt("orderId");
 					int menuItemId = resultSet.getInt("menuItemId");
 					int quantity = resultSet.getInt("quantity");
-//					orderItemList.add(new OrderItem(id, menuItemId, quantity));
-//	               
+					
+					
+					MenuItem menuItem = MenuItemController.getMenuItemById(menuItemId);
+					orderItemList.add(new OrderItem(id, menuItem, quantity));
+					
+	               
 	              	                
-//	                for (OrderItem oi : orderItemList)
-//	    			{
-//	    				oi.setMenuItem(MenuItem.getMenuItemById(orderItem.getMenuItemId()));
-//	    			}
+
 	            }
 	        }
 	    } catch (SQLException e) {
@@ -117,7 +118,7 @@ public class OrderItem {
 	}
 
 	public void setMenuItem(MenuItem menuItem) {
-		this.menuItem = menuItem;
+		this.menuItem = MenuItem.getMenuItemById(menuItemId);
 	}	
 
 	public int getQuantity() {

@@ -303,6 +303,12 @@ public class CustomerPanel extends Stage {
                	Label totalLabel = new Label("Total Price: 0.0");
             	root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
                 
+            	ItemName.clear();
+                ItemDesc.clear();
+                ItemPrice.clear();
+                ItemQuantity.clear();
+                
+                tableMenuItem.getSelectionModel().clearSelection();
             }
         });
         
@@ -313,8 +319,8 @@ public class CustomerPanel extends Stage {
     
     
     
-    
-    
+
+
     private void viewOrdered() {
 		// TODO Auto-generated method stub
     	root1.getChildren().clear();
@@ -324,39 +330,105 @@ public class CustomerPanel extends Stage {
     	TableView<Order> tableOrdered = createOrderedTable();
     	root1.getChildren().add(tableOrdered);
     	
-    	//biar bisa select data-data
-    	tableOrdered.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-	        if (newSelection != null) {
-	        	
-	        }
-	    });
+    	
+    	
+    	if (!tableOrdered.getItems().isEmpty()) {
+    		selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
+            showOrderDetails(selectedOrder);
+            
+        }
   
     	
-    	
+    	 
 
 	}
     
+    
+    
+    private TableView<OrderItem> createOrdersByOrderIdTable(Order OrderId){
+    	TableView<OrderItem> table = new TableView<>();
+     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+ 	    // Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
+ 	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
+ 	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
+ 	    itemName.setPrefWidth(150);
+
+ 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
+ 	    itemQuantity.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
+ 	    itemQuantity.setPrefWidth(50);
+
+ 	    // New TableColumn for itemTotalPrice
+ 	    TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+ 	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
+ 	    itemTotalPrice.setPrefWidth(100);
+
+ 	    table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+ 	    
+ 	   ArrayList<OrderItem> orderItem = orderItemController.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
+ 	   System.out.println("Number of order items: " + orderItem.size());
+ 	   table.setItems(FXCollections.observableArrayList(orderItem));
+ 	   
+ 	   
+ 	    return table;
+    	
+		
+    }
+    
+    private void showOrderDetails(Order selectedOrder) {
+        root2.getChildren().clear(); // Bersihkan root2
+        if (selectedOrder != null) {
+            TableView<OrderItem> orderItemTable = createOrdersByOrderIdTable(selectedOrder);
+            root2.getChildren().add(orderItemTable);
+        }
+    }
+
+    
+   
+    
+    private Order selectedOrder;
     private TableView<Order> createOrderedTable() {
 		// TODO Auto-generated method stunt
     	TableView<Order> table = new TableView<>();
     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     	    
-        TableColumn<Order, Integer> orderID = new TableColumn<>("Order ID");
-        orderID.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+        TableColumn<Order, Integer> orderId = new TableColumn<>("Order ID");
+        orderId.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         
         TableColumn<Order, String> orderStatus= new TableColumn<>("Status");
         orderStatus.setCellValueFactory(new PropertyValueFactory<>("orderStatus"));
         
         TableColumn<Order, Date> orderDate = new TableColumn<>("Date");
         orderDate.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
+        
+        TableColumn<Order, Double> orderTotal = new TableColumn<>("Total Order Price");
+        orderTotal.setCellValueFactory(new PropertyValueFactory<>("orderTotal"));
        
-        table.getColumns().addAll(orderID, orderStatus, orderDate);
+        table.getColumns().add(orderId);
+        table.getColumns().add(orderStatus);
+        table.getColumns().add(orderDate);
+        table.getColumns().add(orderTotal);
+        
+    	
+    	table.setPrefHeight(1200);
+
+    	table.setMinHeight(700);
+    	table.setMinWidth(400);
+        
         table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+        
+        
+        table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedOrder = newSelection;
+                showOrderDetails(selectedOrder);
+            }
+        });
         
         return table;
 	}
     
-   
+
 
 }
 
