@@ -281,6 +281,7 @@ public class CustomerPanel extends Stage {
             }
         });
         
+        
         //button buat Order dari Tabel Keranjang
         makeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -544,6 +545,8 @@ public class CustomerPanel extends Stage {
                     UpdateItemName.clear();
                     UpdateItemPrice.clear();
                     UpdateItemQuantity.clear();
+                    
+                    orderItemTable.getSelectionModel().clearSelection();
                 }
             }
         });
