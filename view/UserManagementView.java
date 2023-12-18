@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserManagementView extends Application {
-    private UserController userController;
-
     private TableView<User> userTableView;
     private ObservableList<User> userData;
 
@@ -28,8 +26,6 @@ public class UserManagementView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        userController = new UserController();
-
         primaryStage.setTitle("User Management View");
 
         userTableView = new TableView<>();
@@ -70,7 +66,7 @@ public class UserManagementView extends Application {
 
     private void viewAllUsers() {
         userData.clear();
-        List<User> users = userController.getAllUsers();
+        List<User> users = UserController.getAllUsers();
         userData.addAll(users);
         userTableView.setItems(userData);
     }
@@ -79,7 +75,7 @@ public class UserManagementView extends Application {
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             int userId = selectedUser.getUserId();
-            userController.deleteUser(Integer.toString(userId));
+            UserController.deleteUser(Integer.toString(userId));
             viewAllUsers();
         } else {
             showAlert("Please select a user to remove.");
@@ -95,7 +91,7 @@ public class UserManagementView extends Application {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(newRole -> {
-                userController.updateUser(
+                UserController.updateUser(
                         String.valueOf(selectedUser.getUserId()),
                         newRole,
                         selectedUser.getUserName(),

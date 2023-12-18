@@ -33,23 +33,10 @@ public class MenuItem {
     	} catch (SQLException e) {
     	  e.printStackTrace();
     	}
-//        MenuItem newMenuItem = new MenuItem(menuItemName, menuItemDescription, menuItemPrice);
-//        menuItems.add(newMenuItem);
         return "Menu Item created: " + menuItemName;
     }
 	
     public static void updateMenuItem(int menuItemId, String menuItemName, String menuItemDescription, double menuItemPrice) {
-//      for (MenuItem menuItem : menuItems) {
-//          if (menuItem.menuItemId.equals(menuItemId)) {
-//              menuItem.menuItemName = menuItemName;
-//              menuItem.menuItemDescription = menuItemDescription;
-//              menuItem.menuItemPrice = menuItemPrice;
-//              System.out.println("Menu Item updated: " + menuItem);
-//              return;
-//          }
-//      }
-  	
-//      System.out.println("Menu Item not found with ID: " + menuItemId);
   	String query = "UPDATE menuitem SET menuItemName = ?, menuItemDescription = ?, menuItemPrice = ? WHERE menuItemId = ?";
   	try (Connection connection = Connect.getInstance().getConnection();
   		PreparedStatement ps = connection.prepareStatement(query)) { 
@@ -64,16 +51,6 @@ public class MenuItem {
   }
 	
     public static void deleteMenuItem(int menuItemId) {
-//      for (int i = 0; i < menuItems.size(); i++) {
-//      	MenuItem item = menuItems.get(i);
-//          if (item.menuItemId.equals(menuItemId)) {
-//          	menuItems.remove(i);
-//              System.out.println("Menu Item deleted: " + item);
-//              return;
-//          }
-//      }
-//      System.out.println("Menu not found with ID: " + menuItemId);
-  	
   	String query = "DELETE FROM menuitem WHERE menuItemId = ?";
       try (Connection connection = Connect.getInstance().getConnection();
       	PreparedStatement ps = connection.prepareStatement(query)) {
@@ -85,13 +62,6 @@ public class MenuItem {
   }
 	
     public static MenuItem getMenuItemById(int menuItemId) {
-//      for (MenuItem menuItem : menuItems) {
-//          if (menuItem.menuIt`emId.equals(menuItemId)) {
-//              System.out.println("Menu Item found by ID: " + menuItem);
-//              return menuItem;
-//          }
-//      }
-//      System.out.println("Menu Item not found with ID: " + menuItemId);
     	MenuItem menuItem = null;
 		
 		try(Connection connection = Connect.getInstance().getConnection()){
@@ -115,12 +85,6 @@ public class MenuItem {
   }
 	
     public static ArrayList<MenuItem> getAllMenuItems() {
-//      for (MenuItem menuItem : menuItems) {
-//          System.out.println("MenuItem: " + menuItem.menuItemName + ", Description: " + menuItem.menuItemDescription
-//                  + ", Price: " + menuItem.menuItemPrice);
-//      }
-//      return new ArrayList<>(menuItems);
-      
       ArrayList<MenuItem> menuItemList = new ArrayList<>();
       String query = "SELECT * FROM menuitem";
       try (Connection connection = Connect.getInstance().getConnection();

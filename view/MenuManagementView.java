@@ -17,7 +17,6 @@ import model.User;
 
 public class MenuManagementView {
     private TableView<MenuItem> table = new TableView<>();
-    MenuItemController controller = new MenuItemController();
     private TextField idInput = new TextField();
     private TextField nameInput = new TextField();
     private TextField descriptionInput = new TextField();
@@ -38,7 +37,7 @@ public class MenuManagementView {
     }
 
     private void loadData() {
-        ArrayList<MenuItem> data = controller.getAllMenuItems();
+        ArrayList<MenuItem> data = MenuItemController.getAllMenuItems();
         table.getItems().setAll(data);
     }
 

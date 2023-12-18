@@ -6,11 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import controller.MenuItemController;
-
 public class OrderItem {
 	
-
 	private int orderId;
 	private int menuItemId;
 	private int quantity;
@@ -22,9 +19,6 @@ public class OrderItem {
 		this.menuItem = menuItem;
 		this.quantity = quantity;
 	}
-
-	
-
 
 	public static void createOrderItem(int orderId, MenuItem menuItem, int quantity) {
 		String query = "INSERT INTO orderitem (orderId, menuItemId, quantity) VALUES (?, ?, ?)";
@@ -75,7 +69,6 @@ public class OrderItem {
 
 	        ps.setInt(1, orderId);
 	        
-	        
 	        try (ResultSet resultSet = ps.executeQuery()) {
 	            while (resultSet.next()) {
 	            	int id = resultSet.getInt("orderId");
@@ -86,13 +79,8 @@ public class OrderItem {
 		            double menuItemPrice = resultSet.getDouble("menuItemPrice");
 					
 					MenuItem menuItem = new MenuItem(menuItemId, menuItemName,menuItemDescription, menuItemPrice);
-					orderItemList.add(new OrderItem(id, menuItem, quantity));
-					            
-	              	                
-
+					orderItemList.add(new OrderItem(id, menuItem, quantity));                
 	            }
-	            
-	            
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -136,6 +124,5 @@ public class OrderItem {
 	public String getMenuItemName() {
 	    return menuItem.getMenuItemName();
 	}
-
 
 }

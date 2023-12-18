@@ -182,6 +182,25 @@ public class Order {
 		}
 	}
 	
+	public static boolean orderExists(int orderId) {
+	    String query = "SELECT COUNT(*) FROM orders WHERE orderId = ?";
+	    try (Connection connection = Connect.getInstance().getConnection();
+	         PreparedStatement ps = connection.prepareStatement(query)) {
+
+	        ps.setInt(1, orderId);
+
+	        try (ResultSet resultSet = ps.executeQuery()) {
+	            if (resultSet.next()) {
+	                int count = resultSet.getInt(1);
+	                return count > 0;
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
 	
 
 	public int getOrderId() {

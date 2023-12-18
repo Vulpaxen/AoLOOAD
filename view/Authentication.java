@@ -16,7 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.User;
 
 public class Authentication extends Stage {
 	private VBox root = new VBox(10);
@@ -65,9 +64,9 @@ public class Authentication extends Stage {
 					} else if (userRole.equals("Chef")) {
 						ChefPanel chefPanel = new ChefPanel();
 						chefPanel.show();
-					} else if (userRole.equals("Waiter")) {
+					} else if (userRole.equalsIgnoreCase("Waiter")) {
 						WaiterPanel waiterPanel = new WaiterPanel();
-						// waiterPanel.show();
+						waiterPanel.show();
 					} else if (userRole.equals("Cashier")) {
 						CashierPanel cashierPanel = new CashierPanel();
 						// cashierPanel.show();
