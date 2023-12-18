@@ -41,83 +41,87 @@ import model.User;
 public class CustomerPanel extends Stage {
 
 	private BorderPane borderPane = new BorderPane();
-	private VBox root1 = new VBox(20);
-	private VBox root2 = new VBox(20);
-	private Scene scene;
-	private MenuBar menuBar = new MenuBar();
-
-	private OrderController orderController = new OrderController();
-	private OrderItemController orderItemController = new OrderItemController();
-
-	public CustomerPanel() {
-
-		super(StageStyle.DECORATED);
-		this.setTitle("Customer Dashboard");
-
-		scene = new Scene(borderPane, 1000, 800);
-		this.setScene(scene);
-
-		Menu addOrderMenu = new Menu("Add Order");
-		javafx.scene.control.MenuItem AddOrderMenuItem = new javafx.scene.control.MenuItem("Go To Add Order");
-		addOrderMenu.getItems().addAll(AddOrderMenuItem);
-
-		Menu viewOrderedMenu = new Menu("View Ordered (History)");
-		javafx.scene.control.MenuItem viewOrderedMenuItem = new javafx.scene.control.MenuItem("Go to View Ordered");
-		viewOrderedMenu.getItems().addAll(viewOrderedMenuItem);
-
-		menuBar.getMenus().addAll(addOrderMenu);
-		menuBar.getMenus().addAll(viewOrderedMenu);
-
-		borderPane.setTop(menuBar);
-
-		addOrder();
-
-		AddOrderMenuItem.setOnAction(e -> {
-			addOrder();
-		});
-
-		viewOrderedMenuItem.setOnAction(e -> {
-			viewOrdered();
-		});
-
-		borderPane.setLeft(root1);
-		root1.setAlignment(Pos.CENTER);
-		root1.setPadding(new Insets(20));
-		root1.setPrefHeight(getMaxHeight());
-		root1.setStyle("-fx-background-color: lightgray;");
-
-		borderPane.setCenter(root2);
-		root2.setAlignment(Pos.CENTER);
-		root2.setPadding(new Insets(20));
-
-	}
-
-	// variabel nyimpen select dan form
-	private TextField ItemId = new TextField();
-	private TextField ItemName = new TextField();
-	private TextField ItemDesc = new TextField();
-	private TextField ItemPrice = new TextField();
-	private TextField ItemQuantity = new TextField();
-
-	// Tampilan Customer Untuk Add Order
-	// Tabel Menu Order Item, Form buat Nambah Item, Tabel Cart Item yang udah
-	// ditambahin
-	TableView<OrderItem> createdCartTable = createCartTable();
-
-	private void addOrder() {
-		// buat hilangin tampilan isi sebelumnya
-		root1.getChildren().clear();
-		root2.getChildren().clear();
-
-		// buat tampilan baru
-		TableView<MenuItem> tableMenuItem = createMenuItemTable();
-		tableMenuItem.setStyle("-fx-background-color: lightblue;");
-		root1.getChildren().addAll(tableMenuItem);
-
-		GridPane form = createOrderForm(tableMenuItem);
-		Label totalLabel = new Label("Total Price: 0");
-		root2.getChildren().addAll(form, createdCartTable, totalLabel);
-		updateTotalLabel();
+    private VBox root1 = new VBox(20);
+    private VBox root2 = new VBox(20);
+    private Scene scene;
+    private MenuBar menuBar = new MenuBar();
+    
+    
+    private OrderController orderController = new OrderController();
+    private OrderItemController orderItemController = new OrderItemController();
+    
+   
+    public CustomerPanel() {
+    	
+        super(StageStyle.DECORATED);
+        this.setTitle("Customer Dashboard");
+        
+                        
+        scene = new Scene(borderPane, 1000, 800);
+        this.setScene(scene);
+        
+        Menu addOrderMenu = new Menu("Add Order");
+        javafx.scene.control.MenuItem AddOrderMenuItem = new javafx.scene.control.MenuItem("Go To Add Order");
+        addOrderMenu.getItems().addAll(AddOrderMenuItem);
+        
+        Menu viewOrderedMenu = new Menu("View Ordered (History)");
+        javafx.scene.control.MenuItem viewOrderedMenuItem = new javafx.scene.control.MenuItem("Go to View Ordered");
+        viewOrderedMenu.getItems().addAll(viewOrderedMenuItem);
+        
+        menuBar.getMenus().addAll(addOrderMenu);
+        menuBar.getMenus().addAll(viewOrderedMenu);
+        
+        borderPane.setTop(menuBar);
+       
+        
+        addOrder();
+        
+        AddOrderMenuItem.setOnAction(e ->{
+        	addOrder();
+        });
+        
+             
+        viewOrderedMenuItem.setOnAction(e -> {
+        	viewOrdered();
+        });
+        
+        borderPane.setLeft(root1);
+        root1.setAlignment(Pos.CENTER);
+        root1.setPadding(new Insets(20));
+        root1.setPrefHeight(getMaxHeight());
+        root1.setStyle("-fx-background-color: lightgray;");
+        
+        borderPane.setCenter(root2);
+        root2.setAlignment(Pos.CENTER);
+        root2.setPadding(new Insets(20));
+                                        
+    }
+    
+    //variabel nyimpen select dan form
+    private TextField ItemId = new TextField();
+    private TextField ItemName = new TextField();
+    private TextField ItemDesc = new TextField();
+    private TextField ItemPrice = new TextField();
+    private TextField ItemQuantity= new TextField();
+    
+    
+    //Tampilan Customer Untuk Add Order
+    //Tabel Menu Order Item, Form buat Nambah Item, Tabel Cart Item yang udah ditambahin 
+    TableView<OrderItem> createdCartTable = createCartTable();
+    private void addOrder() {
+    	//buat hilangin tampilan isi sebelumnya
+    	root1.getChildren().clear();
+    	root2.getChildren().clear();
+    	
+    	//buat tampilan baru
+    	TableView<MenuItem> tableMenuItem = createMenuItemTable();
+    	tableMenuItem.setStyle("-fx-background-color: lightblue;");
+       	root1.getChildren().addAll(tableMenuItem);
+       	
+       	GridPane form = createOrderForm(tableMenuItem);
+        Label totalLabel = new Label("Total Price: 0");
+    	root2.getChildren().addAll(form, createdCartTable, totalLabel );
+    	updateTotalLabel();
 	}
 
 	// Buat Table Menu Item
