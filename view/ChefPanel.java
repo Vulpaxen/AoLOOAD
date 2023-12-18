@@ -36,8 +36,6 @@ public class ChefPanel extends Stage {
 	private VBox root2 = new VBox(20);
 	private Scene scene;
 
-	private OrderItemController orderItemController = new OrderItemController();
-
 	public ChefPanel() {
 
 		super(StageStyle.DECORATED);
@@ -60,7 +58,7 @@ public class ChefPanel extends Stage {
 
 	}
 
-	private TableView<OrderItem> createCartTable() {
+	private TableView<OrderItem> createOrderDetails() {
 		TableView<OrderItem> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -83,22 +81,22 @@ public class ChefPanel extends Stage {
 		return table;
 	}
 
-	TableView<OrderItem> createdCartTable = createCartTable();
+	TableView<OrderItem> orderDetails = createOrderDetails();
 
-	TableView<Order> tableOrdered = createOrderedTable();
+	TableView<Order> pendingOrders = createOrderedTable();
 
 	private void viewOrdered() {
 		// TODO Auto-generated method stub
 		root1.getChildren().clear();
 		root2.getChildren().clear();
 
-		root1.getChildren().add(tableOrdered);
+		root1.getChildren().add(pendingOrders);
 
-		if (tableOrdered.getSelectionModel().isEmpty()) {
+		if (pendingOrders.getSelectionModel().isEmpty()) {
 			Label selectOrderLabel = new Label("Select an order from the table to see order details.");
 			root2.getChildren().add(selectOrderLabel);
 		} else {
-			selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
+			selectedOrder = pendingOrders.getSelectionModel().getSelectedItem();
 			showOrderDetails(selectedOrder);
 		}
 	}
@@ -178,7 +176,7 @@ public class ChefPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -191,7 +189,7 @@ public class ChefPanel extends Stage {
 	}
 
 	private void refreshOrderedTable() {
-		tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+		pendingOrders.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
 	}
 
 	private TextField updateItemQuantity = new TextField();
@@ -220,7 +218,6 @@ public class ChefPanel extends Stage {
 		prepareOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
 				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					ArrayList<OrderItem> orderItems = OrderItemController
@@ -231,8 +228,8 @@ public class ChefPanel extends Stage {
 				} else {
 					showAlert("No Order Selected", "Please select a pending order to prepare.");
 				}
+				viewOrdered();
 			}
-
 		});
 		updateOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -266,6 +263,21 @@ public class ChefPanel extends Stage {
 					}
 
 					updateItemQuantity.clear();
+				}
+			}
+		});
+		removeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Order selectedOrder = pendingOrders.getSelectionModel().getSelectedItem();
+				if (selectedOrder != null) {
+					int selectedOrderId = selectedOrder.getOrderId();
+
+					OrderController.deleteOrder(selectedOrderId);
+
+					refreshOrderedTable();
+				} else {
+					showAlert("No Order Item Selected", "Please select an order item to remove.");
 				}
 			}
 		});

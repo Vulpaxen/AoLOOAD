@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javafx.util.Callback;
+
 public class Order {
 	private int orderId;
 	private int orderUserId;
@@ -258,5 +260,34 @@ public class Order {
 	public void setOrderTotal(double d) {
 		this.orderTotal = d;
 	}
+
+	public static ArrayList<Order> getPendingOrdersByCustomerId(int customerId) {
+		ArrayList<Order> pendingOrders = new ArrayList<>();
+	    
+		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+
+	    for (Order order : allOrders) {
+	        if ("Pending".equals(order.getOrderStatus())) {
+	            pendingOrders.add(order);
+	        }
+	    }
+
+	    return pendingOrders;
+	}
+	
+	public static ArrayList<Order> getPreparedOrdersByCustomerId(int customerId) {
+		ArrayList<Order> preparedOrders = new ArrayList<>();
+	    
+		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+
+	    for (Order order : allOrders) {
+	        if ("Prepared".equals(order.getOrderStatus())) {
+	        	preparedOrders.add(order);
+	        }
+	    }
+
+	    return preparedOrders;
+	}
+
 
 }

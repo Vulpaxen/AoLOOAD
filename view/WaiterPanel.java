@@ -36,12 +36,10 @@ public class WaiterPanel extends Stage {
 	private VBox root2 = new VBox(20);
 	private Scene scene;
 
-	private OrderItemController orderItemController = new OrderItemController();
-
 	public WaiterPanel() {
 
 		super(StageStyle.DECORATED);
-		this.setTitle("Chef Dashboard");
+		this.setTitle("Waiter Dashboard");
 
 		scene = new Scene(borderPane, 1000, 800);
 		this.setScene(scene);
@@ -60,7 +58,7 @@ public class WaiterPanel extends Stage {
 
 	}
 
-	private TableView<OrderItem> createCartTable() {
+	private TableView<OrderItem> createOrderDetails() {
 		TableView<OrderItem> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -83,22 +81,22 @@ public class WaiterPanel extends Stage {
 		return table;
 	}
 
-	TableView<OrderItem> createdCartTable = createCartTable();
+	TableView<OrderItem> orderDetails = createOrderDetails();
 
-	TableView<Order> tableOrdered = createOrderedTable();
+	TableView<Order> preparedOrders = createOrderedTable();
 
 	private void viewOrdered() {
 		// TODO Auto-generated method stub
 		root1.getChildren().clear();
 		root2.getChildren().clear();
 
-		root1.getChildren().add(tableOrdered);
+		root1.getChildren().add(preparedOrders);
 
-		if (tableOrdered.getSelectionModel().isEmpty()) {
+		if (preparedOrders.getSelectionModel().isEmpty()) {
 			Label selectOrderLabel = new Label("Select an order from the table to see order details.");
 			root2.getChildren().add(selectOrderLabel);
 		} else {
-			selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
+			selectedOrder = preparedOrders.getSelectionModel().getSelectedItem();
 			showOrderDetails(selectedOrder);
 		}
 	}
@@ -178,7 +176,7 @@ public class WaiterPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(Order.getPreparedOrdersByCustomerId(1)));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -191,7 +189,7 @@ public class WaiterPanel extends Stage {
 	}
 
 	private void refreshOrderedTable() {
-		tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+		preparedOrders.setItems(FXCollections.observableArrayList(Order.getPreparedOrdersByCustomerId((1))));
 	}
 
 	private TextField updateItemQuantity = new TextField();
@@ -220,7 +218,6 @@ public class WaiterPanel extends Stage {
 		serveOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
 				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					ArrayList<OrderItem> orderItems = OrderItemController
@@ -229,10 +226,10 @@ public class WaiterPanel extends Stage {
 					refreshOrderedTable();
 					showAlert("Order Served", "Selected order has been served.");
 				} else {
-					showAlert("No Order Selected", "Please select a prepared order to serve.");
+					showAlert("No Order Selected", "Please select a pending order to serve.");
 				}
+				viewOrdered();
 			}
-
 		});
 		updateOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -266,6 +263,21 @@ public class WaiterPanel extends Stage {
 					}
 
 					updateItemQuantity.clear();
+				}
+			}
+		});
+		removeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Order selectedOrder = preparedOrders.getSelectionModel().getSelectedItem();
+				if (selectedOrder != null) {
+					int selectedOrderId = selectedOrder.getOrderId();
+
+					OrderController.deleteOrder(selectedOrderId);
+
+					refreshOrderedTable();
+				} else {
+					showAlert("No Order Item Selected", "Please select an order item to remove.");
 				}
 			}
 		});
