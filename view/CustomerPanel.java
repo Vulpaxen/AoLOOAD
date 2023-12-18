@@ -173,20 +173,18 @@ public class CustomerPanel extends Stage {
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 		// Tambahkan kolom-kolom yang sesuai dengan atribut OrderItem
-		TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
-		itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
-		itemName.setPrefWidth(150);
+	    TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
+	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
+	    itemName.setPrefWidth(150);
 
-		TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
-		itemQuantity.setCellValueFactory(
-				orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
-		itemQuantity.setPrefWidth(50);
+	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
+	    itemQuantity.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
+	    itemQuantity.setPrefWidth(50);
 
-		// New TableColumn for itemTotalPrice
-		TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
-		itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(
-				orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
-		itemTotalPrice.setPrefWidth(100);
+	    // New TableColumn for itemTotalPrice
+	    TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
+	    itemTotalPrice.setPrefWidth(100);
 
 		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
 
@@ -268,18 +266,18 @@ public class CustomerPanel extends Stage {
 				}
 			}
 		});
-
-		// button buat Order dari Tabel Keranjang
-		makeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (tempCart != null) {
-					Date date = new Date(System.currentTimeMillis());
-					int orderId = orderController.createOrder(User.getUserById(1), tempCart, date, orderTotal);
-
-					for (OrderItem orderItem : tempCart) {
-						orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
-
+        
+        //button buat Order dari Tabel Keranjang
+        makeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (tempCart != null) {
+                	Date date = new Date(System.currentTimeMillis());
+                	int orderId = orderController.createOrder(User.getUserById(1), tempCart, date, orderTotal);
+			                	
+                	for (OrderItem orderItem : tempCart) {
+                		orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
+						
 					}
 					tempCart.clear();
 					createdCartTable.setItems(FXCollections.observableArrayList(tempCart)); // Clear the table
@@ -516,6 +514,8 @@ public class CustomerPanel extends Stage {
 					UpdateItemName.clear();
 					UpdateItemPrice.clear();
 					UpdateItemQuantity.clear();
+					
+					orderItemTable.getSelectionModel().clearSelection();
 				}
 			}
 		});
