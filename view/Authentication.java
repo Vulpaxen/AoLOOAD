@@ -72,7 +72,7 @@ public class Authentication extends Stage {
 						// cashierPanel.show();
 					} else if (userRole.equals("Admin")) {
 						AdminPanel adminPanel = new AdminPanel();
-						// adminPanel.show();
+						//adminPanel.show();
 					}
 
 					((Stage) loginBtn.getScene().getWindow()).close();

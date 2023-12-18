@@ -64,14 +64,14 @@ public class UserManagementView extends Application {
         primaryStage.show();
     }
 
-    private void viewAllUsers() {
+    public void viewAllUsers() {
         userData.clear();
         List<User> users = UserController.getAllUsers();
         userData.addAll(users);
         userTableView.setItems(userData);
     }
 
-    private void removeUser() {
+    public void removeUser() {
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             int userId = selectedUser.getUserId();
@@ -82,7 +82,7 @@ public class UserManagementView extends Application {
         }
     }
 
-    private void changeUserRole() {
+    public void changeUserRole() {
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             TextInputDialog dialog = new TextInputDialog(selectedUser.getUserRole());

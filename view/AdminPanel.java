@@ -1,5 +1,10 @@
 package view;
 
-public class AdminPanel {
+import javafx.stage.Stage;
 
+public class AdminPanel extends Stage{
+
+    public void start() {
+    	
+    }
 }

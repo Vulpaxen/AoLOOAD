@@ -36,7 +36,7 @@ public class MenuManagementView {
         }
     }
 
-    private void loadData() {
+    public void loadData() {
         ArrayList<MenuItem> data = MenuItemController.getAllMenuItems();
         table.getItems().setAll(data);
     }
