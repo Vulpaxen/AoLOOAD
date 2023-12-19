@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -68,7 +69,7 @@ public class CashierPanel extends Stage{
 		});
 		
 		receiptMenuItem.setOnAction(e -> {
-			
+			viewReceiptCashier();
 		});
 		
 		borderPane.setTop(menuBar);
@@ -127,7 +128,7 @@ public class CashierPanel extends Stage{
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getServedOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -212,10 +213,13 @@ public class CashierPanel extends Stage{
 						int amount = Integer.parseInt(paymentAmount.getText());
 						
 						int totalPrice = 0;
-						for(OrderItem oi:selectedOrder.getOrderItem()) {
-							totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
-							
+						if(selectedOrder.getOrderItem()!= null) {
+							for(OrderItem oi:selectedOrder.getOrderItem()) {
+								totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
+
+							}
 						}
+						
 						ArrayList<OrderItem> orderItems = OrderItemController
 								.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
 						if(amount < totalPrice) {
@@ -229,7 +233,7 @@ public class CashierPanel extends Stage{
 							//TODO: masukin ke receipt
 							
 							Date date = new Date(System.currentTimeMillis());
-							ReceiptController.createReceipt(selectedOrder, payment, date, amount);
+							ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, amount);
 						}else {
 							showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
 						}
@@ -251,9 +255,75 @@ public class CashierPanel extends Stage{
 	}
 	
 	private void refreshOrderedTable() {
-		servedOrders.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
+		servedOrders.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 	}
 	
+	
+	//TODO: Receipt
+	private TableView<Receipt> tableReceipt = createReceiptTable();
+	private TableView<Object> tableDetail;
+	Receipt selectedReceipt;
+	
+	private void viewReceiptCashier() {
+		root1.getChildren().clear();
+		root2.getChildren().clear();
+		
+		root1.getChildren().add(tableReceipt);
+		if (tableReceipt.getSelectionModel().isEmpty()) {
+			Label selectOrderLabel = new Label("Select an receipt from the table to see receipt details.");
+			root2.getChildren().add(selectOrderLabel);
+		} else {
+			selectedReceipt = tableReceipt.getSelectionModel().getSelectedItem();
+			showReceiptDetails(selectedReceipt);
+		}
+	}
+	
+	
+	private TableView<Receipt> createReceiptTable() {
+		tableReceipt = new TableView<>();
+		tableReceipt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+		ObservableList<Receipt> receiptData = FXCollections.observableArrayList(Receipt.getAllReceipts());
+		
+		TableColumn<Receipt, Integer> receiptId = new TableColumn<>("Order ID");
+		receiptId.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
+
+		TableColumn<Receipt, Integer> orderId = new TableColumn<>("Order ID");
+		orderId.setCellValueFactory(new PropertyValueFactory<>("receiptOrderId"));
+
+		TableColumn<Receipt, String> paymentType = new TableColumn<>("Payment Type");
+		paymentType.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentType"));
+
+		TableColumn<Receipt, Integer> paymentAmount = new TableColumn<>("Payment Amount");
+		paymentAmount.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentAmount"));
+		
+		TableColumn<Receipt, Date> receiptDate = new TableColumn<>("Payment Date");
+		receiptDate.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentDate"));
+		
+		tableReceipt.getColumns().addAll(receiptId,orderId,paymentType,paymentAmount,receiptDate);
+		
+		tableReceipt.setPrefHeight(1200);
+
+		tableReceipt.setMinHeight(800);
+		tableReceipt.setMinWidth(400);
+		
+		tableReceipt.setItems(receiptData);
+		
+		tableReceipt.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (newSelection != null) {
+				selectedReceipt = newSelection;
+				showReceiptDetails(selectedReceipt);
+			}
+		});
+		
+		
+		return tableReceipt;
+	}
+	private void showReceiptDetails(Receipt selectedReceipt2) {
+		root2.getChildren().clear();
+	}
+	
+	//Alert
 	private void showAlert(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);
