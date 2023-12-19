@@ -148,25 +148,32 @@ public class User {
 		return user;
 	}
     
-    public static String authenticateUser(String userEmail, String userPassword) {
-        String query = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
-        try (Connection connection = Connect.getInstance().getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
-
-            ps.setString(1, userEmail);
-            ps.setString(2, userPassword);
-
-            try (ResultSet resultSet = ps.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getString("userRole");
-                } else {
-                    return null;
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static User authenticateUser(String userEmail, String userPassword) {
+    	ArrayList<User> userList = getAllUsers();
+    	for(User u: userList) {
+    		if(u.getUserEmail().equals(userEmail) && u.getUserPassword().equals(userPassword)){
+    			return u;
+    		}
+    	}
+    	return null;
+//        String query = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
+//        try (Connection connection = Connect.getInstance().getConnection();
+//             PreparedStatement ps = connection.prepareStatement(query)) {
+//
+//            ps.setString(1, userEmail);
+//            ps.setString(2, userPassword);
+//
+//            try (ResultSet resultSet = ps.executeQuery()) {
+//                if (resultSet.next()) {
+//                    return resultSet.getString("userRole");
+//                } else {
+//                    return null;
+//                }
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
     }
 }
