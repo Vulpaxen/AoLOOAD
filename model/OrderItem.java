@@ -124,5 +124,9 @@ public class OrderItem {
 	public String getMenuItemName() {
 	    return menuItem.getMenuItemName();
 	}
+	
+	public String getMenuItemDesc() {
+	    return menuItem.getMenuItemDescription();
+	}
 
 }
