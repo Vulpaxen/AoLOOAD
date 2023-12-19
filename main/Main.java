@@ -3,6 +3,8 @@ package main;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import view.Authentication;
+import view.CashierPanel;
+import view.ChefPanel;
 import view.CustomerPanel;
 
 public class Main extends Application {
@@ -16,7 +18,11 @@ public class Main extends Application {
 //        Authentication authentication = new Authentication();
 //        authentication.show();
         
-        CustomerPanel cust = new CustomerPanel();
-        cust.show();
+//        CustomerPanel cust = new CustomerPanel();
+//        cust.show();
+    	CashierPanel cashier = new CashierPanel();
+    	cashier.show();
+//    	ChefPanel chef = new ChefPanel();
+//    	chef.show();
     }
 }
