@@ -14,8 +14,5 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Authentication authentication = new Authentication();
         authentication.show();
-        
-//        AdminPanel adm = new AdminPanel();
-//        adm.show
     }
 }

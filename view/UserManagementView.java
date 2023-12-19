@@ -29,7 +29,7 @@ public class UserManagementView {
         TableColumn<User, String> usernameColumn = createColumn("Username", "userName");
         TableColumn<User, String> roleColumn = createColumn("Role", "userRole");
 
-        userTableView.getColumns().addAll(userIdColumn, usernameColumn, roleColumn);
+        userTableView.getColumns().addAll(List.of(userIdColumn, usernameColumn, roleColumn));
 
         Button viewButton = new Button("View All Users");
         Button removeButton = new Button("Remove User");
@@ -71,7 +71,9 @@ public class UserManagementView {
         List<User> users = UserController.getAllUsers();
 
         for (User user : users) {
-            user.setUserRole("customer");
+         if (user != null) {
+                user.setUserRole("customer");
+            }
         }
 
         userData.addAll(users);

@@ -4,13 +4,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.User;
 
 public class AdminPanel extends Stage {
 
-    public AdminPanel() {
+ public AdminPanel(User currentUser) {
         start();
     }
-
+ 
     private void start() {
         AnchorPane root = new AnchorPane();
 
@@ -51,4 +52,4 @@ public class AdminPanel extends Stage {
     public void showAdminPanel() {
         showAndWait();
     }
-} 
+}

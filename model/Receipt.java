@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Receipt {
@@ -66,7 +65,6 @@ public class Receipt {
 				Date paymentDate = resultSet.getDate("receiptPaymentDate");
 				String paymentType = resultSet.getString("receiptPaymentType");
 				
-				Order order = Order.getOrderByOrderId(orderId);
 				receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
 			}
 		} 

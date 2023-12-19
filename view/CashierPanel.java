@@ -2,6 +2,7 @@ package view;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import controller.OrderController;
 import controller.OrderItemController;
@@ -175,7 +176,7 @@ public class CashierPanel extends Stage{
 
 		table.setItems(FXCollections.observableArrayList(orderItem));
 
-		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+		table.getColumns().addAll(List.of(itemName, itemQuantity, itemTotalPrice));
 
 		return table;
 	}
@@ -203,7 +204,6 @@ public class CashierPanel extends Stage{
 			@Override
 			public void handle(ActionEvent event) {
 				
-				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					//Check paymenttype
 					try {
@@ -259,7 +259,6 @@ public class CashierPanel extends Stage{
 	
 	//TODO: Receipt
 	private TableView<Receipt> tableReceipt = createReceiptTable();
-	private TableView<Object> tableDetail;
 	Receipt selectedReceipt;
 	
 	private void viewReceiptCashier() {
@@ -298,7 +297,7 @@ public class CashierPanel extends Stage{
 		TableColumn<Receipt, Date> receiptDate = new TableColumn<>("Payment Date");
 		receiptDate.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentDate"));
 		
-		tableReceipt.getColumns().addAll(receiptId,orderId,paymentType,paymentAmount,receiptDate);
+		tableReceipt.getColumns().addAll(List.of(receiptId,orderId,paymentType,paymentAmount,receiptDate));
 		
 		tableReceipt.setPrefHeight(1200);
 

@@ -2,6 +2,7 @@ package view;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import controller.OrderController;
 import controller.OrderItemController;
@@ -76,7 +77,7 @@ public class ChefPanel extends Stage {
 				orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
 		itemTotalPrice.setPrefWidth(100);
 
-		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+		table.getColumns().addAll(List.of(itemName, itemQuantity, itemTotalPrice));
 
 		return table;
 	}
@@ -123,7 +124,7 @@ public class ChefPanel extends Stage {
 
 		table.setItems(FXCollections.observableArrayList(orderItem));
 
-		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+		table.getColumns().addAll(List.of(itemName, itemQuantity, itemTotalPrice));
 
 		return table;
 
@@ -218,7 +219,6 @@ public class ChefPanel extends Stage {
 		prepareOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					ArrayList<OrderItem> orderItems = OrderItemController
 							.getAllOrderItemsByOrderId(selectedOrder.getOrderId());

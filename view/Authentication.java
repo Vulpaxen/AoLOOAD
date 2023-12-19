@@ -72,8 +72,8 @@ public class Authentication extends Stage {
 						CashierPanel cashierPanel = new CashierPanel();
 						 cashierPanel.show();
 					} else if (user.getUserRole().equals("Admin")) {
-						AdminPanel adminPanel = new AdminPanel();
-//						adminPanel.show();
+						AdminPanel adminPanel = new AdminPanel(user);
+						adminPanel.show();
 					}
 
 					((Stage) loginBtn.getScene().getWindow()).close();

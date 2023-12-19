@@ -14,6 +14,7 @@ import model.MenuItem;
 import model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MenuManagementView {
     private TableView<MenuItem> table = new TableView<>();
@@ -55,7 +56,7 @@ public class MenuManagementView {
         TableColumn<MenuItem, Double> priceColumn = new TableColumn<>("Menu Item Price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
 
-        table.getColumns().addAll(idColumn, nameColumn, descriptionColumn, priceColumn);
+        table.getColumns().addAll(List.of(idColumn, nameColumn, descriptionColumn, priceColumn));
 
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {

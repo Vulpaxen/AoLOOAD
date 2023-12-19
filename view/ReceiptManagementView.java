@@ -1,13 +1,12 @@
 package view;
 
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import model.Receipt;
 import model.User;
 
 public class ReceiptManagementView{
-	private TableView<Receipt> table = new TableView<>();
+//	private TableView<Receipt> table = new TableView<>();
 	private User currentUser;
 	
 	public VBox getRoot() {
@@ -28,11 +27,11 @@ public class ReceiptManagementView{
 		return null;
 	}
 	
-	private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
+//	private void showAlert(String title, String content) {
+//        Alert alert = new Alert(Alert.AlertType.ERROR);
+//        alert.setTitle(title);
+//        alert.setHeaderText(null);
+//        alert.setContentText(content);
+//        alert.showAndWait();
+//    }
 }
