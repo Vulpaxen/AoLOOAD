@@ -15,14 +15,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-//        Authentication authentication = new Authentication();
-//        authentication.show();
-        
-//        CustomerPanel cust = new CustomerPanel();
-//        cust.show();
-    	CashierPanel cashier = new CashierPanel();
-    	cashier.show();
-//    	ChefPanel chef = new ChefPanel();
-//    	chef.show();
+        Authentication authentication = new Authentication();
+        authentication.show();
     }
 }

@@ -38,11 +38,11 @@ public class UserController {
         return true;
     }
     
-    public static void deleteUser(String userId) {
+    public static void deleteUser(int userId) {
         User.deleteUser(userId);
     }
     
-    public static String updateUser(String userId, String userRole, String userName, String userEmail, String userPassword) {
+    public static String updateUser(int userId, String userRole, String userName, String userEmail, String userPassword) {
 		for (String validRole : validUserRoles) {
 			if (userRole.equals(validRole)) {
 				User.updateUser(userId, userRole, userName, userEmail, userPassword);

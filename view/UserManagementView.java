@@ -5,6 +5,8 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,6 +29,17 @@ public class UserManagementView extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("User Management View");
+
+        Node root = getRoot();
+
+        Scene scene = new Scene((Parent) root, 600, 400);
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
+    public Node getRoot() {
+        BorderPane rootPane = new BorderPane();
 
         userTableView = new TableView<>();
         userData = FXCollections.observableArrayList();
@@ -54,14 +67,10 @@ public class UserManagementView extends Application {
         buttonVBox.setPadding(new Insets(10, 10, 10, 10));
         buttonVBox.getChildren().addAll(viewButton, removeButton, changeRoleButton);
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(userTableView);
-        borderPane.setRight(buttonVBox);
+        rootPane.setCenter(userTableView);
+        rootPane.setRight(buttonVBox);
 
-        Scene scene = new Scene(borderPane, 600, 400);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
+        return rootPane;
     }
 
     public void viewAllUsers() {
@@ -75,7 +84,7 @@ public class UserManagementView extends Application {
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             int userId = selectedUser.getUserId();
-            UserController.deleteUser(Integer.toString(userId));
+            UserController.deleteUser(userId);
             viewAllUsers();
         } else {
             showAlert("Please select a user to remove.");
@@ -92,7 +101,7 @@ public class UserManagementView extends Application {
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(newRole -> {
                 UserController.updateUser(
-                        String.valueOf(selectedUser.getUserId()),
+                        selectedUser.getUserId(),
                         newRole,
                         selectedUser.getUserName(),
                         selectedUser.getUserEmail(),

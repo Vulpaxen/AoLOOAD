@@ -76,18 +76,18 @@ public class User {
     	}
     }
 	
-    public static void deleteUser(String userId) {
+    public static void deleteUser(int userId) {
         String query = "DELETE FROM users WHERE userId = ?";
         try (Connection connection = Connect.getInstance().getConnection();
         	PreparedStatement ps = connection.prepareStatement(query)) {
-        	ps.setString(1, userId);
+        	ps.setInt(1, userId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 	
-    public static void updateUser(String userId, String userRole, String userName, String userEmail, String userPassword) {
+    public static void updateUser(int userId, String userRole, String userName, String userEmail, String userPassword) {
     	String query = "UPDATE users SET userRole = ?, userName = ?, userEmail = ?, userPassword = ? WHERE userId = ?";
     	try (Connection connection = Connect.getInstance().getConnection();
     		PreparedStatement ps = connection.prepareStatement(query)) { 
