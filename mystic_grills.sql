@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 15, 2023 at 05:24 PM
+-- Generation Time: Dec 19, 2023 at 03:03 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -39,7 +39,8 @@ CREATE TABLE `menuitem` (
 --
 
 INSERT INTO `menuitem` (`menuItemId`, `menuItemName`, `menuItemDescription`, `menuItemPrice`) VALUES
-(1, 'Ayam', 'enak', 200);
+(1, 'Ayam', 'enak', 200),
+(2, 'Sapi', 'oke', 300);
 
 -- --------------------------------------------------------
 
@@ -58,7 +59,8 @@ CREATE TABLE `orderitem` (
 --
 
 INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(2, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -69,6 +71,7 @@ INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
 CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
+  `orderItemId` int(11) NOT NULL,
   `orderStatus` varchar(20) NOT NULL,
   `orderDate` date NOT NULL,
   `orderTotal` int(11) NOT NULL
@@ -79,7 +82,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`orderId`, `userId`, `orderItemId`, `orderStatus`, `orderDate`, `orderTotal`) VALUES
-(1, 1, 1, 'Pending', '2023-12-13', 1);
+(1, 1, 1, 'Pending', '2023-12-13', 1),
+(2, 1, 2, 'Served', '2023-12-13', 2);
 
 -- --------------------------------------------------------
 
@@ -114,8 +118,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userId`, `userRole`, `userName`, `userEmail`, `userPassword`) VALUES
-(1, 'Customer', 'asd', 'cust', '123123'),
-(2, 'Chef', 'def', 'chef', '123123');
+(1, 'Customer', 'Customer', 'cust', '123123'),
+(2, 'Chef', 'def', 'chef', '123123'),
+(3, 'Admin', 'admin', 'admin', '123123'),
+(4, 'Waiter', 'Waiter', 'wait', '123123');
 
 --
 -- Indexes for dumped tables
@@ -163,13 +169,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `menuitem`
 --
 ALTER TABLE `menuitem`
-  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `receipt`
@@ -181,7 +187,7 @@ ALTER TABLE `receipt`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -192,7 +198,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `orderitem`
   ADD CONSTRAINT `fk_menu_item_ids` FOREIGN KEY (`menuItemId`) REFERENCES `menuitem` (`menuItemId`),
-  ADD CONSTRAINT `fk_order_id` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`);
+  ADD CONSTRAINT `fk_order_id` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `orders`

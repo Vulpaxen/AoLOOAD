@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javafx.util.Callback;
-
 public class Order {
 	private int orderId;
 	private int orderUserId;
