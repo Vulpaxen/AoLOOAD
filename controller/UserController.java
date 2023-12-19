@@ -61,8 +61,7 @@ public class UserController {
 		return User.getUserById(userId);
 	}
 
-	public static String authenticateUser(String userEmail, String userPassword) {
+	public static User authenticateUser(String userEmail, String userPassword) {
 		return User.authenticateUser(userEmail, userPassword);
 	}
-	
 }
