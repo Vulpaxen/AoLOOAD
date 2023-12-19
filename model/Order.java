@@ -287,10 +287,10 @@ public class Order {
 	    return preparedOrders;
 	}
 	
-	public static ArrayList<Order> getServedOrdersByCustomerId(int customerId) {
+	public static ArrayList<Order> getServedOrders() {
 		ArrayList<Order> preparedOrders = new ArrayList<>();
 	    
-		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+		ArrayList<Order> allOrders = getAllOrders();
 
 	    for (Order order : allOrders) {
 	        if ("Served".equals(order.getOrderStatus())) {
