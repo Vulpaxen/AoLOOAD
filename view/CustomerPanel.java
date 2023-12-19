@@ -54,11 +54,14 @@ public class CustomerPanel extends Stage {
     private OrderController orderController = new OrderController();
     private OrderItemController orderItemController = new OrderItemController();
     
+    
    
-    public CustomerPanel() {
+    public CustomerPanel(User user) {
+    	
     	
         super(StageStyle.DECORATED);
         this.setTitle("Customer Dashboard");
+    
         
                         
         scene = new Scene(borderPane, 1400, 800);
@@ -78,18 +81,18 @@ public class CustomerPanel extends Stage {
         borderPane.setTop(menuBar);
        
         
-        addOrder();
+        addOrder(user);
         
         AddOrderMenuItem.setOnAction(e ->{
         	formClear();
-        	addOrder();
+        	addOrder(user);
         	
         });
         
              
         viewOrderedMenuItem.setOnAction(e -> {
         	formClear();
-        	viewOrdered();
+        	viewOrdered(user);
         });
         
         borderPane.setLeft(root1);
@@ -119,7 +122,7 @@ public class CustomerPanel extends Stage {
     //Tampilan Customer Untuk Add Order
     //Tabel Menu Order Item, Form buat Nambah Item, Tabel Cart Item yang udah ditambahin 
     TableView<OrderItem> createdCartTable = createCartTable();
-    private void addOrder() {
+    private void addOrder(User user) {
     	//buat hilangin tampilan isi sebelumnya
     	root1.getChildren().clear();
     	root2.getChildren().clear();
@@ -130,7 +133,7 @@ public class CustomerPanel extends Stage {
     	tableMenuItem.setStyle("-fx-background-color: lightblue;");
        	root1.getChildren().addAll(tableMenuItem);
        	
-       	GridPane form = createOrderForm(tableMenuItem);
+       	GridPane form = createOrderForm(tableMenuItem, user);
         Label totalLabel = new Label("Total Price: 0");
     	root2.getChildren().addAll(form, createdCartTable, totalLabel );
     	updateTotalLabel();
@@ -229,7 +232,7 @@ public class CustomerPanel extends Stage {
 	
 	
 	//Form buat nambahin Keranjang
-    private GridPane createOrderForm(TableView<MenuItem> tableMenuItem) {
+    private GridPane createOrderForm(TableView<MenuItem> tableMenuItem, User user) {
     	GridPane form = new GridPane();
     	form.setVgap(20);
         form.setHgap(10);
@@ -314,7 +317,7 @@ public class CustomerPanel extends Stage {
             public void handle(ActionEvent event) {
                 if (!tempCart.isEmpty()) {
                 	Date date = new Date(System.currentTimeMillis());
-                	int orderId = orderController.createOrder(User.getUserById(1), tempCart, date, orderTotal);
+                	int orderId = orderController.createOrder(user, tempCart, date, orderTotal);
 			                	
                 	for (OrderItem orderItem : tempCart) {
                 		orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
@@ -327,7 +330,10 @@ public class CustomerPanel extends Stage {
                 	root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
                 	
                 	showAlert("Make Order", "Succes Make Order");
-                	refreshOrderedTable();
+                	
+                	TableView<Order> tableOrdered = createOrderedTable(user);
+                    tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+                   
                 }
                 else {
                 	showAlert("Make Order", "There Is No Item, Please Add Item First");
@@ -367,13 +373,14 @@ public class CustomerPanel extends Stage {
     //Customer Panel untuk View Ordered / History Order
     
     
-    TableView<Order> tableOrdered = createOrderedTable();
+    
     //Berisi Tabel Order List,
-    private void viewOrdered() {
+    private void viewOrdered(User user) {
 		// TODO Auto-generated method stub
     	root1.getChildren().clear();
     	root2.getChildren().clear();
     	root3.getChildren().clear();
+    	 TableView<Order> tableOrdered = createOrderedTable(user);
     	
     	
     	//buat tampilan baru
@@ -386,7 +393,7 @@ public class CustomerPanel extends Stage {
         } else {
             // Jika ada pesanan yang dipilih, tampilkan detail pesanan
             selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
-            showOrderDetails(selectedOrder);
+            showOrderDetails(selectedOrder, tableOrdered, user);
         }
 
         
@@ -400,7 +407,8 @@ public class CustomerPanel extends Stage {
 	}
     
     private Order selectedOrder;
-    private TableView<Order> createOrderedTable() {
+    private TableView<Order> createOrderedTable(User user) {
+ 
 		// TODO Auto-generated method stunt
     	TableView<Order> table = new TableView<>();
     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -428,22 +436,20 @@ public class CustomerPanel extends Stage {
     	table.setMinHeight(700);
     	table.setMinWidth(400);
         
-        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
+        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
         
         
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedOrder = newSelection;
-                showOrderDetails(selectedOrder);
+                showOrderDetails(selectedOrder, table, user);
             }
         });
         
         return table;
 	}
     
-    private void refreshOrderedTable() {
-        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(1)));
-    }
+
     
     
     
@@ -484,7 +490,7 @@ public class CustomerPanel extends Stage {
     Label totalUpdateLabel;
     Label orderDetailLabel;
     Label chooseItemLabel;
-    private void showOrderDetails(Order selectedOrder) {
+    private void showOrderDetails(Order selectedOrder, TableView<Order> tableOrdered, User user) {
     	TableView<OrderItem> orderItemTable = null;
     	 orderDetailLabel = new Label("Order Details");
     	 chooseItemLabel = new Label("Choose Menu Item To Add Item");
@@ -507,7 +513,7 @@ public class CustomerPanel extends Stage {
                 totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
                 root2.getChildren().add(totalUpdateLabel);
                 
-                root2.getChildren().add(createUpdateOrderForm(selectedOrder, orderItemTable, tableMenuItem));
+                root2.getChildren().add(createUpdateOrderForm(selectedOrder, orderItemTable, tableMenuItem, tableOrdered, user));
                 
             	
             	tableMenuItem.setStyle("-fx-background-color: lightblue;");
@@ -557,11 +563,11 @@ public class CustomerPanel extends Stage {
     private TextField UpdateItemPrice = new TextField();
     private TextField UpdateItemQuantity = new TextField();
 
-    private GridPane createUpdateOrderForm(Order selectedOrder, TableView<OrderItem> orderItemTable, TableView<MenuItem> tableMenuItem) {
+    private GridPane createUpdateOrderForm(Order selectedOrder, TableView<OrderItem> orderItemTable, TableView<MenuItem> tableMenuItem,  TableView<Order> tableOrdered, User user) {
         GridPane form = new GridPane();
         form.setVgap(20);
         form.setHgap(10);
-
+      
          Button updateItemButton = new Button("Update Order");
          
         
@@ -631,7 +637,9 @@ public class CustomerPanel extends Stage {
 
                         totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
-                        refreshOrderedTable();
+                        
+                        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+                        
                         showAlert("Remove Order Item", "Selected Order Item Has Been Removed");
              
                     } else {
@@ -644,9 +652,10 @@ public class CustomerPanel extends Stage {
 
                         totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
-                        refreshOrderedTable();
+                        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
                         showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
                     }
+                    
                     
                     
                     
@@ -665,7 +674,7 @@ public class CustomerPanel extends Stage {
                     orderItemTable.getSelectionModel().clearSelection();
                     tableMenuItem.getSelectionModel().clearSelection();
                 }
-                else {
+                else if(selectedMenuItem != null && selectedOrderItem == null ){
                     // Cek apakah item sudah ada dalam orderItemList
                     boolean itemExists = false;
                     for (OrderItem existingOrderItem : orderItemTable.getItems()) {
@@ -682,7 +691,7 @@ public class CustomerPanel extends Stage {
                             totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(existingOrderItem.getOrderId()));
 
                             // Refresh ordered table
-                            refreshOrderedTable();
+//                            refreshOrderedTable();
                             showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
                             itemExists = true;
                             break;
@@ -703,15 +712,19 @@ public class CustomerPanel extends Stage {
                         totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrder.getOrderId()));
 
                         // Refresh ordered table
-                        refreshOrderedTable();
+                        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
                         
                         showAlert("Update Order Item", "Succes Add New Order Item");
                     }
 
                     // Clear form fields dan selection
+                    tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
                     formClear();
                     orderItemTable.getSelectionModel().clearSelection();
                     tableMenuItem.getSelectionModel().clearSelection();
+                }
+                else {
+                	showAlert("Update Order Item", "Please Select An Order Item or Menu Item To Update Order");
                 }
             }
         });
