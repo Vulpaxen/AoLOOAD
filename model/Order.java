@@ -299,10 +299,10 @@ public class Order {
         return preparedOrders;
     }
 	
-	public static ArrayList<Order> getAllServedOrders() {
-        ArrayList<Order> servedOrders = new ArrayList<>();
-
-        ArrayList<Order> allOrders = getAllOrders();
+	public static ArrayList<Order> getServedOrders() {
+		ArrayList<Order> servedOrders = new ArrayList<>();
+	    
+		ArrayList<Order> allOrders = getAllOrders();
 
         for (Order order : allOrders) {
             if ("Served".equals(order.getOrderStatus())) {

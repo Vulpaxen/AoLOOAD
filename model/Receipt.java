@@ -10,26 +10,27 @@ import java.util.ArrayList;
 
 public class Receipt {
 	private int receiptId;
-	private String receiptOrder;
+	private Order receiptOrder;
+	private int receiptOrderId;
 	private int receiptPaymentAmount;
 	private Date receiptPaymentDate;
 	private String receiptPaymentType;
 	
-	public Receipt(int receiptId, String receiptOrder, int receiptPaymentAmount, Date receiptPaymentDate,
+	public Receipt(int receiptId, int receiptOrderId, int receiptPaymentAmount, Date receiptPaymentDate,
 			String receiptPaymentType) {
 		super();
 		this.receiptId = receiptId;
-		this.receiptOrder = receiptOrder;
+		this.receiptOrderId = receiptOrderId;
 		this.receiptPaymentAmount = receiptPaymentAmount;
 		this.receiptPaymentDate = receiptPaymentDate;
 		this.receiptPaymentType = receiptPaymentType;
 	}
 	
-	public static void createReceipt(Order order, String receiptPaymentType, Date receiptPaymentDate, int receiptPaymentAmount) {
+	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate, int receiptPaymentAmount) {
 		String query = "INSERT INTO receipt (orderId, receiptPaymentType, receiptPaymentDate, receiptPaymentAmount) VALUES (?, ?, ?, ?)";
     	try (Connection connection = Connect.getInstance().getConnection();
     	  PreparedStatement ps = connection.prepareStatement(query)) { 
-    		ps.setInt(1, order.getOrderId());
+    		ps.setInt(1, orderId);
     		ps.setString(2, receiptPaymentType);
     		ps.setDate(3, receiptPaymentDate);
     		ps.setInt(4, receiptPaymentAmount);
@@ -40,7 +41,7 @@ public class Receipt {
 	}
 	
 	public static void deleteReceipt(Order orderId) {
-        String query = "DELETE FROM receipts WHERE orderId = ?";
+        String query = "DELETE FROM receipt WHERE orderId = ?";
         try (Connection connection = Connect.getInstance().getConnection();
          PreparedStatement ps = connection.prepareStatement(query)) {
          ps.setInt(1, orderId.getOrderId());
@@ -54,17 +55,19 @@ public class Receipt {
 		Receipt receipt = null;
 		
 		try(Connection connection = Connect.getInstance().getConnection()){
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM receipts WHERE receiptId = ?;");
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM receipt WHERE receiptId = ?;");
 			ps.setInt(1,  receiptId);
 			ResultSet resultSet = ps.executeQuery();
 			
 			if(resultSet.next()){
 				int id = resultSet.getInt("receiptId");
-				String order = resultSet.getString("receiptOrder");
+				int orderId = resultSet.getInt("orderId");
 				int paymentAmount = resultSet.getInt("receiptPaymentAmount");
 				Date paymentDate = resultSet.getDate("receiptPaymentDate");
 				String paymentType = resultSet.getString("receiptPaymentType");
-				receipt = new Receipt(id, order, paymentAmount, paymentDate, paymentType);
+				
+				Order order = Order.getOrderByOrderId(orderId);
+				receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
 			}
 		} 
 		catch (Exception e) {
@@ -76,25 +79,30 @@ public class Receipt {
 	
 	public static ArrayList<Receipt> getAllReceipts() {
         ArrayList<Receipt> receiptList = new ArrayList<>();
-        String query = "SELECT * FROM receipts";
-        try (Connection connection = Connect.getInstance().getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+        String query = "SELECT * FROM receipt JOIN orders ON receipt.orderId = orders.orderId";
+        try (Connection connection = Connect.getInstance().getConnection()) {
+            PreparedStatement prep = connection.prepareStatement(query);
+//            ResultSet resultSet = prep.executeQuery();
             
-            while (resultSet.next()) {
-            	int id = resultSet.getInt("receiptId");
-				String order = resultSet.getString("receiptOrder");
-				int paymentAmount = resultSet.getInt("receiptPaymentAmount");
-				Date paymentDate = resultSet.getDate("receiptPaymentDate");
-				String paymentType = resultSet.getString("receiptPaymentType");
+            try (ResultSet resultSet = prep.executeQuery()){
+            	while (resultSet.next()) {
+            		int id = resultSet.getInt("receiptId");
+            		int orderId = resultSet.getInt("orderId");
+            		int paymentAmount = resultSet.getInt("receiptPaymentAmount");
+            		Date paymentDate = resultSet.getDate("receiptPaymentDate");
+            		String paymentType = resultSet.getString("receiptPaymentType");
 
-				Receipt receipt = new Receipt(id, order, paymentAmount, paymentDate, paymentType);
-				receiptList.add(receipt);
+            		Receipt receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
+            		receiptList.add(receipt);
+            	}
             }
+            
+//            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return receiptList;
+		
     }
 
 	public int getReceiptId() {
@@ -105,11 +113,11 @@ public class Receipt {
 		this.receiptId = receiptId;
 	}
 
-	public String getReceiptOrder() {
+	public Order getReceiptOrder() {
 		return receiptOrder;
 	}
 
-	public void setReceiptOrder(String receiptOrder) {
+	public void setReceiptOrder(Order receiptOrder) {
 		this.receiptOrder = receiptOrder;
 	}
 
@@ -135,5 +143,13 @@ public class Receipt {
 
 	public void setReceiptPaymentType(String receiptPaymentType) {
 		this.receiptPaymentType = receiptPaymentType;
+	}
+
+	public int getReceiptOrderId() {
+		return receiptOrderId;
+	}
+
+	public void setReceiptOrderId(int receiptOrderId) {
+		this.receiptOrderId = receiptOrderId;
 	}
 }

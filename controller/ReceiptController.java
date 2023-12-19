@@ -8,8 +8,8 @@ import model.Receipt;
 
 public class ReceiptController {
 	
-	public static void createReceipt(Order order, String receiptPaymentType, Date receiptPaymentDate,int receiptPaymentAmount) {
-		Receipt.createReceipt(order, receiptPaymentType, receiptPaymentDate,receiptPaymentAmount);
+	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate,int receiptPaymentAmount) {
+		Receipt.createReceipt(orderId, receiptPaymentType, receiptPaymentDate,receiptPaymentAmount);
 	}
 	
 	public static void deleteReceipt(Order orderId) {

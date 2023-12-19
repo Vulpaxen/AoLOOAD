@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import controller.MenuItemController;
 import controller.OrderController;
 import controller.OrderItemController;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -170,7 +171,7 @@ public class CustomerPanel extends Stage {
     	table.setMinHeight(700);
     	table.setMinWidth(400);
     	
-    	table.setItems(FXCollections.observableArrayList(MenuItem.getAllMenuItems()));
+    	table.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
     	
     	//biar bisa select data-data
     	table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -323,6 +324,7 @@ public class CustomerPanel extends Stage {
                 		orderItemController.createOrderItem(orderId, orderItem.getMenuItem(), orderItem.getQuantity());
 						
 					}
+                	
                 	tempCart.clear();
                 	createdCartTable.setItems(FXCollections.observableArrayList(tempCart)); // Clear the table
                 	
@@ -436,7 +438,7 @@ public class CustomerPanel extends Stage {
     	table.setMinHeight(700);
     	table.setMinWidth(400);
         
-        table.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+        table.setItems(FXCollections.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
         
         
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -638,7 +640,7 @@ public class CustomerPanel extends Stage {
                         totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
                         
-                        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+                        tableOrdered.setItems(FXCollections.observableArrayList(orderController.getOrderByCustomerId(user.getUserId())));
                         
                         showAlert("Remove Order Item", "Selected Order Item Has Been Removed");
              
@@ -652,7 +654,7 @@ public class CustomerPanel extends Stage {
 
                         totalUpdateLabel.setText("Total Price: " + selectedOrder.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
-                        tableOrdered.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+                        tableOrdered.setItems(FXCollections.observableArrayList(orderController.getOrderByCustomerId(user.getUserId())));
                         showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
                     }
                     
