@@ -492,22 +492,49 @@ public class CustomerPanel extends Stage {
         root2.getChildren().clear(); //
         root3.getChildren().clear(); //
         root2.getChildren().add(orderDetailLabel);
-       
+        
+        
         if (selectedOrder != null) {
+        	
         	orderItemTable = createOrdersByOrderIdTable(selectedOrder);
         	TableView<MenuItem> tableMenuItem = createMenuItemTable();
-            root2.getChildren().add(orderItemTable);
-            
-            double totalOrderPrice = selectedOrder.getOrderTotal();
-            totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
-            root2.getChildren().add(totalUpdateLabel);
-            
-            root2.getChildren().add(createUpdateOrderForm(selectedOrder, orderItemTable, tableMenuItem));
-            
+        	if(selectedOrder.getOrderStatus().equals("Pending")) {
+        		
+
+                root2.getChildren().add(orderItemTable);
+                
+                double totalOrderPrice = selectedOrder.getOrderTotal();
+                totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
+                root2.getChildren().add(totalUpdateLabel);
+                
+                root2.getChildren().add(createUpdateOrderForm(selectedOrder, orderItemTable, tableMenuItem));
+                
+            	
+            	tableMenuItem.setStyle("-fx-background-color: lightblue;");
+                root3.getChildren().add(chooseItemLabel);
+            	root3.getChildren().add(tableMenuItem);
+        		
+        	}
+        	else if(selectedOrder.getOrderStatus().equals("Served") || selectedOrder.getOrderStatus().equals("Prepared")){
+        		 root2.getChildren().add(createOrdersByOrderIdTable(selectedOrder));
+        		 
+        	     Label statusLabel;
+        		 double totalOrderPrice = selectedOrder.getOrderTotal();
+                 totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
+                 
+                 root2.getChildren().add(totalUpdateLabel);
+                 if(selectedOrder.getOrderStatus().equals("Served")) {
+                	 statusLabel = new Label("Order Served, Can Only See Order Item Details");
+                	 root2.getChildren().add(statusLabel);
+                 }
+                 else if(selectedOrder.getOrderStatus().equals("Prepared")) {
+                	 statusLabel = new Label("Order Prepared, Can Only See Order Item Details");
+                	 root2.getChildren().add(statusLabel);
+                 }
+                 
+                 
+        	}
         	
-        	tableMenuItem.setStyle("-fx-background-color: lightblue;");
-            root3.getChildren().add(chooseItemLabel);
-        	root3.getChildren().add(tableMenuItem);
         }
  
     }
