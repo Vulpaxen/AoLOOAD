@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.User;
 
 public class Authentication extends Stage {
 	private VBox root = new VBox(10);
@@ -55,24 +56,24 @@ public class Authentication extends Stage {
 			try {
 				String userEmail = emailField.getText();
 				String userPassword = passwordField.getText();
-				String userRole = UserController.authenticateUser(userEmail, userPassword);
+				User user = UserController.authenticateUser(userEmail, userPassword);
 
-				if (userRole != null) {
-					if (userRole.equals("Customer")) {
+				if (user != null) {
+					if (user.getUserRole().equals("Customer")) {
 						CustomerPanel customerPanel = new CustomerPanel();
 						customerPanel.show();
-					} else if (userRole.equals("Chef")) {
+					} else if (user.getUserRole().equals("Chef")) {
 						ChefPanel chefPanel = new ChefPanel();
 						chefPanel.show();
-					} else if (userRole.equalsIgnoreCase("Waiter")) {
+					} else if (user.getUserRole().equalsIgnoreCase("Waiter")) {
 						WaiterPanel waiterPanel = new WaiterPanel();
 						waiterPanel.show();
-					} else if (userRole.equals("Cashier")) {
+					} else if (user.getUserRole().equals("Cashier")) {
 						CashierPanel cashierPanel = new CashierPanel();
-						// cashierPanel.show();
-					} else if (userRole.equals("Admin")) {
+						 cashierPanel.show();
+					} else if (user.getUserRole().equals("Admin")) {
 						AdminPanel adminPanel = new AdminPanel();
-						//adminPanel.show();
+//						adminPanel.show();
 					}
 
 					((Stage) loginBtn.getScene().getWindow()).close();
