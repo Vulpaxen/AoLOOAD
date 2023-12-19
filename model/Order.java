@@ -259,48 +259,63 @@ public class Order {
 		this.orderTotal = d;
 	}
 
-	public static ArrayList<Order> getPendingOrdersByCustomerId(int customerId) {
-		ArrayList<Order> pendingOrders = new ArrayList<>();
-	    
-		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+	public static ArrayList<Order> getAllPendingOrders() {
+        ArrayList<Order> pendingOrders = new ArrayList<>();
 
-	    for (Order order : allOrders) {
-	        if ("Pending".equals(order.getOrderStatus())) {
-	            pendingOrders.add(order);
-	        }
-	    }
+        ArrayList<Order> allOrders = getAllOrders();
 
-	    return pendingOrders;
-	}
+        for (Order order : allOrders) {
+            if ("Pending".equals(order.getOrderStatus())) {
+            	pendingOrders.add(order);
+            }
+        }
+
+        for (Order orders : pendingOrders)
+        {
+            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+        }
+        return pendingOrders;
+    }
 	
-	public static ArrayList<Order> getPreparedOrdersByCustomerId(int customerId) {
-		ArrayList<Order> preparedOrders = new ArrayList<>();
-	    
-		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+	public static ArrayList<Order> getAllPreparedOrders() {
+        ArrayList<Order> preparedOrders = new ArrayList<>();
 
-	    for (Order order : allOrders) {
-	        if ("Prepared".equals(order.getOrderStatus())) {
-	        	preparedOrders.add(order);
-	        }
-	    }
+        ArrayList<Order> allOrders = getAllOrders();
 
-	    return preparedOrders;
-	}
+        for (Order order : allOrders) {
+            if ("Prepared".equals(order.getOrderStatus())) {
+                preparedOrders.add(order);
+            }
+        }
+
+        for (Order orders : preparedOrders)
+        {
+            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+        }
+        return preparedOrders;
+    }
 	
-	public static ArrayList<Order> getServedOrdersByCustomerId(int customerId) {
-		ArrayList<Order> preparedOrders = new ArrayList<>();
-	    
-		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+	public static ArrayList<Order> getAllServedOrders() {
+        ArrayList<Order> servedOrders = new ArrayList<>();
 
-	    for (Order order : allOrders) {
-	        if ("Served".equals(order.getOrderStatus())) {
-	        	preparedOrders.add(order);
-	        }
-	    }
+        ArrayList<Order> allOrders = getAllOrders();
 
-	    return preparedOrders;
-	}
-	
+        for (Order order : allOrders) {
+            if ("Served".equals(order.getOrderStatus())) {
+            	servedOrders.add(order);
+            }
+        }
 
-
+        for (Order orders : servedOrders)
+        {
+            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+        }
+        return servedOrders;
+    }
 }

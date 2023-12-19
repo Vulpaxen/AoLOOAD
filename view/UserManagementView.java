@@ -1,42 +1,23 @@
 package view;
 
 import controller.UserController;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserManagementView extends Application {
+public class UserManagementView {
     private TableView<User> userTableView;
     private ObservableList<User> userData;
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("User Management View");
-
-        Node root = getRoot();
-
-        Scene scene = new Scene((Parent) root, 600, 400);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
-    }
 
     public Node getRoot() {
         BorderPane rootPane = new BorderPane();
@@ -44,14 +25,9 @@ public class UserManagementView extends Application {
         userTableView = new TableView<>();
         userData = FXCollections.observableArrayList();
 
-        TableColumn<User, String> userIdColumn = new TableColumn<>("User ID");
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
-
-        TableColumn<User, String> usernameColumn = new TableColumn<>("Username");
-        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
-
-        TableColumn<User, String> roleColumn = new TableColumn<>("Role");
-        roleColumn.setCellValueFactory(new PropertyValueFactory<>("userRole"));
+        TableColumn<User, String> userIdColumn = createColumn("User ID", "userId");
+        TableColumn<User, String> usernameColumn = createColumn("Username", "userName");
+        TableColumn<User, String> roleColumn = createColumn("Role", "userRole");
 
         userTableView.getColumns().addAll(userIdColumn, usernameColumn, roleColumn);
 
@@ -73,9 +49,31 @@ public class UserManagementView extends Application {
         return rootPane;
     }
 
+    private TableColumn<User, String> createColumn(String columnName, String propertyName) {
+        TableColumn<User, String> column = new TableColumn<>(columnName);
+        column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+        column.setCellFactory(cell -> new TextFieldTableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
+        return column;
+    }
+
     public void viewAllUsers() {
         userData.clear();
         List<User> users = UserController.getAllUsers();
+
+        for (User user : users) {
+            user.setUserRole("customer");
+        }
+
         userData.addAll(users);
         userTableView.setItems(userData);
     }
@@ -100,16 +98,20 @@ public class UserManagementView extends Application {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(newRole -> {
-                UserController.updateUser(
-                        selectedUser.getUserId(),
-                        newRole,
-                        selectedUser.getUserName(),
-                        selectedUser.getUserEmail(),
-                        selectedUser.getUserPassword()
-                );
+                if (!newRole.equals(selectedUser.getUserRole())) {
+                    UserController.updateUser(
+                            selectedUser.getUserId(),
+                            newRole,
+                            selectedUser.getUserName(),
+                            selectedUser.getUserEmail(),
+                            selectedUser.getUserPassword()
+                    );
 
-                showAlert("User role changed to " + newRole + ".");
-                viewAllUsers();
+                    showAlert("User role changed to " + newRole + ".");
+                    viewAllUsers();
+                } else {
+                    showAlert("New role is the same as the current role.");
+                }
             });
         } else {
             showAlert("Please select a user to change role.");

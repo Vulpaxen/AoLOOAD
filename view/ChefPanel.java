@@ -133,7 +133,7 @@ public class ChefPanel extends Stage {
 
 	private void showOrderDetails(Order selectedOrder) {
 		TableView<OrderItem> orderItemTable = null;
-		root2.getChildren().clear(); //
+		root2.getChildren().clear();
 		if (selectedOrder != null) {
 			orderItemTable = createOrdersByOrderIdTable(selectedOrder);
 			root2.getChildren().add(orderItemTable);
@@ -176,7 +176,7 @@ public class ChefPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(OrderController.getAllPendingOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -189,7 +189,7 @@ public class ChefPanel extends Stage {
 	}
 
 	private void refreshOrderedTable() {
-		pendingOrders.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
+		pendingOrders.setItems(FXCollections.observableArrayList(OrderController.getAllPendingOrders()));
 	}
 
 	private TextField updateItemQuantity = new TextField();

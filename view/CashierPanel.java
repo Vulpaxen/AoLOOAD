@@ -127,7 +127,7 @@ public class CashierPanel extends Stage{
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getServedOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(OrderController.getAllServedOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -141,7 +141,7 @@ public class CashierPanel extends Stage{
 
 	private void showOrderDetails(Order order) {
 		TableView<OrderItem> orderItemTable = null;
-		root2.getChildren().clear(); //
+		root2.getChildren().clear();
 		if (order != null) {
 			orderItemTable = createOrdersByOrderIdTable(order);
 			root2.getChildren().add(orderItemTable);
@@ -251,7 +251,7 @@ public class CashierPanel extends Stage{
 	}
 	
 	private void refreshOrderedTable() {
-		servedOrders.setItems(FXCollections.observableArrayList(Order.getPendingOrdersByCustomerId(1)));
+		servedOrders.setItems(FXCollections.observableArrayList(OrderController.getAllPendingOrders()));
 	}
 	
 	private void showAlert(String title, String message) {

@@ -39,6 +39,17 @@ public class OrderController {
 	public static Order getOrderByOrderId(int orderId){
 		return Order.getOrderByOrderId(orderId);
 	}
-
+	
+	public static ArrayList<Order> getAllPendingOrders() {
+	    return Order.getAllPendingOrders();
+	}
+	
+	public static ArrayList<Order> getAllPreparedOrders() {
+	    return Order.getAllPreparedOrders();
+	}
+	
+	public static ArrayList<Order> getAllServedOrders() {
+	    return Order.getAllPreparedOrders();
+	}
 
 }

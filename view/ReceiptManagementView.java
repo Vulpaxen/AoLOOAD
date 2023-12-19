@@ -1,10 +1,8 @@
 package view;
 
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
-import model.MenuItem;
 import model.Receipt;
 import model.User;
 

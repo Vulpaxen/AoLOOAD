@@ -1,7 +1,5 @@
 package view;
 
-import java.util.ArrayList;
-
 import controller.MenuItemController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -14,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import model.MenuItem;
 import model.User;
+
+import java.util.ArrayList;
 
 public class MenuManagementView {
     private TableView<MenuItem> table = new TableView<>();
@@ -29,10 +29,10 @@ public class MenuManagementView {
     public VBox getRoot() {
         if (currentUser != null) {
             VBox root = new VBox();
-            root.getChildren().add(createMenuItemTable());
+            root.getChildren().addAll(createMenuItemTable(), createMenuItemForm());
             return root;
         } else {
-            return new VBox(); 
+            return new VBox();
         }
     }
 
@@ -55,10 +55,7 @@ public class MenuManagementView {
         TableColumn<MenuItem, Double> priceColumn = new TableColumn<>("Menu Item Price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
 
-        table.getColumns().add(idColumn);
-        table.getColumns().add(nameColumn);
-        table.getColumns().add(descriptionColumn);
-        table.getColumns().add(priceColumn);
+        table.getColumns().addAll(idColumn, nameColumn, descriptionColumn, priceColumn);
 
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -72,23 +69,23 @@ public class MenuManagementView {
         return table;
     }
 
-    private void createMenuItemForm() {
-        GridPane form = new GridPane();
-        form.setVgap(20);
-        form.setHgap(10);
+    private VBox createMenuItemForm() {
+        VBox form = new VBox();
+        GridPane gridPane = new GridPane();
+        gridPane.setVgap(20);
+        gridPane.setHgap(10);
 
-        form.add(new Label("Menu Item Id:"), 0, 0);
+        gridPane.add(new Label("Menu Item Id:"), 0, 0);
         idInput.setDisable(true);
-        form.add(idInput, 1, 0);
-        form.add(new Label("Menu Item Name:"), 0, 1);
-        form.add(nameInput, 1, 1);
-        form.add(new Label("Menu Item Description:"), 0, 2);
-        form.add(descriptionInput, 1, 2);
-        form.add(new Label("Menu Item Price:"), 0, 3);
-        form.add(priceInput, 1, 3);
-        form.add(addButton, 0, 4);
-        form.add(updateButton, 1, 4);
-        form.add(deleteButton, 2, 4);
+        gridPane.add(idInput, 1, 0);
+        gridPane.add(new Label("Menu Item Name:"), 0, 1);
+        gridPane.add(nameInput, 1, 1);
+        gridPane.add(new Label("Menu Item Description:"), 0, 2);
+        gridPane.add(descriptionInput, 1, 2);
+        gridPane.add(new Label("Menu Item Price:"), 0, 3);
+        gridPane.add(priceInput, 1, 3);
+
+        form.getChildren().add(gridPane);
 
         addButton.setOnAction(event -> {
             if (currentUser != null) {
@@ -136,6 +133,10 @@ public class MenuManagementView {
                 showAlert("Unauthorized Access", "You do not have permission to delete menu items.");
             }
         });
+
+        form.getChildren().addAll(addButton, updateButton, deleteButton);
+
+        return form;
     }
 
     private void showAlert(String title, String content) {

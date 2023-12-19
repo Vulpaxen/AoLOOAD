@@ -21,7 +21,7 @@ public class UserController {
             return "Error: Password must be 6 characters long";
         }
         
-        if(userPassword.equals(confirmPassword)) {
+        if(!userPassword.equals(confirmPassword)) {
         	return "Error: Confirm Password must be the same as Password";
         }
         

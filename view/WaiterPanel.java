@@ -176,7 +176,7 @@ public class WaiterPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getPreparedOrdersByCustomerId(1)));
+		table.setItems(FXCollections.observableArrayList(OrderController.getAllPreparedOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -189,7 +189,7 @@ public class WaiterPanel extends Stage {
 	}
 
 	private void refreshOrderedTable() {
-		preparedOrders.setItems(FXCollections.observableArrayList(Order.getPreparedOrdersByCustomerId((1))));
+		preparedOrders.setItems(FXCollections.observableArrayList(OrderController.getAllPreparedOrders()));
 	}
 
 	private TextField updateItemQuantity = new TextField();
