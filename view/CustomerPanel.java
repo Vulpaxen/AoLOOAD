@@ -515,7 +515,9 @@ public class CustomerPanel extends Stage {
             	root3.getChildren().add(tableMenuItem);
         		
         	}
-        	else if(selectedOrder.getOrderStatus().equals("Served") || selectedOrder.getOrderStatus().equals("Prepared")){
+        	else if(selectedOrder.getOrderStatus().equals("Served") || 
+        			selectedOrder.getOrderStatus().equals("Prepared")||
+        			selectedOrder.getOrderStatus().equals("Paid")){
         		 root2.getChildren().add(createOrdersByOrderIdTable(selectedOrder));
         		 
         	     Label statusLabel;
@@ -529,6 +531,10 @@ public class CustomerPanel extends Stage {
                  }
                  else if(selectedOrder.getOrderStatus().equals("Prepared")) {
                 	 statusLabel = new Label("Order Prepared, Can Only See Order Item Details");
+                	 root2.getChildren().add(statusLabel);
+                 }
+                 else if(selectedOrder.getOrderStatus().equals("Paid")) {
+                	 statusLabel = new Label("Order Already Paid, Can Only See Order Item Details");
                 	 root2.getChildren().add(statusLabel);
                  }
                  
