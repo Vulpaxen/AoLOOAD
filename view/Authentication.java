@@ -124,7 +124,7 @@ public class Authentication extends Stage {
 				String userPassword = passwordField.getText();
 				String confirmPassword = confirmPasswordField.getText();
 
-				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword);
+				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword,confirmPassword);
 				showLoginPage();
 				statusLabel.setText(registrationResult);
 			} catch (Exception ex) {

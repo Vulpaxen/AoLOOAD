@@ -1,6 +1,6 @@
 /.classpath
 /mystic_grills.sql
-/controller/
 /main/
-/model/
 /view/
+/controller/
+/model/

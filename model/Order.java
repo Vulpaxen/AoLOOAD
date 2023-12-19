@@ -286,6 +286,21 @@ public class Order {
 
 	    return preparedOrders;
 	}
+	
+	public static ArrayList<Order> getServedOrdersByCustomerId(int customerId) {
+		ArrayList<Order> preparedOrders = new ArrayList<>();
+	    
+		ArrayList<Order> allOrders = getOrdersByCustomerId(customerId);
+
+	    for (Order order : allOrders) {
+	        if ("Served".equals(order.getOrderStatus())) {
+	        	preparedOrders.add(order);
+	        }
+	    }
+
+	    return preparedOrders;
+	}
+	
 
 
 }

@@ -618,6 +618,7 @@ public class CustomerPanel extends Stage {
         UpdateItemDesc.clear();    
         }
     
+    //TODO: pindahin ke controller
     private OrderItem getOrderItemByOrderIdAndMenuItemId(int orderId, int menuItemId) {
         ArrayList<OrderItem> orderItemList = OrderItem.getAllOrderItemsByOrderId(orderId);
         for (OrderItem orderItem : orderItemList) {

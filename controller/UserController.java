@@ -8,7 +8,7 @@ public class UserController {
 	private static ArrayList<User> userList = new ArrayList<>();
 	private static String[] validUserRoles = { "Admin", "Chef", "Waiter", "Cashier", "Customer" };
 	
-    public static String createUser(String userRole, String userName, String userEmail, String userPassword) {
+    public static String createUser(String userRole, String userName, String userEmail, String userPassword,String confirmPassword) {
         if (userName == null || userName.isEmpty()) {
             return "Error: Name cannot be empty.";
         }
@@ -19,6 +19,10 @@ public class UserController {
         
         if(userPassword.length() < 6 || userPassword.isEmpty()) {
             return "Error: Password must be 6 characters long";
+        }
+        
+        if(userPassword.equals(confirmPassword)) {
+        	return "Error: Confirm Password must be the same as Password";
         }
         
     	User.createUser(userRole, userName, userEmail, userPassword);
