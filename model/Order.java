@@ -133,7 +133,7 @@ public class Order {
 	
 	public static double getTotalByOrderId(int orderId)
 	{
-		int orderTotalPrice = 0;
+		double orderTotalPrice = 0;
 		String query = "SELECT * FROM orderitem JOIN menuitem ON orderitem.menuItemId = menuitem.menuItemId WHERE orderitem.orderId = ?;";
 		  
 		try (Connection connection = Connect.getInstance().getConnection())
