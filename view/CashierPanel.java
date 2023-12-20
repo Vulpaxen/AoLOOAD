@@ -1,12 +1,13 @@
 package view;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import controller.OrderController;
 import controller.OrderItemController;
 import controller.ReceiptController;
+import controller.UserController;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -35,6 +37,7 @@ import javafx.stage.StageStyle;
 import model.Order;
 import model.OrderItem;
 import model.Receipt;
+import model.User;
 
 public class CashierPanel extends Stage{
 	
@@ -43,7 +46,7 @@ public class CashierPanel extends Stage{
 	private VBox root2 = new VBox(20);
 	private MenuBar menuBar = new MenuBar();
 	private Scene scene;
-	Label totalUpdateLabel;
+	Label totalPrice;
 	
 	public CashierPanel() {
 		super(StageStyle.DECORATED);
@@ -127,7 +130,7 @@ public class CashierPanel extends Stage{
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(OrderController.getAllServedOrders()));
+		table.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -141,14 +144,14 @@ public class CashierPanel extends Stage{
 
 	private void showOrderDetails(Order order) {
 		TableView<OrderItem> orderItemTable = null;
-		root2.getChildren().clear();
+		root2.getChildren().clear(); //
 		if (order != null) {
 			orderItemTable = createOrdersByOrderIdTable(order);
 			root2.getChildren().add(orderItemTable);
 
 			double totalOrderPrice = order.getOrderTotal();
-			totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
-			root2.getChildren().add(totalUpdateLabel);
+			totalPrice = new Label("Total Price: " + totalOrderPrice);
+			root2.getChildren().add(totalPrice);
 
 			root2.getChildren().add(createProcessOrderForm(orderItemTable));
 		}
@@ -176,7 +179,7 @@ public class CashierPanel extends Stage{
 
 		table.setItems(FXCollections.observableArrayList(orderItem));
 
-		table.getColumns().addAll(List.of(itemName, itemQuantity, itemTotalPrice));
+		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
 
 		return table;
 	}
@@ -204,6 +207,7 @@ public class CashierPanel extends Stage{
 			@Override
 			public void handle(ActionEvent event) {
 				
+				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					//Check paymenttype
 					try {
@@ -231,7 +235,7 @@ public class CashierPanel extends Stage{
 							//TODO: masukin ke receipt
 							
 							Date date = new Date(System.currentTimeMillis());
-							ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, amount);
+							ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, totalPrice);
 						}else {
 							showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
 						}
@@ -242,7 +246,7 @@ public class CashierPanel extends Stage{
 					}
 					
 				} else {
-					showAlert("No Order Selected", "Please select a served order to process payment.");
+					showAlert("No Order Selected", "Please select a pending order to prepare.");
 				}
 				viewOrderCashier();
 			}
@@ -253,12 +257,13 @@ public class CashierPanel extends Stage{
 	}
 	
 	private void refreshOrderedTable() {
-		servedOrders.setItems(FXCollections.observableArrayList(OrderController.getAllServedOrders()));
+		servedOrders.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 	}
 	
 	
 	//TODO: Receipt
 	private TableView<Receipt> tableReceipt = createReceiptTable();
+	private TableView<OrderItem> tableDetail;
 	Receipt selectedReceipt;
 	
 	private void viewReceiptCashier() {
@@ -275,7 +280,7 @@ public class CashierPanel extends Stage{
 		}
 	}
 	
-	
+
 	private TableView<Receipt> createReceiptTable() {
 		tableReceipt = new TableView<>();
 		tableReceipt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -297,7 +302,7 @@ public class CashierPanel extends Stage{
 		TableColumn<Receipt, Date> receiptDate = new TableColumn<>("Payment Date");
 		receiptDate.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentDate"));
 		
-		tableReceipt.getColumns().addAll(List.of(receiptId,orderId,paymentType,paymentAmount,receiptDate));
+		tableReceipt.getColumns().addAll(receiptId,orderId,paymentType,paymentAmount,receiptDate);
 		
 		tableReceipt.setPrefHeight(1200);
 
@@ -316,8 +321,63 @@ public class CashierPanel extends Stage{
 		
 		return tableReceipt;
 	}
-	private void showReceiptDetails(Receipt selectedReceipt2) {
+	
+	//Receipt Detail
+	//Order 
+	// Customer
+	
+	Label orderItemLbl;
+	Label userNameLbl;
+	
+	private void showReceiptDetails(Receipt receipt) {
 		root2.getChildren().clear();
+
+		orderItemLbl = new Label("Receipt Detail");
+		root2.getChildren().add(orderItemLbl);
+
+		if(selectedReceipt != null) {
+			tableDetail = createDetailTable();
+			
+			root2.getChildren().add(tableDetail);
+			
+			Order order = OrderController.getOrderByOrderId(selectedReceipt.getReceiptOrderId());
+			System.out.println(order.getOrderId());
+			double totalOrderPrice = order.getOrderTotal();
+            totalPrice = new Label("Total Paid: " + selectedReceipt.getReceiptPaymentAmount());
+            
+            root2.getChildren().add(totalPrice);
+        	tableDetail.setStyle("-fx-background-color: lightblue;");
+
+        	User user = UserController.getUserById(order.getOrderUserId());
+        	
+        	userNameLbl = new Label("Customer Name : "+user.getUserName());
+        	root2.getChildren().add(userNameLbl);
+		}
+	}
+	
+	private TableView<OrderItem> createDetailTable() {
+		TableView<OrderItem> table = new TableView<>();
+     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+		TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
+ 	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
+ 	    
+ 	    TableColumn<OrderItem, String> itemDesc = new TableColumn<>("Item Desc");
+	    itemDesc.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemDesc()));
+
+ 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
+ 	    itemQuantity.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
+
+ 	    // New TableColumn for itemTotalPrice
+ 	    TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+ 	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
+ 	    
+ 	   ArrayList<OrderItem> receiptData = OrderItemController.getAllOrderItemsByOrderId(selectedReceipt.getReceiptOrderId());
+ 	   table.setItems(FXCollections.observableArrayList(receiptData));
+ 	   
+ 	   table.getColumns().addAll(itemName, itemDesc, itemQuantity,  itemTotalPrice);
+ 	   
+		return table;
 	}
 	
 	//Alert
