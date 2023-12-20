@@ -95,7 +95,7 @@ public class MenuItem {
 				int id = resultSet.getInt("menuItemId");
 				String name = resultSet.getString("menuItemName");
 				String description = resultSet.getString("menuItemDescription");
-				int price = resultSet.getInt("menuItemPrice");
+				Double price = resultSet.getDouble("menuItemPrice");
 				MenuItem menuItem = new MenuItem(id, name, description, price);
               menuItemList.add(menuItem);
           }
