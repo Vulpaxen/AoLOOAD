@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.MenuItemController;
 import controller.OrderController;
 import controller.OrderItemController;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,25 +28,28 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.MenuItem;
 import model.Order;
 import model.OrderItem;
+import model.User;
 
 public class ChefPanel extends Stage {
 
 	private BorderPane borderPane = new BorderPane();
 	private VBox root1 = new VBox(20);
 	private VBox root2 = new VBox(20);
+	private VBox root3 = new VBox(20);
 	private Scene scene;
 
-	public ChefPanel() {
+	public ChefPanel(User user) {
 
 		super(StageStyle.DECORATED);
 		this.setTitle("Chef Dashboard");
 
-		scene = new Scene(borderPane, 1000, 800);
+		scene = new Scene(borderPane, 1400, 800);
 		this.setScene(scene);
 
-		viewOrdered();
+		viewOrdered(user);
 
 		borderPane.setLeft(root1);
 		root1.setAlignment(Pos.CENTER);
@@ -56,6 +60,10 @@ public class ChefPanel extends Stage {
 		borderPane.setCenter(root2);
 		root2.setAlignment(Pos.CENTER);
 		root2.setPadding(new Insets(20));
+		
+		borderPane.setRight(root3);
+		root3.setAlignment(Pos.CENTER);
+		root3.setPadding(new Insets(20));
 
 	}
 
@@ -84,12 +92,11 @@ public class ChefPanel extends Stage {
 
 	TableView<OrderItem> orderDetails = createOrderDetails();
 
-	TableView<Order> pendingOrders = createOrderedTable();
-
-	private void viewOrdered() {
+	private void viewOrdered(User user) {
 		// TODO Auto-generated method stub
 		root1.getChildren().clear();
 		root2.getChildren().clear();
+		TableView<Order> pendingOrders = createOrderedTable(user);
 
 		root1.getChildren().add(pendingOrders);
 
@@ -98,7 +105,7 @@ public class ChefPanel extends Stage {
 			root2.getChildren().add(selectOrderLabel);
 		} else {
 			selectedOrder = pendingOrders.getSelectionModel().getSelectedItem();
-			showOrderDetails(selectedOrder);
+			showOrderDetails(selectedOrder, pendingOrders, user);
 		}
 	}
 
@@ -132,25 +139,9 @@ public class ChefPanel extends Stage {
 
 	Label totalUpdateLabel;
 
-	private void showOrderDetails(Order selectedOrder) {
-		TableView<OrderItem> orderItemTable = null;
-		root2.getChildren().clear();
-		if (selectedOrder != null) {
-			orderItemTable = createOrdersByOrderIdTable(selectedOrder);
-			root2.getChildren().add(orderItemTable);
-
-			double totalOrderPrice = selectedOrder.getOrderTotal();
-			totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
-			root2.getChildren().add(totalUpdateLabel);
-
-			root2.getChildren().add(createUpdateOrderForm(orderItemTable));
-		}
-
-	}
-
 	private Order selectedOrder;
 
-	private TableView<Order> createOrderedTable() {
+	private TableView<Order> createOrderedTable(User user) {
 		// TODO Auto-generated method stunt
 		TableView<Order> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -182,20 +173,17 @@ public class ChefPanel extends Stage {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
 				selectedOrder = newSelection;
-				showOrderDetails(selectedOrder);
+				showOrderDetails(selectedOrder, table, user);
 			}
 		});
 
 		return table;
 	}
 
-	private void refreshOrderedTable() {
-		pendingOrders.setItems(FXCollections.observableArrayList(OrderController.getAllPendingOrders()));
-	}
-
 	private TextField updateItemQuantity = new TextField();
 
-	private GridPane createUpdateOrderForm(TableView<OrderItem> orderItemTable) {
+	private GridPane createUpdateOrderForm(Order selectedOrder, TableView<OrderItem> orderItemTable,
+			TableView<MenuItem> tableMenuItem, TableView<Order> tableOrdered, User user) {
 		GridPane form = new GridPane();
 		form.setVgap(20);
 		form.setHgap(10);
@@ -223,12 +211,14 @@ public class ChefPanel extends Stage {
 					ArrayList<OrderItem> orderItems = OrderItemController
 							.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
 					OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Prepared");
-					refreshOrderedTable();
+					tableOrdered.setItems(FXCollections
+							.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+
 					showAlert("Order Prepared", "Selected order has been prepared.");
 				} else {
 					showAlert("No Order Selected", "Please select a pending order to prepare.");
 				}
-				viewOrdered();
+				viewOrdered(user);
 			}
 		});
 		updateOrderButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -248,7 +238,9 @@ public class ChefPanel extends Stage {
 						totalUpdateLabel
 								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
-						refreshOrderedTable();
+						tableOrdered.setItems(FXCollections
+								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+
 					} else {
 						selectedOrderItem.setQuantity(newQuantity);
 						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
@@ -259,7 +251,9 @@ public class ChefPanel extends Stage {
 						totalUpdateLabel
 								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
-						refreshOrderedTable();
+						tableOrdered.setItems(FXCollections
+								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+
 					}
 
 					updateItemQuantity.clear();
@@ -269,13 +263,16 @@ public class ChefPanel extends Stage {
 		removeOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				TableView<Order> pendingOrders = createOrderedTable(user);
 				Order selectedOrder = pendingOrders.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					int selectedOrderId = selectedOrder.getOrderId();
 
 					OrderController.deleteOrder(selectedOrderId);
 
-					refreshOrderedTable();
+					tableOrdered.setItems(FXCollections
+							.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+
 				} else {
 					showAlert("No Order Item Selected", "Please select an order item to remove.");
 				}
@@ -283,6 +280,112 @@ public class ChefPanel extends Stage {
 		});
 
 		return form;
+	}
+	
+	private TextField ItemId = new TextField();
+	private TextField ItemName = new TextField();
+	private TextField ItemDesc = new TextField();
+	private TextField ItemPrice = new TextField();
+	private TextField ItemQuantity = new TextField();
+	
+	private TableView<MenuItem> createMenuItemTable() {
+		TableView<MenuItem> table = new TableView<>();
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+		TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Name");
+		menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
+
+		TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Desc");
+		menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
+
+		TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Price");
+		menuItemPrice.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
+
+		table.getColumns().add(menuItemName);
+		table.getColumns().add(menuItemDesc);
+		table.getColumns().add(menuItemPrice);
+
+		menuItemName.setPrefWidth(100);
+		menuItemName.setPrefWidth(100);
+		menuItemName.setPrefWidth(100);
+
+		table.setPrefHeight(1200);
+
+		table.setMinHeight(700);
+		table.setMinWidth(400);
+
+		table.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
+
+		// biar bisa select data-data
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (newSelection != null) {
+				ItemId.setText(newSelection.getMenuItemId() + "");
+				ItemName.setText(newSelection.getMenuItemName());
+				ItemDesc.setText(newSelection.getMenuItemDescription());
+				ItemPrice.setText(String.valueOf(newSelection.getMenuItemPrice()));
+				ItemQuantity.setText("1");
+			}
+		});
+
+		return table;
+	}
+	
+	Label orderDetailLabel;
+	Label chooseItemLabel;
+	
+	private void showOrderDetails(Order selectedOrder, TableView<Order> tableOrdered, User user) {
+		TableView<OrderItem> orderItemTable = null;
+		orderDetailLabel = new Label("Order Details");
+		chooseItemLabel = new Label("Choose Menu Item To Add Item");
+
+		root2.getChildren().clear(); //
+		root3.getChildren().clear(); //
+		root2.getChildren().add(orderDetailLabel);
+
+		if (selectedOrder != null) {
+
+			orderItemTable = createOrdersByOrderIdTable(selectedOrder);
+			TableView<MenuItem> tableMenuItem = createMenuItemTable();
+			if (selectedOrder.getOrderStatus().equals("Pending")) {
+
+				root2.getChildren().add(orderItemTable);
+
+				double totalOrderPrice = selectedOrder.getOrderTotal();
+				totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
+				root2.getChildren().add(totalUpdateLabel);
+
+				root2.getChildren()
+						.add(createUpdateOrderForm(selectedOrder, orderItemTable, tableMenuItem, tableOrdered, user));
+
+				tableMenuItem.setStyle("-fx-background-color: lightblue;");
+				root3.getChildren().add(chooseItemLabel);
+				root3.getChildren().add(tableMenuItem);
+
+			} else if (selectedOrder.getOrderStatus().equals("Served")
+					|| selectedOrder.getOrderStatus().equals("Prepared")
+					|| selectedOrder.getOrderStatus().equals("Paid")) {
+				root2.getChildren().add(createOrdersByOrderIdTable(selectedOrder));
+
+				Label statusLabel;
+				double totalOrderPrice = selectedOrder.getOrderTotal();
+				totalUpdateLabel = new Label("Total Price: " + totalOrderPrice);
+
+				root2.getChildren().add(totalUpdateLabel);
+				if (selectedOrder.getOrderStatus().equals("Served")) {
+					statusLabel = new Label("Order Served, Can Only See Order Item Details");
+					root2.getChildren().add(statusLabel);
+				} else if (selectedOrder.getOrderStatus().equals("Prepared")) {
+					statusLabel = new Label("Order Prepared, Can Only See Order Item Details");
+					root2.getChildren().add(statusLabel);
+				} else if (selectedOrder.getOrderStatus().equals("Paid")) {
+					statusLabel = new Label("Order Already Paid, Can Only See Order Item Details");
+					root2.getChildren().add(statusLabel);
+				}
+
+			}
+
+		}
+
 	}
 
 	private void showAlert(String title, String message) {

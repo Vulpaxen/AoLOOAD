@@ -234,40 +234,50 @@ public class CustomerPanel extends Stage {
 			@Override
 			public void handle(ActionEvent event) {
 				MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
+				
+				int newQuantity = Integer.parseInt(ItemQuantity.getText());
 
-				if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
+				if (selectedMenuItem != null && !ItemQuantity.getText().equals("0") ) {
+					
+					if(newQuantity > 0) {
+						// Check if the selected item is already in the cart
+						OrderItem existingOrderItem = tempCart.stream().filter(
+								orderItem -> orderItem.getMenuItem().getMenuItemId() == selectedMenuItem.getMenuItemId())
+								.findFirst().orElse(null);
 
-					// Check if the selected item is already in the cart
-					OrderItem existingOrderItem = tempCart.stream().filter(
-							orderItem -> orderItem.getMenuItem().getMenuItemId() == selectedMenuItem.getMenuItemId())
-							.findFirst().orElse(null);
+						if (existingOrderItem != null) {
+							// If the item is already in the cart, update the quantity
+							newQuantity = existingOrderItem.getQuantity() + Integer.parseInt(ItemQuantity.getText());
+							existingOrderItem.setQuantity(newQuantity);
 
-					if (existingOrderItem != null) {
-						// If the item is already in the cart, update the quantity
-						int newQuantity = existingOrderItem.getQuantity() + Integer.parseInt(ItemQuantity.getText());
-						existingOrderItem.setQuantity(newQuantity);
+							createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+							updateTotalLabel();
+							showAlert("Add Order Item", "Add Quantity to Added Item");
 
-						createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
-						updateTotalLabel();
-						showAlert("Add Order Item", "Add Quantity to Added Item");
+							createdCartTable.refresh();
+						} else {
+							// If the item is not in the cart, add a new OrderItem
+							OrderItem orderItem = new OrderItem(0, selectedMenuItem,
+									Integer.parseInt(ItemQuantity.getText()));
+							tempCart.add(orderItem);
 
-						createdCartTable.refresh();
-					} else {
-						// If the item is not in the cart, add a new OrderItem
-						OrderItem orderItem = new OrderItem(0, selectedMenuItem,
-								Integer.parseInt(ItemQuantity.getText()));
-						tempCart.add(orderItem);
+							createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+							updateTotalLabel();
+							showAlert("Add Order Item", "Add New Item To Cart");
+							createdCartTable.refresh();
 
-						createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
-						updateTotalLabel();
-						showAlert("Add Order Item", "Add New Item To Cart");
-						createdCartTable.refresh();
-
+						}
 					}
-
+					else if(newQuantity < 0) {
+						showAlert("Add Order Item", "Item Quantity Must Be Positive");
+					}
+					
 					formClear();
 					tableMenuItem.getSelectionModel().clearSelection();
 
+				}
+				else if(ItemQuantity.getText().equals("0")) {
+					showAlert("Add Menu Item", "Please Add Quantity");
 				}
 
 				else {
