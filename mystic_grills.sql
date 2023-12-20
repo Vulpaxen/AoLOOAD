@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2023 at 04:50 PM
+-- Generation Time: Dec 20, 2023 at 05:04 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `mystic_grills`
 --
+
+CREATE DATABASE IF NOT EXISTS mystic_grills;
+USE mystic_grills;
 
 -- --------------------------------------------------------
 
@@ -144,7 +147,7 @@ INSERT INTO `orders` (`orderId`, `userId`, `orderStatus`, `orderDate`, `orderTot
 (65, 9, 'Served', '2023-12-20', 145.5),
 (66, 8, 'Served', '2023-12-20', 151),
 (67, 8, 'Paid', '2023-12-20', 110.5),
-(68, 8, 'Served', '2023-12-20', 195);
+(68, 8, 'Paid', '2023-12-20', 195);
 
 -- --------------------------------------------------------
 
@@ -167,7 +170,8 @@ CREATE TABLE `receipt` (
 INSERT INTO `receipt` (`receiptId`, `orderId`, `receiptPaymentAmount`, `receiptPaymentDate`, `receiptPaymentType`) VALUES
 (3, 59, 76, '2023-12-20', 'Cash'),
 (4, 57, 12, '2023-12-20', 'Debit'),
-(5, 61, 20.5, '2023-12-20', 'Credit');
+(5, 61, 20.5, '2023-12-20', 'Credit'),
+(11, 68, 195, '2023-12-20', 'Credit');
 
 -- --------------------------------------------------------
 
@@ -253,7 +257,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `receipt`
 --
 ALTER TABLE `receipt`
-  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
