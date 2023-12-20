@@ -70,7 +70,7 @@ public class Authentication extends Stage {
 						ChefPanel chefPanel = new ChefPanel(user);
 						chefPanel.show();
 					} else if (user.getUserRole().equalsIgnoreCase("Waiter")) {
-						WaiterPanel waiterPanel = new WaiterPanel();
+						WaiterPanel waiterPanel = new WaiterPanel(user);
 						waiterPanel.show();
 					} else if (user.getUserRole().equals("Cashier")) {
 						CashierPanel cashierPanel = new CashierPanel();

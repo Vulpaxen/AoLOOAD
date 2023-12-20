@@ -305,7 +305,7 @@ public class CustomerPanel extends Stage {
 					Label totalLabel = new Label("Total Price: 0");
 					root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
 
-					showAlert("Make Order", "Succes Make Order");
+					showAlert("Make Order", "Success Make Order");
 
 					TableView<Order> tableOrdered = createOrderedTable(user);
 					tableOrdered
@@ -596,7 +596,7 @@ public class CustomerPanel extends Stage {
 
 						tableOrdered.setItems(FXCollections
 								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
-						showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+						showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
 					}
 					else {
 						showAlert("Update Order Item", "Quantity Must Be Positive");
@@ -625,7 +625,7 @@ public class CustomerPanel extends Stage {
 							if(OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
 									existingOrderItem.getMenuItem(), newQuantity)) {
 								existingOrderItem.setQuantity(newQuantity);
-								showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+								showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
 
 							}else {
 								showAlert("Update Order Item Error","Failed quantity must be more than 0");
@@ -676,7 +676,7 @@ public class CustomerPanel extends Stage {
 						tableOrdered.setItems(
 								FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
 
-//						showAlert("Update Order Item", "Succes Add New Order Item");
+//						showAlert("Update Order Item", "Success Add New Order Item");
 					}
 
 					// Clear form fields dan selection

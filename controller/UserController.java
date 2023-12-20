@@ -5,7 +5,6 @@ import model.User;
 
 public class UserController {
 	
-	private static ArrayList<User> userList = new ArrayList<>();
 	private static String[] validUserRoles = { "Admin", "Chef", "Waiter", "Cashier", "Customer" };
 	
     public static String createUser(String userRole, String userName, String userEmail, String userPassword,String confirmPassword) {

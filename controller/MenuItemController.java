@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import model.MenuItem;
 
 public class MenuItemController {
-    private static ArrayList<MenuItem> menuItems;
-
     public static String createMenuItem(String menuItemName, String menuItemDescription, double menuItemPrice) {
     	
         if (menuItemName == null || menuItemName.isEmpty()) {

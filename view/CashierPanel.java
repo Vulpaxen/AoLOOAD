@@ -1,8 +1,8 @@
 package view;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import controller.OrderController;
 import controller.OrderItemController;
@@ -17,7 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -188,7 +187,7 @@ public class CashierPanel extends Stage{
 
 		table.setItems(FXCollections.observableArrayList(orderItem));
 
-		table.getColumns().addAll(itemName, itemQuantity, itemTotalPrice);
+		table.getColumns().addAll(List.of(itemName, itemQuantity, itemTotalPrice));
 
 		return table;
 	}
@@ -217,7 +216,6 @@ public class CashierPanel extends Stage{
 			@Override
 			public void handle(ActionEvent event) {
 				
-				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				if (selectedOrder != null) {
 					//Check paymenttype
 					try {
@@ -314,7 +312,7 @@ public class CashierPanel extends Stage{
 		TableColumn<Receipt, Date> receiptDate = new TableColumn<>("Payment Date");
 		receiptDate.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentDate"));
 		
-		tableReceipt.getColumns().addAll(receiptId,orderId,paymentType,paymentAmount,receiptDate);
+		tableReceipt.getColumns().addAll(List.of(receiptId,orderId,paymentType,paymentAmount,receiptDate));
 		
 		tableReceipt.setPrefHeight(1200);
 
@@ -353,7 +351,6 @@ public class CashierPanel extends Stage{
 			
 			Order order = OrderController.getOrderByOrderId(selectedReceipt.getReceiptOrderId());
 			System.out.println(order.getOrderId());
-			double totalOrderPrice = order.getOrderTotal();
             totalPrice = new Label("Total Paid: " + selectedReceipt.getReceiptPaymentAmount());
             
             root2.getChildren().add(totalPrice);
@@ -387,7 +384,7 @@ public class CashierPanel extends Stage{
  	   ArrayList<OrderItem> receiptData = OrderItemController.getAllOrderItemsByOrderId(selectedReceipt.getReceiptOrderId());
  	   table.setItems(FXCollections.observableArrayList(receiptData));
  	   
- 	   table.getColumns().addAll(itemName, itemDesc, itemQuantity,  itemTotalPrice);
+ 	   table.getColumns().addAll(List.of(itemName, itemDesc, itemQuantity,  itemTotalPrice));
  	   
 		return table;
 	}

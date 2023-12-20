@@ -24,6 +24,10 @@ public class OrderController {
 	    }
 	}
 	
+	public static double getTotalByOrderId(int orderId){
+		return Order.getTotalByOrderId(orderId);
+	}
+	
 	public static ArrayList<Order> getOrderByCustomerId(int customerId){
 		return Order.getOrdersByCustomerId(customerId);
 	}

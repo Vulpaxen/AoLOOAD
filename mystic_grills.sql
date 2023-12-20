@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2023 at 03:34 PM
+-- Generation Time: Dec 20, 2023 at 02:45 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -64,12 +64,10 @@ INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
 (7, 2, 1),
 (9, 1, 3),
 (9, 2, 4),
-(10, 1, 1),
-(11, 1, 1),
 (12, 2, 7),
 (13, 1, 3),
 (14, 1, 2),
-(15, 1, 1),
+(15, 1, 2),
 (16, 2, 1),
 (17, 2, 15),
 (18, 1, 1),
@@ -92,30 +90,30 @@ INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
 (32, 2, 20),
 (33, 2, 1),
 (34, 2, 1),
-(35, 2, 41),
+(35, 2, 40),
 (37, 2, 1),
 (38, 1, 1),
 (40, 2, 1),
-(41, 1, 10),
+(41, 1, 11),
 (2, 1, 1),
 (2, 1, 1),
 (3, 1, 5),
-(4, 1, 1),
 (5, 1, 2),
 (8, 2, 1),
 (6, 1, 1),
-(2, 2, 1),
+(2, 2, 2),
 (1, 1, 1),
-(1, 2, 1),
+(1, 2, 2),
 (22, 1, 1),
 (39, 2, 1),
-(42, 2, 1),
+(42, 2, 2),
 (46, 1, 1),
 (47, 1, 1),
 (3, 2, 1),
 (48, 1, 13),
-(49, 1, 1),
-(49, 2, 1);
+(13, 2, 2),
+(12, 1, 1),
+(41, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -136,30 +134,25 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`orderId`, `userId`, `orderStatus`, `orderDate`, `orderTotal`) VALUES
-(1, 1, 'Pending', '2023-12-13', 0),
-(2, 1, 'Pending', '2023-12-16', 0),
+(1, 1, 'Served', '2023-12-13', 0),
+(2, 1, 'Prepared', '2023-12-16', 0),
 (3, 1, 'Pending', '2023-12-16', 0),
-(4, 1, 'Pending', '2023-12-16', 0),
 (5, 1, 'Pending', '2023-12-16', 0),
-(6, 1, 'Prepared', '2023-12-16', 0),
+(6, 1, 'Served', '2023-12-16', 0),
 (7, 1, 'Prepared', '2023-12-16', 0),
 (8, 1, 'Served', '2023-12-16', 0),
 (9, 1, 'Prepared', '2023-12-16', 0),
-(10, 1, 'Pending', '2023-12-16', 0),
-(11, 1, 'Pending', '2023-12-16', 0),
 (12, 1, 'Pending', '2023-12-16', 0),
 (13, 1, 'Pending', '2023-12-16', 0),
-(14, 1, 'Prepared', '2023-12-16', 0),
-(15, 1, 'Pending', '2023-12-16', 0),
+(14, 1, 'Paid', '2023-12-16', 0),
+(15, 1, 'Prepared', '2023-12-16', 0),
 (16, 1, 'Pending', '2023-12-16', 0),
 (17, 1, 'Pending', '2023-12-16', 0),
 (18, 1, 'Pending', '2023-12-16', 1700),
 (19, 1, 'Pending', '2023-12-16', 3400),
 (20, 1, 'Pending', '2023-12-16', 1500),
 (21, 1, 'Pending', '2023-12-16', 1500),
-(22, 1, 'Pending', '2023-12-16', 0),
-(23, 1, 'Pending', '2023-12-16', 0),
-(24, 1, 'Pending', '2023-12-16', 0),
+(22, 1, 'Prepared', '2023-12-16', 0),
 (25, 1, 'Pending', '2023-12-16', 200),
 (26, 1, 'Pending', '2023-12-16', 7700),
 (27, 1, 'Pending', '2023-12-16', 3000),
@@ -168,23 +161,18 @@ INSERT INTO `orders` (`orderId`, `userId`, `orderStatus`, `orderDate`, `orderTot
 (30, 1, 'Pending', '2023-12-16', 5200),
 (31, 1, 'Pending', '2023-12-19', 4000),
 (32, 1, 'Pending', '2023-12-19', 30000),
-(33, 1, 'Pending', '2023-12-19', 1500),
+(33, 1, 'Prepared', '2023-12-19', 1500),
 (34, 1, 'Pending', '2023-12-19', 1500),
 (35, 1, 'Pending', '2023-12-19', 61500),
-(36, 1, 'Pending', '2023-12-19', 1500),
 (37, 1, 'Pending', '2023-12-19', 1500),
 (38, 1, 'Pending', '2023-12-19', 200),
 (39, 1, 'Pending', '2023-12-19', 200),
 (40, 1, 'Pending', '2023-12-19', 1500),
-(41, 1, 'Pending', '2023-12-19', 200),
+(41, 1, 'Prepared', '2023-12-19', 200),
 (42, 1, 'Pending', '2023-12-19', 1500),
-(43, 1, 'Pending', '2023-12-19', 1500),
-(44, 1, 'Pending', '2023-12-19', 1500),
-(45, 1, 'Pending', '2023-12-19', 1500),
-(46, 1, 'Pending', '2023-12-19', 200),
-(47, 1, 'Pending', '2023-12-19', 200),
-(48, 1, 'Pending', '2023-12-19', 2600),
-(49, 1, 'Pending', '2023-12-19', 1700);
+(46, 1, 'Prepared', '2023-12-19', 200),
+(47, 1, 'Prepared', '2023-12-19', 200),
+(48, 1, 'Prepared', '2023-12-19', 2600);
 
 -- --------------------------------------------------------
 
@@ -199,6 +187,13 @@ CREATE TABLE `receipt` (
   `receiptPaymentDate` date NOT NULL,
   `receiptPaymentType` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `receipt`
+--
+
+INSERT INTO `receipt` (`receiptId`, `orderId`, `receiptPaymentAmount`, `receiptPaymentDate`, `receiptPaymentType`) VALUES
+(1, 14, 400, '2023-12-20', 'Cash');
 
 -- --------------------------------------------------------
 
@@ -223,7 +218,9 @@ INSERT INTO `users` (`userId`, `userRole`, `userName`, `userEmail`, `userPasswor
 (2, 'Chef', 'def', 'chef', '123123'),
 (3, 'Waiter', 'Waiter', 'wait', '123123'),
 (4, 'Cashier', 'Cashier', 'cash', '123123'),
-(5, 'Admin', 'Admin', 'adm', '123123');
+(5, 'Admin', 'Admin', 'adm', '123123'),
+(6, 'Customer', 'test', 'test', '123123'),
+(7, 'Customer', 'test1', 'test1', '123123');
 
 --
 -- Indexes for dumped tables
@@ -282,13 +279,13 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `receipt`
 --
 ALTER TABLE `receipt`
-  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -302,19 +299,21 @@ ALTER TABLE `orderitem`
   ADD CONSTRAINT `fk_order_id` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `orders`
+-- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE;
- 
+  ADD CONSTRAINT `FK_userId` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`);
 
 --
--- Ketidakleluasaan untuk tabel `receipt`
+-- Constraints for table `receipt`
 --
 ALTER TABLE `receipt`
   ADD CONSTRAINT `fk_order_ids` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) ON DELETE CASCADE;
 COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -4,7 +4,6 @@ package view;
 import controller.MenuItemController;
 import controller.UserController;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,14 +11,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.MenuItem;
-import model.OrderItem;
 import model.User;
 
 public class AdminPanel extends Stage {
@@ -239,7 +236,7 @@ public class AdminPanel extends Stage {
 					tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers()));
 					tableUser.refresh();
 
-					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
 				}
 				else {
 					showAlert("Remove User", "Please Select An User From Table");
@@ -365,7 +362,6 @@ public class AdminPanel extends Stage {
 		addItemButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {	
-				int id = Integer.parseInt(ItemId.getText());
 				String newName = ItemName.getText();
 				double newPrice = Double.parseDouble(ItemPrice.getText());
 				String newDesc = ItemDesc.getText();
@@ -400,7 +396,7 @@ public class AdminPanel extends Stage {
 						tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 						tableMenuItem.refresh();
 						tableMenuItem.getSelectionModel().clearSelection();
-						showAlert("Update Menu Item", "Succes Add Menu Item");
+						showAlert("Update Menu Item", "Success Add Menu Item");
 					}
 
 				}
@@ -422,7 +418,6 @@ public class AdminPanel extends Stage {
 
 
 				if(selectedMenuItem != null) {
-					int id = Integer.parseInt(ItemId.getText());
 					String newName = ItemName.getText();
 					double newPrice = Double.parseDouble(ItemPrice.getText());
 					String newDesc = ItemDesc.getText();
@@ -468,7 +463,7 @@ public class AdminPanel extends Stage {
 							tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 							tableMenuItem.refresh();
 							tableMenuItem.getSelectionModel().clearSelection();
-							showAlert("Update Menu Item", "Succes To Update Menu Item");
+							showAlert("Update Menu Item", "Success To Update Menu Item");
 						}
 
 					}
@@ -510,7 +505,7 @@ public class AdminPanel extends Stage {
 					tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 					tableMenuItem.refresh();
 
-					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
 				}
 				else {
 					showAlert("Remove User", "Please Select An User From Table");
