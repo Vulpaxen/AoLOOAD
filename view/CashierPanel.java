@@ -247,6 +247,7 @@ public class CashierPanel extends Stage{
 							
 							OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");
 							refreshOrderedTable();
+							refreshReceipt();
 							showAlert("Order Paid", "Selected order has been paid.");
 							
 							//TODO: masukin ke receipt
@@ -283,6 +284,12 @@ public class CashierPanel extends Stage{
 	private TableView<Receipt> tableReceipt = createReceiptTable();
 	private TableView<OrderItem> tableDetail;
 	Receipt selectedReceipt;
+
+	//refresh Receipt
+	private void refreshReceipt() {
+		tableReceipt.setItems(FXCollections.observableArrayList(Receipt.getAllReceipts()));
+		tableReceipt.refresh();
+	}
 	
 	// View receipt semua untuk cashier
 	private void viewReceiptCashier() {
