@@ -12,10 +12,10 @@ public class MenuItemController {
             return "Error: Name cannot be empty.";
         }
         
-        if (!isNameUnique(menuItemName)) {
-            return "Error: Name must be unique.";
-        }
-        
+//        if (!isNameUnique(menuItemName)) {
+//            return "Error: Name must be unique.";
+//        }
+//        
         if (menuItemDescription.length() <= 10) {
             return "Error: Description must be more than 10 characters.";
         }
@@ -28,16 +28,16 @@ public class MenuItemController {
     	
         return "Menu Item created: " + menuItemName;
     }
-    
-    private static boolean isNameUnique(String menuItemName) {
-        for (MenuItem item : menuItems) {
-            if (item.getMenuItemName().equals(menuItemName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+//    
+//    private static boolean isNameUnique(String menuItemName) {
+//        for (MenuItem item : menuItems) {
+//            if (item.getMenuItemName().equals(menuItemName)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//    
     public static void updateMenuItem(int menuItemId, String menuItemName, String menuItemDescription, double menuItemPrice) {
     	MenuItem.updateMenuItem(menuItemId, menuItemName, menuItemDescription, menuItemPrice);
     }
