@@ -25,14 +25,14 @@ public class Receipt {
 		this.receiptPaymentType = receiptPaymentType;
 	}
 	
-	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate, int receiptPaymentAmount) {
+	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate, double receiptPaymentAmount) {
 		String query = "INSERT INTO receipt (orderId, receiptPaymentType, receiptPaymentDate, receiptPaymentAmount) VALUES (?, ?, ?, ?)";
     	try (Connection connection = Connect.getInstance().getConnection();
     	  PreparedStatement ps = connection.prepareStatement(query)) { 
     		ps.setInt(1, orderId);
     		ps.setString(2, receiptPaymentType);
     		ps.setDate(3, receiptPaymentDate);
-    		ps.setInt(4, receiptPaymentAmount);
+    		ps.setDouble(4, receiptPaymentAmount);
     		ps.executeUpdate();
     	} catch (SQLException e) {
     	  e.printStackTrace();

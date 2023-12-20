@@ -53,7 +53,7 @@ public class CustomerPanel extends Stage {
 		super(StageStyle.DECORATED);
 		this.setTitle("Customer Dashboard");
 
-		scene = new Scene(borderPane, 1400, 800);
+		scene = new Scene(borderPane, 1450, 800);
 		this.setScene(scene);
 
 		// pakai javafx.scene.control.MenuItem karena kelompok kami terdapat class
@@ -160,7 +160,7 @@ public class CustomerPanel extends Stage {
 		TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Name");
 		menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
 
-		TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Desc");
+		TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Description");
 		menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
 
 		TableColumn<MenuItem, String> menuItemPrice = new TableColumn<>("Price");
@@ -170,14 +170,14 @@ public class CustomerPanel extends Stage {
 		table.getColumns().add(menuItemDesc);
 		table.getColumns().add(menuItemPrice);
 
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
+		menuItemName.setPrefWidth(150);
+		menuItemDesc.setPrefWidth(300);
+		menuItemPrice.setPrefWidth(100);
 
 		table.setPrefHeight(1200);
 
 		table.setMinHeight(700);
-		table.setMinWidth(400);
+		table.setMinWidth(550);
 
 		table.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 
@@ -337,7 +337,7 @@ public class CustomerPanel extends Stage {
 					Label totalLabel = new Label("Total Price: 0");
 					root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
 
-					showAlert("Make Order", "Succes Make Order");
+					showAlert("Make Order", "Success Make Order");
 
 					TableView<Order> tableOrdered = createOrderedTable(user);
 					tableOrdered
@@ -652,7 +652,7 @@ public class CustomerPanel extends Stage {
 
 						tableOrdered.setItems(FXCollections
 								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
-						showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+						showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
 					}
 					// jika quantity <0 maka input quantity harus lebih dari 1
 					else {
@@ -682,7 +682,7 @@ public class CustomerPanel extends Stage {
 							if (OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
 									existingOrderItem.getMenuItem(), newQuantity)) {
 								existingOrderItem.setQuantity(newQuantity);
-								showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+								showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
 
 							} else {
 								showAlert("Update Order Item Error", "Failed quantity must be more than 0");

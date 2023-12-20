@@ -52,7 +52,7 @@ public class CashierPanel extends Stage{
 		super(StageStyle.DECORATED);
 		this.setTitle("Cashier Dashboard");
 		
-		scene = new Scene(borderPane, 1000, 800);
+		scene = new Scene(borderPane, 1450, 800);
 		this.setScene(scene);
 		
 		viewOrderCashier();
@@ -75,6 +75,7 @@ public class CashierPanel extends Stage{
 		// Receipt View dan Receipt Detail View
 		receiptMenuItem.setOnAction(e -> {
 			viewReceiptCashier();
+			refreshOrderedTable();
 		});
 		
 		borderPane.setTop(menuBar);
@@ -206,7 +207,7 @@ public class CashierPanel extends Stage{
 		form.setVgap(20);
 		form.setHgap(10);
 
-		Button prepareOrderButton = new Button("Process Order");
+		Button processOrderButton = new Button("Process Order");
 		TextField paymentType = new TextField();
 		TextField paymentAmount = new TextField();
 		
@@ -217,9 +218,9 @@ public class CashierPanel extends Stage{
 		form.add(paymentType, 1, 0);
 		form.add(new Label("Payment amount:"), 0, 1);
 		form.add(paymentAmount, 1, 1);
-		form.add(prepareOrderButton, 0, 2);
+		form.add(processOrderButton, 0, 2);
 		
-		prepareOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+		processOrderButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
@@ -228,9 +229,9 @@ public class CashierPanel extends Stage{
 					//Check paymenttype
 					try {
 						String payment = paymentType.getText();
-						int amount = Integer.parseInt(paymentAmount.getText());
+						double amount = Double.parseDouble(paymentAmount.getText());
 						
-						int totalPrice = 0;
+						double totalPrice = 0;
 						if(selectedOrder.getOrderItem()!= null) {
 							for(OrderItem oi:selectedOrder.getOrderItem()) {
 								totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
@@ -241,7 +242,7 @@ public class CashierPanel extends Stage{
 						ArrayList<OrderItem> orderItems = OrderItemController
 								.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
 						if(amount < totalPrice) {
-							showAlert("insufficient payment","Please input more than payment");
+							showAlert("Insufficient payment","Please input more than payment");
 						}else if(payment.equals("Cash") || payment.equals("Debit") || payment.equals("Credit")) {
 							
 							OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");

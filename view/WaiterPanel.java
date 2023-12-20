@@ -65,7 +65,7 @@ public class WaiterPanel extends Stage {
 		super(StageStyle.DECORATED);
 		this.setTitle("Waiter Dashboard");
 
-		scene = new Scene(borderPane, 1400, 800);
+		scene = new Scene(borderPane, 1450, 800);
 		this.setScene(scene);
 
 		// set ui default ke viewordered
@@ -226,9 +226,9 @@ public class WaiterPanel extends Stage {
 		table.getColumns().add(menuItemDesc);
 		table.getColumns().add(menuItemPrice);
 
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
+		menuItemName.setPrefWidth(150);
+		menuItemDesc.setPrefWidth(300);
+		menuItemPrice.setPrefWidth(100);
 
 		table.setPrefHeight(1200);
 
@@ -309,6 +309,8 @@ public class WaiterPanel extends Stage {
 					showAlert("No Order Selected", "Please select a prepared order to serve.");
 				}
 				viewOrdered(user);
+				
+				root3.getChildren().clear();
 			}
 		});
 

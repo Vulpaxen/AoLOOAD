@@ -8,7 +8,7 @@ import model.Receipt;
 
 public class ReceiptController {
 	
-	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate,int receiptPaymentAmount) {
+	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate,double receiptPaymentAmount) {
 		Receipt.createReceipt(orderId, receiptPaymentType, receiptPaymentDate,receiptPaymentAmount);
 	}
 	

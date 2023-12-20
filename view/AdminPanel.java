@@ -240,7 +240,7 @@ public class AdminPanel extends Stage {
 					tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers()));
 					tableUser.refresh();
 
-					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
 				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
@@ -300,9 +300,9 @@ public class AdminPanel extends Stage {
 		table.getColumns().add(menuItemDesc);
 		table.getColumns().add(menuItemPrice);
 
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
-		menuItemName.setPrefWidth(100);
+		menuItemName.setPrefWidth(150);
+		menuItemDesc.setPrefWidth(300);
+		menuItemPrice.setPrefWidth(100);
 
 		table.setPrefHeight(1200);
 
@@ -386,7 +386,7 @@ public class AdminPanel extends Stage {
 						tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 						tableMenuItem.refresh();
 						tableMenuItem.getSelectionModel().clearSelection();
-						showAlert("Update Menu Item", "Succes Add Menu Item");
+						showAlert("Update Menu Item", "Success Add Menu Item");
 					}
 
 				}
@@ -447,7 +447,7 @@ public class AdminPanel extends Stage {
 									.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 							tableMenuItem.refresh();
 							tableMenuItem.getSelectionModel().clearSelection();
-							showAlert("Update Menu Item", "Succes To Update Menu Item");
+							showAlert("Update Menu Item", "Success To Update Menu Item");
 						}
 
 					}
@@ -486,7 +486,7 @@ public class AdminPanel extends Stage {
 					tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 					tableMenuItem.refresh();
 
-					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
 				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
