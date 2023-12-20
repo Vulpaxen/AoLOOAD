@@ -1,6 +1,5 @@
 package view;
 
-
 import controller.MenuItemController;
 import controller.UserController;
 import javafx.collections.FXCollections;
@@ -16,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import model.MenuItem;
 import model.User;
 
@@ -78,9 +78,14 @@ public class AdminPanel extends Stage {
 		root3.setAlignment(Pos.CENTER);
 		root3.setPadding(new Insets(20));
 
+		this.setOnCloseRequest(event -> {
+			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+				Authentication authenticationPanel = new Authentication();
+				authenticationPanel.show();
+			}
+		});
+
 	}
-
-
 
 	// Untuk View User Management
 	private void userManagement(User user) {
@@ -91,13 +96,12 @@ public class AdminPanel extends Stage {
 
 		TableView<User> tableUser = createUserTable();
 		tableUser.setStyle("-fx-background-color: lightblue;");
-		root1.getChildren().addAll(tableUser);		
-
-
+		root1.getChildren().addAll(tableUser);
 
 		GridPane form = createUserForm(tableUser);
 		root2.getChildren().add(form);
 	}
+
 	// variabel nyimpen select dan form
 	private TextField formUserId = new TextField();
 	private TextField formUserName = new TextField();
@@ -118,7 +122,6 @@ public class AdminPanel extends Stage {
 
 		TableColumn<User, String> userEmail = new TableColumn<>("Email");
 		userEmail.setCellValueFactory(new PropertyValueFactory<>("userEmail"));
-
 
 		TableColumn<User, String> userRole = new TableColumn<>("Role");
 		userRole.setCellValueFactory(new PropertyValueFactory<>("userRole"));
@@ -178,10 +181,8 @@ public class AdminPanel extends Stage {
 		form.add(new Label("Role"), 0, 4);
 		form.add(formUserRole, 1, 4);
 
-
 		form.add(updateUserButton, 0, 5);
 		form.add(removeUserButton, 0, 8);
-
 
 		// Update role user
 		updateUserButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -189,29 +190,29 @@ public class AdminPanel extends Stage {
 			public void handle(ActionEvent event) {
 				User selectedUser = tableUser.getSelectionModel().getSelectedItem();
 
-				if(selectedUser != null) {
+				if (selectedUser != null) {
 					String newRole = formUserRole.getText();
 
-					if(newRole.equals(selectedUser.getUserRole())){
+					if (newRole.equals(selectedUser.getUserRole())) {
 						showAlert("Update User", "Update Role The Same With The Current Role");
 
-					}
-					else if(newRole.equals("Chef")||newRole.equals("Admin")||
-							newRole.equals("Customer")||newRole.equals("Waiter")||
-							newRole.equals("Chasier")) {
+					} else if (newRole.equals("Chef") || newRole.equals("Admin") || newRole.equals("Customer")
+							|| newRole.equals("Waiter") || newRole.equals("Chasier")) {
 						selectedUser.setUserRole(newRole);
 
-						UserController.updateUser(selectedUser.getUserId(), newRole, selectedUser.getUserName(), selectedUser.getUserEmail(), selectedUser.getUserPassword());
+						UserController.updateUser(selectedUser.getUserId(), newRole, selectedUser.getUserName(),
+								selectedUser.getUserEmail(), selectedUser.getUserPassword());
 
-						tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers())); // Update table data
+						tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers())); // Update
+																												// table
+																												// data
 						tableUser.refresh();
 						showAlert("Update Order", "Selected User's Role Has Been Changed");
+					} else {
+						showAlert("Update Order",
+								"Please input Valid Role 'Customer', 'Admin', 'Chef', 'Waiter', 'Cashier'");
 					}
-					else {
-						showAlert("Update Order", "Please input Valid Role 'Customer', 'Admin', 'Chef', 'Waiter', 'Cashier'");
-					}
-				}
-				else {
+				} else {
 					showAlert("Update User", "Please Select An User From Table");
 				}
 				tableUser.getSelectionModel().clearSelection();
@@ -231,14 +232,13 @@ public class AdminPanel extends Stage {
 			public void handle(ActionEvent event) {
 				User selectedUser = tableUser.getSelectionModel().getSelectedItem();
 
-				if(selectedUser != null) {
+				if (selectedUser != null) {
 					UserController.deleteUser(selectedUser.getUserId());
 					tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers()));
 					tableUser.refresh();
 
 					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
-				}
-				else {
+				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
 
@@ -250,21 +250,14 @@ public class AdminPanel extends Stage {
 				formUserPasssword.clear();
 				formUserRole.clear();
 
-
 			}
 		});
 
 		return form;
 	}
 
-
-
-
-
-
-
-	//	============================================
-	//	===========================================
+	// ============================================
+	// ===========================================
 	// Panel MenuItem menuManagement
 	private void menuManagement(User user) {
 		root1.getChildren().clear();
@@ -273,7 +266,7 @@ public class AdminPanel extends Stage {
 
 		TableView<MenuItem> tableMenuItem = createMenuItemTable();
 		tableMenuItem.setStyle("-fx-background-color: lightblue;");
-		root1.getChildren().addAll(tableMenuItem);	
+		root1.getChildren().addAll(tableMenuItem);
 
 		GridPane form = createMenuItemForm(tableMenuItem);
 		root2.getChildren().add(form);
@@ -339,9 +332,9 @@ public class AdminPanel extends Stage {
 		Button updateItemButton = new Button("Update Menu Item");
 		Button removeItemButton = new Button("Remove Menu Item");
 
-		//		form.add(new Label("Id:"), 0, 0);
-		//		form.add(ItemId, 1, 0);
-		//		ItemId.setDisable(true);
+		// form.add(new Label("Id:"), 0, 0);
+		// form.add(ItemId, 1, 0);
+		// ItemId.setDisable(true);
 
 		form.add(new Label("Name:"), 0, 1);
 		form.add(ItemName, 1, 1);
@@ -352,8 +345,6 @@ public class AdminPanel extends Stage {
 		form.add(new Label("Price:"), 0, 3);
 		form.add(ItemPrice, 1, 3);
 
-
-
 		form.add(addItemButton, 0, 4);
 		form.add(updateItemButton, 0, 6);
 		form.add(removeItemButton, 0, 8);
@@ -361,35 +352,31 @@ public class AdminPanel extends Stage {
 		// Untuk add Item
 		addItemButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event) {	
+			public void handle(ActionEvent event) {
 				String newName = ItemName.getText();
 				double newPrice = Double.parseDouble(ItemPrice.getText());
 				String newDesc = ItemDesc.getText();
 
 				boolean checkUnique = true;
 				for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
-					if(menuItem.getMenuItemName().equals(newName)) {
+					if (menuItem.getMenuItemName().equals(newName)) {
 						checkUnique = false;
 						break;
 					}
 
 				}
 
-				if(newName.length() == 0){
+				if (newName.length() == 0) {
 					showAlert("Update Menu Item", "Menu Item Name Cannot Be Empty ");
 
-				}
-				else if(!checkUnique){
+				} else if (!checkUnique) {
 					showAlert("Update Menu Item", "Menu Item Name Must Be Unique");
-				}
-				else {
-					if(newDesc.length() <= 10) {
+				} else {
+					if (newDesc.length() <= 10) {
 						showAlert("Update Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
-					}
-					else if(newPrice <= 2.5) {
+					} else if (newPrice <= 2.5) {
 						showAlert("Update Menu Item", "Menu Item Price Must Greater Than >= 2.5 ");
-					}
-					else {
+					} else {
 
 						MenuItemController.createMenuItem(newName, newDesc, newPrice);
 
@@ -410,22 +397,21 @@ public class AdminPanel extends Stage {
 			}
 		});
 
-		//Untuk update item
+		// Untuk update item
 		updateItemButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
 
-
-				if(selectedMenuItem != null) {
+				if (selectedMenuItem != null) {
 					String newName = ItemName.getText();
 					double newPrice = Double.parseDouble(ItemPrice.getText());
 					String newDesc = ItemDesc.getText();
 
 					boolean checkUnique = true;
 					for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
-						if(menuItem.getMenuItemName().equals(newName)) {
-							if(menuItem.getMenuItemName().equals(selectedMenuItem.getMenuItemName())) {
+						if (menuItem.getMenuItemName().equals(newName)) {
+							if (menuItem.getMenuItemName().equals(selectedMenuItem.getMenuItemName())) {
 								continue;
 							}
 
@@ -435,32 +421,27 @@ public class AdminPanel extends Stage {
 
 					}
 
-					if(newName.length() == 0){
+					if (newName.length() == 0) {
 						showAlert("Update Menu Item", "Menu Item Name Cannot Be Empty ");
 
-					}
-					else if(!checkUnique){
+					} else if (!checkUnique) {
 						showAlert("Update Menu Item", "Menu Item Name  ");
-					}
-					else {
-						if(newDesc.length() <= 10) {
+					} else {
+						if (newDesc.length() <= 10) {
 							showAlert("Update Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
-						}
-						else if(newPrice <= 2.5) {
+						} else if (newPrice <= 2.5) {
 							showAlert("Update Menu Item", "Menu Item Price Must Greater Than >= 2.5 ");
-						}
-						else {
+						} else {
 							selectedMenuItem.setMenuItemName(newName);
 							selectedMenuItem.setMenuItemDescription(newDesc);
 							selectedMenuItem.setMenuItemPrice(newPrice);
 
-							MenuItemController.updateMenuItem(
-									selectedMenuItem.getMenuItemId(), 
-									selectedMenuItem.getMenuItemName(),
-									selectedMenuItem.getMenuItemDescription(),
+							MenuItemController.updateMenuItem(selectedMenuItem.getMenuItemId(),
+									selectedMenuItem.getMenuItemName(), selectedMenuItem.getMenuItemDescription(),
 									selectedMenuItem.getMenuItemPrice());
 
-							tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
+							tableMenuItem
+									.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 							tableMenuItem.refresh();
 							tableMenuItem.getSelectionModel().clearSelection();
 							showAlert("Update Menu Item", "Success To Update Menu Item");
@@ -468,12 +449,10 @@ public class AdminPanel extends Stage {
 
 					}
 
-					//					}
-				}
-				else {
+					// }
+				} else {
 					showAlert("Update User", "Please Select An User From Table");
 				}
-
 
 				formUserId.clear();
 				formUserEmail.clear();
@@ -484,14 +463,13 @@ public class AdminPanel extends Stage {
 			}
 		});
 
-
 		// Untuk remove item
 		removeItemButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				MenuItem selectedItem = tableMenuItem.getSelectionModel().getSelectedItem();
 
-				if(selectedItem != null) {
+				if (selectedItem != null) {
 					MenuItemController.deleteMenuItem(selectedItem.getMenuItemId());
 
 					formUserId.clear();
@@ -506,8 +484,7 @@ public class AdminPanel extends Stage {
 					tableMenuItem.refresh();
 
 					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
-				}
-				else {
+				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
 

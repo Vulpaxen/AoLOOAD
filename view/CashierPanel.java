@@ -33,6 +33,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import model.Order;
 import model.OrderItem;
 import model.Receipt;
@@ -86,6 +87,13 @@ public class CashierPanel extends Stage{
 		borderPane.setCenter(root2);
 		root2.setAlignment(Pos.CENTER);
 		root2.setPadding(new Insets(20));
+		
+		this.setOnCloseRequest(event -> {
+			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+				Authentication authenticationPanel = new Authentication();
+				authenticationPanel.show();
+			}
+		});
 	}
 	
 	//Table untuk served Orders

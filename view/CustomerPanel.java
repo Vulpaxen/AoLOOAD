@@ -30,6 +30,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import model.MenuItem;
 import model.Order;
 import model.OrderItem;
@@ -91,6 +92,13 @@ public class CustomerPanel extends Stage {
 		borderPane.setRight(root3);
 		root3.setAlignment(Pos.CENTER);
 		root3.setPadding(new Insets(20));
+		
+		this.setOnCloseRequest(event -> {
+			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+				Authentication authenticationPanel = new Authentication();
+				authenticationPanel.show();
+			}
+		});
 
 	}
 
