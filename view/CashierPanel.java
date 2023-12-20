@@ -70,12 +70,15 @@ public class CashierPanel extends Stage{
 		// Order Item yang akan di process
 		orderMenuItem.setOnAction(e -> {
 			viewOrderCashier();
+			refreshOrderedTable();
+			refreshReceipt();
 		});
 		
 		// Receipt View dan Receipt Detail View
 		receiptMenuItem.setOnAction(e -> {
 			viewReceiptCashier();
 			refreshOrderedTable();
+			refreshReceipt();
 		});
 		
 		borderPane.setTop(menuBar);
@@ -288,7 +291,6 @@ public class CashierPanel extends Stage{
 	//refresh Receipt
 	private void refreshReceipt() {
 		tableReceipt.setItems(FXCollections.observableArrayList(Receipt.getAllReceipts()));
-		tableReceipt.refresh();
 	}
 	
 	// View receipt semua untuk cashier
@@ -313,7 +315,7 @@ public class CashierPanel extends Stage{
 
 		ObservableList<Receipt> receiptData = FXCollections.observableArrayList(Receipt.getAllReceipts());
 		
-		TableColumn<Receipt, Integer> receiptId = new TableColumn<>("Order ID");
+		TableColumn<Receipt, Integer> receiptId = new TableColumn<>("Receipt ID");
 		receiptId.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
 
 		TableColumn<Receipt, Integer> orderId = new TableColumn<>("Order ID");
