@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2023 at 02:45 PM
+-- Generation Time: Dec 20, 2023 at 04:50 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -39,8 +39,14 @@ CREATE TABLE `menuitem` (
 --
 
 INSERT INTO `menuitem` (`menuItemId`, `menuItemName`, `menuItemDescription`, `menuItemPrice`) VALUES
-(1, 'Ayam', 'enak', 200),
-(2, 'bakso', 'enak', 1500);
+(4, 'Chicken Steak (Single)', 'Delicious juicy fried chicken with gravy', 25),
+(5, 'Chicken Steak (Double)', 'Delicious 2 pieces of juicy fried chicken with gravy', 48.5),
+(6, 'Sirloin Steak (Single)', 'Cut of sirloin piece grilled to perfection', 50),
+(7, 'Sirloin Steak (Double)', 'Twice the cut of sirloin piece grilled to perfection', 97.5),
+(8, 'Chicken Cordon Bleu', 'Deep fried chicken cordon bleu with smoked ham and cheese', 35.5),
+(9, 'French Fries', 'Cuts of potatoes deep fried until golden brown and crisp', 10),
+(10, 'Rice', 'Aromatic fluffy jasmine rice', 5),
+(11, 'Sweet Iced Tea', 'Homebrewed sweetened iced tea', 3.5);
 
 -- --------------------------------------------------------
 
@@ -59,61 +65,48 @@ CREATE TABLE `orderitem` (
 --
 
 INSERT INTO `orderitem` (`orderId`, `menuItemId`, `quantity`) VALUES
-(5, 2, 25),
-(6, 2, 2),
-(7, 2, 1),
-(9, 1, 3),
-(9, 2, 4),
-(12, 2, 7),
-(13, 1, 3),
-(14, 1, 2),
-(15, 1, 2),
-(16, 2, 1),
-(17, 2, 15),
-(18, 1, 1),
-(18, 2, 1),
-(19, 2, 2),
-(19, 1, 2),
-(20, 2, 1),
-(21, 2, 1),
-(25, 1, 2),
-(26, 2, 5),
-(26, 1, 1),
-(27, 2, 2),
-(28, 2, 1),
-(29, 1, 5),
-(29, 2, 2),
-(30, 1, 12),
-(30, 2, 4),
-(31, 1, 5),
-(31, 2, 2),
-(32, 2, 20),
-(33, 2, 1),
-(34, 2, 1),
-(35, 2, 40),
-(37, 2, 1),
-(38, 1, 1),
-(40, 2, 1),
-(41, 1, 11),
-(2, 1, 1),
-(2, 1, 1),
-(3, 1, 5),
-(5, 1, 2),
-(8, 2, 1),
-(6, 1, 1),
-(2, 2, 2),
-(1, 1, 1),
-(1, 2, 2),
-(22, 1, 1),
-(39, 2, 1),
-(42, 2, 2),
-(46, 1, 1),
-(47, 1, 1),
-(3, 2, 1),
-(48, 1, 13),
-(13, 2, 2),
-(12, 1, 1),
-(41, 2, 1);
+(51, 4, 1),
+(51, 6, 1),
+(51, 9, 2),
+(51, 10, 2),
+(51, 11, 3),
+(52, 4, 1),
+(52, 9, 1),
+(52, 11, 1),
+(53, 9, 1),
+(54, 10, 1),
+(54, 7, 1),
+(54, 11, 1),
+(55, 5, 1),
+(55, 7, 1),
+(55, 11, 1),
+(56, 8, 2),
+(56, 9, 1),
+(57, 11, 2),
+(57, 10, 1),
+(58, 5, 1),
+(58, 11, 1),
+(59, 5, 1),
+(59, 11, 1),
+(60, 9, 3),
+(60, 7, 1),
+(61, 10, 2),
+(61, 11, 3),
+(62, 5, 1),
+(62, 6, 2),
+(59, 4, 1),
+(63, 6, 1),
+(63, 11, 1),
+(64, 9, 2),
+(64, 10, 1),
+(65, 5, 3),
+(66, 5, 1),
+(66, 10, 1),
+(66, 7, 1),
+(67, 9, 1),
+(67, 11, 1),
+(67, 5, 2),
+(68, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -134,45 +127,24 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`orderId`, `userId`, `orderStatus`, `orderDate`, `orderTotal`) VALUES
-(1, 1, 'Served', '2023-12-13', 0),
-(2, 1, 'Prepared', '2023-12-16', 0),
-(3, 1, 'Pending', '2023-12-16', 0),
-(5, 1, 'Pending', '2023-12-16', 0),
-(6, 1, 'Served', '2023-12-16', 0),
-(7, 1, 'Prepared', '2023-12-16', 0),
-(8, 1, 'Served', '2023-12-16', 0),
-(9, 1, 'Prepared', '2023-12-16', 0),
-(12, 1, 'Pending', '2023-12-16', 0),
-(13, 1, 'Pending', '2023-12-16', 0),
-(14, 1, 'Paid', '2023-12-16', 0),
-(15, 1, 'Prepared', '2023-12-16', 0),
-(16, 1, 'Pending', '2023-12-16', 0),
-(17, 1, 'Pending', '2023-12-16', 0),
-(18, 1, 'Pending', '2023-12-16', 1700),
-(19, 1, 'Pending', '2023-12-16', 3400),
-(20, 1, 'Pending', '2023-12-16', 1500),
-(21, 1, 'Pending', '2023-12-16', 1500),
-(22, 1, 'Prepared', '2023-12-16', 0),
-(25, 1, 'Pending', '2023-12-16', 200),
-(26, 1, 'Pending', '2023-12-16', 7700),
-(27, 1, 'Pending', '2023-12-16', 3000),
-(28, 1, 'Pending', '2023-12-16', 1500),
-(29, 1, 'Pending', '2023-12-16', 16000),
-(30, 1, 'Pending', '2023-12-16', 5200),
-(31, 1, 'Pending', '2023-12-19', 4000),
-(32, 1, 'Pending', '2023-12-19', 30000),
-(33, 1, 'Prepared', '2023-12-19', 1500),
-(34, 1, 'Pending', '2023-12-19', 1500),
-(35, 1, 'Pending', '2023-12-19', 61500),
-(37, 1, 'Pending', '2023-12-19', 1500),
-(38, 1, 'Pending', '2023-12-19', 200),
-(39, 1, 'Pending', '2023-12-19', 200),
-(40, 1, 'Pending', '2023-12-19', 1500),
-(41, 1, 'Prepared', '2023-12-19', 200),
-(42, 1, 'Pending', '2023-12-19', 1500),
-(46, 1, 'Prepared', '2023-12-19', 200),
-(47, 1, 'Prepared', '2023-12-19', 200),
-(48, 1, 'Prepared', '2023-12-19', 2600);
+(51, 1, 'Pending', '2023-12-20', 105.5),
+(52, 1, 'Paid', '2023-12-20', 38.5),
+(53, 1, 'Prepared', '2023-12-20', 10),
+(54, 1, 'Served', '2023-12-20', 106),
+(55, 8, 'Pending', '2023-12-20', 149.5),
+(56, 8, 'Prepared', '2023-12-20', 81),
+(57, 8, 'Paid', '2023-12-20', 12),
+(58, 8, 'Paid', '2023-12-20', 52),
+(59, 9, 'Paid', '2023-12-20', 57),
+(60, 9, 'Prepared', '2023-12-20', 127.5),
+(61, 9, 'Paid', '2023-12-20', 20.5),
+(62, 9, 'Paid', '2023-12-20', 98.5),
+(63, 8, 'Pending', '2023-12-20', 53.5),
+(64, 9, 'Paid', '2023-12-20', 25),
+(65, 9, 'Served', '2023-12-20', 145.5),
+(66, 8, 'Served', '2023-12-20', 151),
+(67, 8, 'Paid', '2023-12-20', 110.5),
+(68, 8, 'Served', '2023-12-20', 195);
 
 -- --------------------------------------------------------
 
@@ -193,7 +165,9 @@ CREATE TABLE `receipt` (
 --
 
 INSERT INTO `receipt` (`receiptId`, `orderId`, `receiptPaymentAmount`, `receiptPaymentDate`, `receiptPaymentType`) VALUES
-(1, 14, 400, '2023-12-20', 'Cash');
+(3, 59, 76, '2023-12-20', 'Cash'),
+(4, 57, 12, '2023-12-20', 'Debit'),
+(5, 61, 20.5, '2023-12-20', 'Credit');
 
 -- --------------------------------------------------------
 
@@ -214,13 +188,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userId`, `userRole`, `userName`, `userEmail`, `userPassword`) VALUES
-(1, 'Customer', 'asd', 'cust', '123123'),
-(2, 'Chef', 'def', 'chef', '123123'),
-(3, 'Waiter', 'Waiter', 'wait', '123123'),
-(4, 'Cashier', 'Cashier', 'cash', '123123'),
-(5, 'Admin', 'Admin', 'adm', '123123'),
-(6, 'Customer', 'test', 'test', '123123'),
-(7, 'Customer', 'test1', 'test1', '123123');
+(1, 'Customer', 'Raien', 'customer@gmail.com', '123123'),
+(2, 'Chef', 'Isna', 'chef@gmail.com', '123123'),
+(3, 'Waiter', 'Budi', 'waiter@gmail.com', '123123'),
+(4, 'Cashier', 'Yanto', 'cashier@gmail.com', '123123'),
+(5, 'Admin', 'Admin', 'admin@gmail.com', '123123'),
+(8, 'Customer', 'Adit', 'adit@gmail.com', 'adit123'),
+(9, 'Customer', 'Kuncoro', 'kuncoro@gmail.com', 'kuncoro123');
 
 --
 -- Indexes for dumped tables
@@ -267,25 +241,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `menuitem`
 --
 ALTER TABLE `menuitem`
-  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `menuItemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `receipt`
 --
 ALTER TABLE `receipt`
-  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `receiptId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

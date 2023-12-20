@@ -20,7 +20,7 @@ import model.User;
 
 public class Authentication extends Stage {
 	private VBox root = new VBox(10);
-	private Scene scene = new Scene(root, 500, 500);
+	private Scene scene = new Scene(root, 500, 350);
 	private TextField usernameField = new TextField();
 	private TextField emailField = new TextField();
 	private PasswordField passwordField = new PasswordField();
