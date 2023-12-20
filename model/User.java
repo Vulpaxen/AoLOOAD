@@ -95,6 +95,7 @@ public class User {
     		ps.setString(2, userName);
     		ps.setString(3, userEmail);
     		ps.setString(4, userPassword);
+    		ps.setInt(5, userId);
     		ps.executeUpdate();
     	} catch (SQLException e) {
     	  e.printStackTrace();
