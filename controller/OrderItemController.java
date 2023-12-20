@@ -16,8 +16,7 @@ public class OrderItemController {
     }
     
     public static boolean updateOrderItem(int orderId, MenuItem menuItem, int quantity) {
-    	if(quantity < 0) {
-    		OrderItem.deleteOrderItem(orderId, menuItem.getMenuItemId());
+    	if(quantity <= 0) {
     		return false;
     	}
     	OrderItem.updateOrderItem(orderId, menuItem, quantity);

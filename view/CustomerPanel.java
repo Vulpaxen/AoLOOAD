@@ -563,12 +563,12 @@ public class CustomerPanel extends Stage {
 
 				if (selectedOrderItem != null) {
 					int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
-					System.out.println(selectedOrderItem.getOrderId());
-					System.out.println(selectedOrderItem.getMenuItemId());
+//					System.out.println(selectedOrderItem.getOrderId());
+//					System.out.println(selectedOrderItem.getMenuItemId());
 
 					if (newQuantity == 0) {
 						// If the new quantity is 0, delete the order item
-						OrderItem.deleteOrderItem(selectedOrderItem.getOrderId(),
+						OrderItemController.deleteOrderItem(selectedOrderItem.getOrderId(),
 								selectedOrderItem.getMenuItemId());
 
 						// Refresh the orderItemTable
@@ -623,7 +623,7 @@ public class CustomerPanel extends Stage {
 							
 							//check quantity 
 							if(OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
-									existingOrderItem.getMenuItem(), existingOrderItem.getQuantity())) {
+									existingOrderItem.getMenuItem(), newQuantity)) {
 								existingOrderItem.setQuantity(newQuantity);
 								showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
 
@@ -683,6 +683,7 @@ public class CustomerPanel extends Stage {
 					tableOrdered
 							.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
 					formClear();
+					orderItemTable.refresh();
 					orderItemTable.getSelectionModel().clearSelection();
 					tableMenuItem.getSelectionModel().clearSelection();
 					
