@@ -33,7 +33,7 @@ public class AdminPanel extends Stage {
 		super(StageStyle.DECORATED);
 		this.setTitle("Admin Dashboard");
 
-		scene = new Scene(borderPane, 900, 800);
+		scene = new Scene(borderPane, 1000, 800);
 		this.setScene(scene);
 
 		Menu menuMenu = new Menu("Menu Management");
@@ -78,7 +78,7 @@ public class AdminPanel extends Stage {
 		root3.setAlignment(Pos.CENTER);
 		root3.setPadding(new Insets(20));
 
-		// jika klik clos (x), maka akan terlogout dan teralihkan ke Authentication Page
+		// jika klik close (x), maka akan terlogout dan teralihkan ke Authentication Page
 		// (Login Register)
 		this.setOnCloseRequest(event -> {
 			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
@@ -290,7 +290,7 @@ public class AdminPanel extends Stage {
 		TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Name");
 		menuItemName.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
 
-		TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Desc");
+		TableColumn<MenuItem, String> menuItemDesc = new TableColumn<>("Description");
 		menuItemDesc.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription"));
 
 		TableColumn<MenuItem, Double> menuItemPrice = new TableColumn<>("Price");
@@ -354,51 +354,57 @@ public class AdminPanel extends Stage {
 
 		// Untuk add Item
 		addItemButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				String newName = ItemName.getText();
-				double newPrice = Double.parseDouble(ItemPrice.getText());
-				String newDesc = ItemDesc.getText();
+		    @Override
+		    public void handle(ActionEvent event) {
+		        String newName = ItemName.getText();
+		        String newDesc = ItemDesc.getText();
+		        String priceText = ItemPrice.getText();
 
-				boolean checkUnique = true;
-				for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
-					if (menuItem.getMenuItemName().equals(newName)) {
-						checkUnique = false;
-						break;
-					}
+		        if (newName.isEmpty() || newDesc.isEmpty() || priceText.isEmpty()) {
+		            showAlert("Add Menu Item", "Please fill in all the fields.");
+		            return;
+		        }
 
-				}
+		        double newPrice;
 
-				if (newName.length() == 0) {
-					showAlert("Update Menu Item", "Menu Item Name Cannot Be Empty ");
+		        try {
+		            newPrice = Double.parseDouble(priceText);
+		        } catch (NumberFormatException e) {
+		            showAlert("Add Menu Item", "Invalid price format. Please enter a valid number.");
+		            return;
+		        }
 
-				} else if (!checkUnique) {
-					showAlert("Update Menu Item", "Menu Item Name Must Be Unique");
-				} else {
-					if (newDesc.length() <= 10) {
-						showAlert("Update Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
-					} else if (newPrice <= 2.5) {
-						showAlert("Update Menu Item", "Menu Item Price Must Greater Than >= 2.5 ");
-					} else {
+		        boolean checkUnique = true;
+		        for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
+		            if (menuItem.getMenuItemName().equals(newName)) {
+		                checkUnique = false;
+		                break;
+		            }
+		        }
 
-						MenuItemController.createMenuItem(newName, newDesc, newPrice);
+		        if (!checkUnique) {
+		            showAlert("Add Menu Item", "Menu Item Name Must Be Unique");
+		        } else {
+		            if (newDesc.length() <= 10) {
+		                showAlert("Add Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
+		            } else if (newPrice <= 2.5) {
+		                showAlert("Add Menu Item", "Menu Item Price Must Be Greater Than or Equal to 2.5 ");
+		            } else {
+		                MenuItemController.createMenuItem(newName, newDesc, newPrice);
 
-						tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
-						tableMenuItem.refresh();
-						tableMenuItem.getSelectionModel().clearSelection();
-						showAlert("Update Menu Item", "Success Add Menu Item");
-					}
+		                tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
+		                tableMenuItem.refresh();
+		                tableMenuItem.getSelectionModel().clearSelection();
+		                showAlert("Add Menu Item", "Success Add Menu Item");
+		            }
+		        }
 
-				}
-
-				formUserId.clear();
-				formUserEmail.clear();
-				formUserName.clear();
-				formUserPasssword.clear();
-				formUserRole.clear();
-
-			}
+		        ItemName.clear();
+		        ItemDesc.clear();
+		        ItemPrice.clear();
+		    }
 		});
+
 
 		// Untuk update item
 		updateItemButton.setOnAction(new EventHandler<ActionEvent>() {

@@ -39,33 +39,33 @@ import model.OrderItem;
 import model.Receipt;
 import model.User;
 
-public class CashierPanel extends Stage{
-	
+public class CashierPanel extends Stage {
+
 	private BorderPane borderPane = new BorderPane();
 	private VBox root1 = new VBox(20);
 	private VBox root2 = new VBox(20);
 	private MenuBar menuBar = new MenuBar();
 	private Scene scene;
 	Label totalPrice;
-	
+
 	public CashierPanel() {
 		super(StageStyle.DECORATED);
 		this.setTitle("Cashier Dashboard");
-		
+
 		scene = new Scene(borderPane, 1450, 800);
 		this.setScene(scene);
-		
+
 		viewOrderCashier();
 		Menu orderMenu = new Menu("View Order");
 		MenuItem orderMenuItem = new MenuItem("View Order");
 		Menu receiptMenu = new Menu("View Receipt");
 		MenuItem receiptMenuItem = new MenuItem("View Receipt");
-		
+
 		orderMenu.getItems().add(orderMenuItem);
 		receiptMenu.getItems().add(receiptMenuItem);
-		
+
 		menuBar.getMenus().addAll(orderMenu, receiptMenu);
-		
+
 		// Menu ada 2
 		// Order Item yang akan di process
 		orderMenuItem.setOnAction(e -> {
@@ -73,14 +73,14 @@ public class CashierPanel extends Stage{
 			refreshOrderedTable();
 			refreshReceipt();
 		});
-		
+
 		// Receipt View dan Receipt Detail View
 		receiptMenuItem.setOnAction(e -> {
 			viewReceiptCashier();
 			refreshOrderedTable();
 			refreshReceipt();
 		});
-		
+
 		borderPane.setTop(menuBar);
 		borderPane.setLeft(root1);
 		root1.setAlignment(Pos.CENTER);
@@ -91,7 +91,7 @@ public class CashierPanel extends Stage{
 		borderPane.setCenter(root2);
 		root2.setAlignment(Pos.CENTER);
 		root2.setPadding(new Insets(20));
-		
+
 		this.setOnCloseRequest(event -> {
 			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
 				Authentication authenticationPanel = new Authentication();
@@ -99,15 +99,15 @@ public class CashierPanel extends Stage{
 			}
 		});
 	}
-	
-	//Table untuk served Orders
+
+	// Table untuk served Orders
 	TableView<Order> servedOrders = createServedTable();
-	
+
 	// View Order untuk cashier
 	private void viewOrderCashier() {
 		root1.getChildren().clear();
 		root2.getChildren().clear();
-		
+
 		root1.getChildren().add(servedOrders);
 		if (servedOrders.getSelectionModel().isEmpty()) {
 			Label selectOrderLabel = new Label("Select an order from the table to see order details.");
@@ -121,6 +121,7 @@ public class CashierPanel extends Stage{
 	// View Order Detail
 	// Bisa Process
 	private Order selectedOrder;
+
 	private TableView<Order> createServedTable() {
 		// TODO Auto-generated method stunt
 		TableView<Order> table = new TableView<>();
@@ -213,91 +214,89 @@ public class CashierPanel extends Stage{
 		Button processOrderButton = new Button("Process Order");
 		TextField paymentType = new TextField();
 		TextField paymentAmount = new TextField();
-		
+
 		paymentType.setPromptText("Cash / Debit / Credit");
 		paymentAmount.setPromptText("Payment Amount");
-		
+
 		form.add(new Label("Payment Type:"), 0, 0);
 		form.add(paymentType, 1, 0);
 		form.add(new Label("Payment amount:"), 0, 1);
 		form.add(paymentAmount, 1, 1);
 		form.add(processOrderButton, 0, 2);
-		
-		processOrderButton.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				
-				if (selectedOrder != null) {
-					//Check paymenttype
-					try {
-						String payment = paymentType.getText();
-						double amount = Double.parseDouble(paymentAmount.getText());
-						
-						double totalPrice = 0;
-						if(selectedOrder.getOrderItem()!= null) {
-							for(OrderItem oi:selectedOrder.getOrderItem()) {
-								totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
 
-							}
-						}
-						
-						ArrayList<OrderItem> orderItems = OrderItemController
-								.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
-						if(amount < totalPrice) {
-							showAlert("Insufficient payment","Please input more than payment");
-						}else if(payment.equals("Cash") || payment.equals("Debit") || payment.equals("Credit")) {
-							
-							OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");
-							refreshOrderedTable();
-							refreshReceipt();
-							showAlert("Order Paid", "Selected order has been paid.");
-							
-							//TODO: masukin ke receipt
-							
-							Date date = new Date(System.currentTimeMillis());
-							ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, totalPrice);
-						}else {
-							showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
-						}
-						
-						
-					}catch(Exception ex){
-						ex.printStackTrace();
-					}
-					
-				} else {
-					showAlert("No Order Selected", "Please select a pending order to prepare.");
-				}
-				viewOrderCashier();
-			}
-			
-			
+		processOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        if (selectedOrder != null) {
+		            // Check paymenttype
+		            try {
+		                String payment = paymentType.getText();
+		                String amountText = paymentAmount.getText();
+
+		                if (payment.isEmpty() || amountText.isEmpty()) {
+		                    showAlert("Empty Fields", "Please fill in both Payment Type and Payment Amount.");
+		                    return;
+		                }
+
+		                double amount = Double.parseDouble(amountText);
+
+		                double totalPrice = 0;
+		                if (selectedOrder.getOrderItem() != null) {
+		                    for (OrderItem oi : selectedOrder.getOrderItem()) {
+		                        totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
+		                    }
+		                }
+
+		                ArrayList<OrderItem> orderItems = OrderItemController
+		                        .getAllOrderItemsByOrderId(selectedOrder.getOrderId());
+		                if (amount < totalPrice) {
+		                    showAlert("Insufficient payment", "Please input more than payment");
+		                } else if (payment.equals("Cash") || payment.equals("Debit") || payment.equals("Credit")) {
+
+		                    OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");
+		                    refreshOrderedTable();
+		                    refreshReceipt();
+		                    showAlert("Order Paid", "Selected order has been paid.");
+
+		                    Date date = new Date(System.currentTimeMillis());
+		                    ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, totalPrice);
+		                } else {
+		                    showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
+		                }
+		            } catch (NumberFormatException ex) {
+		                showAlert("Invalid Amount", "Please enter a valid number for Payment Amount.");
+		            }
+
+		        } else {
+		            showAlert("No Order Selected", "Please select a pending order to prepare.");
+		        }
+		        viewOrderCashier();
+		    }
 		});
+
 		return form;
 	}
-	
+
 	// Refresh Table
 	private void refreshOrderedTable() {
 		servedOrders.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 	}
-	
-	
-	//Receipt
+
+	// Receipt
 	private TableView<Receipt> tableReceipt = createReceiptTable();
 	private TableView<OrderItem> tableDetail;
 	Receipt selectedReceipt;
 
-	//refresh Receipt
+	// refresh Receipt
 	private void refreshReceipt() {
 		tableReceipt.setItems(FXCollections.observableArrayList(Receipt.getAllReceipts()));
 	}
-	
+
 	// View receipt semua untuk cashier
 	private void viewReceiptCashier() {
 		root1.getChildren().clear();
 		root2.getChildren().clear();
-		
+
 		root1.getChildren().add(tableReceipt);
 		if (tableReceipt.getSelectionModel().isEmpty()) {
 			Label selectOrderLabel = new Label("Select an receipt from the table to see receipt details.");
@@ -307,14 +306,14 @@ public class CashierPanel extends Stage{
 			showReceiptDetails(selectedReceipt);
 		}
 	}
-	
+
 	// Table untuk ambil receipt
 	private TableView<Receipt> createReceiptTable() {
 		tableReceipt = new TableView<>();
 		tableReceipt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 		ObservableList<Receipt> receiptData = FXCollections.observableArrayList(Receipt.getAllReceipts());
-		
+
 		TableColumn<Receipt, Integer> receiptId = new TableColumn<>("Receipt ID");
 		receiptId.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
 
@@ -326,34 +325,33 @@ public class CashierPanel extends Stage{
 
 		TableColumn<Receipt, Integer> paymentAmount = new TableColumn<>("Payment Amount");
 		paymentAmount.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentAmount"));
-		
+
 		TableColumn<Receipt, Date> receiptDate = new TableColumn<>("Payment Date");
 		receiptDate.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentDate"));
-		
-		tableReceipt.getColumns().addAll(List.of(receiptId,orderId,paymentType,paymentAmount,receiptDate));
-		
+
+		tableReceipt.getColumns().addAll(List.of(receiptId, orderId, paymentType, paymentAmount, receiptDate));
+
 		tableReceipt.setPrefHeight(1200);
 
 		tableReceipt.setMinHeight(800);
 		tableReceipt.setMinWidth(400);
-		
+
 		tableReceipt.setItems(receiptData);
-		
+
 		tableReceipt.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
 				selectedReceipt = newSelection;
 				showReceiptDetails(selectedReceipt);
 			}
 		});
-		
-		
+
 		return tableReceipt;
 	}
-	
-	//Receipt Detail
+
+	// Receipt Detail
 	Label orderItemLbl;
 	Label userNameLbl;
-	
+
 	// Memiliki detail untuk setiap receipt yang dipilih
 	// Nama Customer
 	private void showReceiptDetails(Receipt receipt) {
@@ -362,52 +360,55 @@ public class CashierPanel extends Stage{
 		orderItemLbl = new Label("Receipt Detail");
 		root2.getChildren().add(orderItemLbl);
 
-		if(selectedReceipt != null) {
+		if (selectedReceipt != null) {
 			tableDetail = createDetailTable();
-			
+
 			root2.getChildren().add(tableDetail);
-			
+
 			Order order = OrderController.getOrderByOrderId(selectedReceipt.getReceiptOrderId());
 			System.out.println(order.getOrderId());
-            totalPrice = new Label("Total Paid: " + selectedReceipt.getReceiptPaymentAmount());
-            
-            root2.getChildren().add(totalPrice);
-        	tableDetail.setStyle("-fx-background-color: lightblue;");
+			totalPrice = new Label("Total Paid: " + selectedReceipt.getReceiptPaymentAmount());
 
-        	User user = UserController.getUserById(order.getOrderUserId());
-        	
-        	userNameLbl = new Label("Customer Name : "+user.getUserName());
-        	root2.getChildren().add(userNameLbl);
+			root2.getChildren().add(totalPrice);
+			tableDetail.setStyle("-fx-background-color: lightblue;");
+
+			User user = UserController.getUserById(order.getOrderUserId());
+
+			userNameLbl = new Label("Customer Name : " + user.getUserName());
+			root2.getChildren().add(userNameLbl);
 		}
 	}
-	
+
 	// Mengambil Receipt Detail yaitu OrderItem dari OrderId.
 	private TableView<OrderItem> createDetailTable() {
 		TableView<OrderItem> table = new TableView<>();
-     	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 		TableColumn<OrderItem, String> itemName = new TableColumn<>("Item Name");
- 	    itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
- 	    
- 	    TableColumn<OrderItem, String> itemDesc = new TableColumn<>("Item Desc");
-	    itemDesc.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemDesc()));
+		itemName.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemName()));
 
- 	    TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
- 	    itemQuantity.setCellValueFactory(orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
+		TableColumn<OrderItem, String> itemDesc = new TableColumn<>("Item Desc");
+		itemDesc.setCellValueFactory(orderItem -> new SimpleStringProperty(orderItem.getValue().getMenuItemDesc()));
 
- 	    // New TableColumn for itemTotalPrice
- 	    TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
- 	    itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
- 	    
- 	   ArrayList<OrderItem> receiptData = OrderItemController.getAllOrderItemsByOrderId(selectedReceipt.getReceiptOrderId());
- 	   table.setItems(FXCollections.observableArrayList(receiptData));
- 	   
- 	   table.getColumns().addAll(List.of(itemName, itemDesc, itemQuantity,  itemTotalPrice));
- 	   
+		TableColumn<OrderItem, Integer> itemQuantity = new TableColumn<>("Quantity");
+		itemQuantity.setCellValueFactory(
+				orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
+
+		// New TableColumn for itemTotalPrice
+		TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+		itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(
+				orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
+
+		ArrayList<OrderItem> receiptData = OrderItemController
+				.getAllOrderItemsByOrderId(selectedReceipt.getReceiptOrderId());
+		table.setItems(FXCollections.observableArrayList(receiptData));
+
+		table.getColumns().addAll(List.of(itemName, itemDesc, itemQuantity, itemTotalPrice));
+
 		return table;
 	}
-	
-	//Alert
+
+	// Alert
 	private void showAlert(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);

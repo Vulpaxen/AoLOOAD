@@ -222,13 +222,32 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 
+	//Ini untuk validasi agar semua textfield harus diisi sebelum make order atau add order
+	private boolean validateInput() {
+		if (ItemName.getText().isEmpty() || ItemPrice.getText().isEmpty() || ItemQuantity.getText().isEmpty()
+				|| !isNumeric(ItemPrice.getText()) || !isNumeric(ItemQuantity.getText())) {
+			return false;
+		}
+		return true;
+	}
+
+	// Check apakah numeric atau tidak
+	private boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
 	// Label Total Price di bawah Tabel Keranjang
 	private void updateTotalLabel() {
 		orderTotal = tempCart.stream()
 				.mapToDouble(orderItem -> orderItem.getQuantity() * orderItem.getMenuItem().getMenuItemPrice()).sum();
 
 		Label totalLabel = new Label("Total Price: " + orderTotal);
-		root2.getChildren().set(root2.getChildren().size() - 1, totalLabel); // Update the last child (total label)
+		root2.getChildren().set(root2.getChildren().size() - 1, totalLabel); // Update last child (total label)
 	}
 
 	ArrayList<OrderItem> tempCart = new ArrayList<>();
@@ -263,57 +282,64 @@ public class CustomerPanel extends Stage {
 		addItemButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
+				if (validateInput()) {
+					MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
 
-				int newQuantity = Integer.parseInt(ItemQuantity.getText());
+					int newQuantity = Integer.parseInt(ItemQuantity.getText());
 
-				if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
+					if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
 
-					if (newQuantity > 0) {
-						// Check if the selected item is already in the cart
-						OrderItem existingOrderItem = tempCart.stream().filter(orderItem -> orderItem.getMenuItem()
-								.getMenuItemId() == selectedMenuItem.getMenuItemId()).findFirst().orElse(null);
+						if (newQuantity > 0) {
+							// Check if the selected item is already in the cart
+							OrderItem existingOrderItem = tempCart
+									.stream().filter(orderItem -> orderItem.getMenuItem()
+											.getMenuItemId() == selectedMenuItem.getMenuItemId())
+									.findFirst().orElse(null);
 
-						if (existingOrderItem != null) {
-							// If the item is already in the cart, update the quantity
-							newQuantity = existingOrderItem.getQuantity() + Integer.parseInt(ItemQuantity.getText());
-							existingOrderItem.setQuantity(newQuantity);
+							if (existingOrderItem != null) {
+								// If the item is already in the cart, update the quantity
+								newQuantity = existingOrderItem.getQuantity()
+										+ Integer.parseInt(ItemQuantity.getText());
+								existingOrderItem.setQuantity(newQuantity);
 
-							createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
-							updateTotalLabel();
-							showAlert("Add Order Item", "Add Quantity to Added Item");
+								createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+								updateTotalLabel();
+								showAlert("Add Order Item", "Add Quantity to Added Item");
 
-							createdCartTable.refresh();
-						} else {
-							// If the item is not in the cart, add a new OrderItem
-							OrderItem orderItem = new OrderItem(0, selectedMenuItem,
-									Integer.parseInt(ItemQuantity.getText()));
-							tempCart.add(orderItem);
+								createdCartTable.refresh();
+							} else {
+								// If the item is not in the cart, add a new OrderItem
+								OrderItem orderItem = new OrderItem(0, selectedMenuItem,
+										Integer.parseInt(ItemQuantity.getText()));
+								tempCart.add(orderItem);
 
-							createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
-							updateTotalLabel();
-							showAlert("Add Order Item", "Add New Item To Cart");
-							createdCartTable.refresh();
+								createdCartTable.setItems(FXCollections.observableArrayList(tempCart));
+								updateTotalLabel();
+								showAlert("Add Order Item", "Add New Item To Cart");
+								createdCartTable.refresh();
 
+							}
 						}
+						// jika quantity < 0 , kasi alert
+						else if (newQuantity < 0) {
+							showAlert("Add Order Item", "Item Quantity Must Be Positive");
+						}
+
+						formClear();
+						tableMenuItem.getSelectionModel().clearSelection();
+
 					}
-					// jika quantity < 0 , kasi alert
-					else if (newQuantity < 0) {
-						showAlert("Add Order Item", "Item Quantity Must Be Positive");
+					// jika form kosong, maka beri tahu suru isi
+					else if (ItemQuantity.getText().equals("0")) {
+						showAlert("Add Menu Item", "Please Add Quantity");
 					}
 
-					formClear();
-					tableMenuItem.getSelectionModel().clearSelection();
-
-				}
-				// jika form kosong, maka beri tahu suru isi
-				else if (ItemQuantity.getText().equals("0")) {
-					showAlert("Add Menu Item", "Please Add Quantity");
-				}
-
-				// jika tidak mengselect menu item apa-apa, maka alert pilih terlebih dahulu
-				else {
-					showAlert("Add Menu Item", "Please Select Menu Item From The Table");
+					// jika tidak mengselect menu item apa-apa, maka alert pilih terlebih dahulu
+					else {
+						showAlert("Add Menu Item", "Please Select Menu Item From The Table");
+					}
+				} else {
+					showAlert("Add Order Item", "Please fill in all the required fields with valid data.");
 				}
 			}
 		});
