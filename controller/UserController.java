@@ -13,8 +13,11 @@ public class UserController {
             return "Error: Name cannot be empty.";
         }
         
-        if (userEmail.isEmpty() || !isEmailUnique(userEmail)) {
-            return "Error: Email must be unique and not empty.";
+        if(!isEmailUnique(userEmail)) {
+        	return "Error: Email must be unique";
+        }
+        if (userEmail.isEmpty()) {
+            return "Error: Email must not empty.";
         }
         
         if(userPassword.length() < 6 || userPassword.isEmpty()) {
@@ -25,12 +28,13 @@ public class UserController {
         	return "Error: Confirm Password must be the same as Password";
         }
         
+        
     	User.createUser(userRole, userName, userEmail, userPassword);
     	return "User created successfully!";
     }
     
     private static boolean isEmailUnique(String userEmail) {
-        for (User user : userList) {
+        for (User user : User.getAllUsers()) {
             if (user.getUserEmail().equals(userEmail)) {
                 return false;
             }

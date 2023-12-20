@@ -157,24 +157,5 @@ public class User {
     		}
     	}
     	return null;
-//        String query = "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?";
-//        try (Connection connection = Connect.getInstance().getConnection();
-//             PreparedStatement ps = connection.prepareStatement(query)) {
-//
-//            ps.setString(1, userEmail);
-//            ps.setString(2, userPassword);
-//
-//            try (ResultSet resultSet = ps.executeQuery()) {
-//                if (resultSet.next()) {
-//                    return resultSet.getString("userRole");
-//                } else {
-//                    return null;
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
     }
 }

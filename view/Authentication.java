@@ -20,7 +20,7 @@ import model.User;
 
 public class Authentication extends Stage {
 	private VBox root = new VBox(10);
-	private Scene scene = new Scene(root, 500, 300);
+	private Scene scene = new Scene(root, 500, 500);
 	private TextField usernameField = new TextField();
 	private TextField emailField = new TextField();
 	private PasswordField passwordField = new PasswordField();
@@ -126,7 +126,9 @@ public class Authentication extends Stage {
 				String confirmPassword = confirmPasswordField.getText();
 
 				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword,confirmPassword);
-				showLoginPage();
+				if(registrationResult.equals("User created successfully!")) {
+					showLoginPage();
+				}
 				statusLabel.setText(registrationResult);
 			} catch (Exception ex) {
 				ex.printStackTrace();

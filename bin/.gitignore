@@ -1,5 +1,5 @@
 /.classpath
 /mystic_grills.sql
-/view/
 /model/
-/main/
+/view/
+/controller/
