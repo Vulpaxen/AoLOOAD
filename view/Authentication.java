@@ -37,6 +37,7 @@ public class Authentication extends Stage {
 		showLoginPage();
 	}
 
+	// Login Page
 	private void showLoginPage() {
 		Label titleLabel = new Label("Login");
 		titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -56,8 +57,11 @@ public class Authentication extends Stage {
 			try {
 				String userEmail = emailField.getText();
 				String userPassword = passwordField.getText();
+				
+				// Mengambil user
 				User user = UserController.authenticateUser(userEmail, userPassword);
 
+				//Mengecek Role
 				if (user != null) {
 					if (user.getUserRole().equals("Customer")) {
 						CustomerPanel customerPanel = new CustomerPanel(user);
@@ -85,6 +89,7 @@ public class Authentication extends Stage {
 			}
 		});
 
+		// Redirect ke Register
 		Label registerLink = new Label("I don't have an account");
 		registerLink.setUnderline(true);
 		registerLink.setTextFill(Color.BLUE);
@@ -102,6 +107,7 @@ public class Authentication extends Stage {
 		root.getChildren().add(container);
 	}
 
+	// Register Page
 	private void showRegisterPage() {
 		Label titleLabel = new Label("Register");
 		titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -125,6 +131,7 @@ public class Authentication extends Stage {
 				String userPassword = passwordField.getText();
 				String confirmPassword = confirmPasswordField.getText();
 
+				// Create User
 				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword,confirmPassword);
 				if(registrationResult.equals("User created successfully!")) {
 					showLoginPage();
@@ -135,6 +142,7 @@ public class Authentication extends Stage {
 			}
 		});
 
+		//Redirect ke Login
 		Label loginLink = new Label("I already have an account");
 		loginLink.setUnderline(true);
 		loginLink.setTextFill(Color.BLUE);

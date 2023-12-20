@@ -66,10 +66,13 @@ public class CashierPanel extends Stage{
 		
 		menuBar.getMenus().addAll(orderMenu, receiptMenu);
 		
+		// Menu ada 2
+		// Order Item yang akan di process
 		orderMenuItem.setOnAction(e -> {
 			viewOrderCashier();
 		});
 		
+		// Receipt View dan Receipt Detail View
 		receiptMenuItem.setOnAction(e -> {
 			viewReceiptCashier();
 		});
@@ -86,8 +89,10 @@ public class CashierPanel extends Stage{
 		root2.setPadding(new Insets(20));
 	}
 	
+	//Table untuk served Orders
 	TableView<Order> servedOrders = createServedTable();
 	
+	// View Order untuk cashier
 	private void viewOrderCashier() {
 		root1.getChildren().clear();
 		root2.getChildren().clear();
@@ -102,6 +107,8 @@ public class CashierPanel extends Stage{
 		}
 	}
 
+	// View Order Detail
+	// Bisa Process
 	private Order selectedOrder;
 	private TableView<Order> createServedTable() {
 		// TODO Auto-generated method stunt
@@ -142,6 +149,7 @@ public class CashierPanel extends Stage{
 		return table;
 	}
 
+	// Untuk Show details Order
 	private void showOrderDetails(Order order) {
 		TableView<OrderItem> orderItemTable = null;
 		root2.getChildren().clear(); //
@@ -157,6 +165,7 @@ public class CashierPanel extends Stage{
 		}
 	}
 
+	// Table order Detail
 	private TableView<OrderItem> createOrdersByOrderIdTable(Order order) {
 		TableView<OrderItem> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -184,6 +193,7 @@ public class CashierPanel extends Stage{
 		return table;
 	}
 
+	// Process Form untuk process order yang sudah di served
 	private GridPane createProcessOrderForm(TableView<OrderItem> orderItemTable) {
 		GridPane form = new GridPane();
 		form.setVgap(20);
@@ -256,16 +266,18 @@ public class CashierPanel extends Stage{
 		return form;
 	}
 	
+	// Refresh Table
 	private void refreshOrderedTable() {
 		servedOrders.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
 	}
 	
 	
-	//TODO: Receipt
+	//Receipt
 	private TableView<Receipt> tableReceipt = createReceiptTable();
 	private TableView<OrderItem> tableDetail;
 	Receipt selectedReceipt;
 	
+	// View receipt semua untuk cashier
 	private void viewReceiptCashier() {
 		root1.getChildren().clear();
 		root2.getChildren().clear();
@@ -280,7 +292,7 @@ public class CashierPanel extends Stage{
 		}
 	}
 	
-
+	// Table untuk ambil receipt
 	private TableView<Receipt> createReceiptTable() {
 		tableReceipt = new TableView<>();
 		tableReceipt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -323,12 +335,11 @@ public class CashierPanel extends Stage{
 	}
 	
 	//Receipt Detail
-	//Order 
-	// Customer
-	
 	Label orderItemLbl;
 	Label userNameLbl;
 	
+	// Memiliki detail untuk setiap receipt yang dipilih
+	// Nama Customer
 	private void showReceiptDetails(Receipt receipt) {
 		root2.getChildren().clear();
 
@@ -355,6 +366,7 @@ public class CashierPanel extends Stage{
 		}
 	}
 	
+	// Mengambil Receipt Detail yaitu OrderItem dari OrderId.
 	private TableView<OrderItem> createDetailTable() {
 		TableView<OrderItem> table = new TableView<>();
      	table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

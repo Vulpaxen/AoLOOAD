@@ -149,6 +149,7 @@ public class User {
 		return user;
 	}
     
+    // Authenticate User
     public static User authenticateUser(String userEmail, String userPassword) {
     	ArrayList<User> userList = getAllUsers();
     	for(User u: userList) {
