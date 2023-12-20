@@ -47,12 +47,20 @@ public class CustomerPanel extends Stage {
 
 	public CustomerPanel(User user) {
 
+		// Controller Customer Panel
+		// Mengsetting layout dan isi dari Tampilan
+
 		super(StageStyle.DECORATED);
 		this.setTitle("Customer Dashboard");
 
 		scene = new Scene(borderPane, 1400, 800);
 		this.setScene(scene);
 
+		// pakai javafx.scene.control.MenuItem karena kelompok kami terdapat class
+		// MenuItem
+		// sehingga takut salah panggil declare jadi digituin
+
+		// Buat Menu dan setting menu item
 		Menu addOrderMenu = new Menu("Add Order");
 		javafx.scene.control.MenuItem AddOrderMenuItem = new javafx.scene.control.MenuItem("Go To Add Order");
 		addOrderMenu.getItems().addAll(AddOrderMenuItem);
@@ -66,14 +74,19 @@ public class CustomerPanel extends Stage {
 
 		borderPane.setTop(menuBar);
 
+		// Saat Membuka Tampilan langsung ditampilkan addOrder(user)
 		addOrder(user);
 
+		// Jika Menu Bar Item Add Order diklik, maka akan membersihkan form dan
+		// menampilkan tampilan addOrder()
 		AddOrderMenuItem.setOnAction(e -> {
 			formClear();
 			addOrder(user);
 
 		});
 
+		// Jika Menu Bar Item View Ordered diklik, maka akan membersihkan form dan
+		// menampilkan tampilan addOrder()
 		viewOrderedMenuItem.setOnAction(e -> {
 			formClear();
 			viewOrdered(user);
@@ -89,10 +102,8 @@ public class CustomerPanel extends Stage {
 		root2.setAlignment(Pos.CENTER);
 		root2.setPadding(new Insets(20));
 
-		borderPane.setRight(root3);
-		root3.setAlignment(Pos.CENTER);
-		root3.setPadding(new Insets(20));
-		
+		// jika klik clos (x), maka akan terlogout dan teralihkan ke Authentication Page
+		// (Login Register)
 		this.setOnCloseRequest(event -> {
 			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
 				Authentication authenticationPanel = new Authentication();
@@ -100,9 +111,13 @@ public class CustomerPanel extends Stage {
 			}
 		});
 
+		borderPane.setRight(root3);
+		root3.setAlignment(Pos.CENTER);
+		root3.setPadding(new Insets(20));
+
 	}
 
-	// variabel nyimpen select dan form
+	// variabel nyimpen select pada tabel untuk mengisi form
 	private TextField ItemId = new TextField();
 	private TextField ItemName = new TextField();
 	private TextField ItemDesc = new TextField();
@@ -120,11 +135,17 @@ public class CustomerPanel extends Stage {
 		root2.getChildren().clear();
 		root3.getChildren().clear();
 
-		// buat tampilan baru
+		// buat Tampilan Baru
+		// pada addOrder terdapat table semua Menu Item
 		TableView<MenuItem> tableMenuItem = createMenuItemTable();
 		tableMenuItem.setStyle("-fx-background-color: lightblue;");
 		root1.getChildren().addAll(tableMenuItem);
 
+		// Dan Form untuk Menambhakan ke keranjang
+		// di form nanti juga terpanggil tabel yang menampil menu-menu item yang di add
+		// jika button make order di klik, maka menu item dan quantity yang tersimpan
+		// pada cart table,
+		// akan menjadi order item dengan order id yang sama
 		GridPane form = createOrderForm(tableMenuItem, user);
 		Label totalLabel = new Label("Total Price: 0");
 		root2.getChildren().addAll(form, createdCartTable, totalLabel);
@@ -174,7 +195,7 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 
-	// Buat tabel keranjang
+	// Method Untuk Buat Tabel keranjang
 	private TableView<OrderItem> createCartTable() {
 		TableView<OrderItem> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -189,8 +210,9 @@ public class CustomerPanel extends Stage {
 				orderItem -> new SimpleIntegerProperty(orderItem.getValue().getQuantity()).asObject());
 		itemQuantity.setPrefWidth(50);
 
-		// New TableColumn for itemTotalPrice
 		TableColumn<OrderItem, Double> itemTotalPrice = new TableColumn<>("Total Price");
+
+		// hitung total prica dari harga menu item dikali jumlah quantity
 		itemTotalPrice.setCellValueFactory(orderItem -> new SimpleDoubleProperty(
 				orderItem.getValue().getQuantity() * orderItem.getValue().getMenuItem().getMenuItemPrice()).asObject());
 		itemTotalPrice.setPrefWidth(100);
@@ -242,16 +264,15 @@ public class CustomerPanel extends Stage {
 			@Override
 			public void handle(ActionEvent event) {
 				MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
-				
+
 				int newQuantity = Integer.parseInt(ItemQuantity.getText());
 
-				if (selectedMenuItem != null && !ItemQuantity.getText().equals("0") ) {
-					
-					if(newQuantity > 0) {
+				if (selectedMenuItem != null && !ItemQuantity.getText().equals("0")) {
+
+					if (newQuantity > 0) {
 						// Check if the selected item is already in the cart
-						OrderItem existingOrderItem = tempCart.stream().filter(
-								orderItem -> orderItem.getMenuItem().getMenuItemId() == selectedMenuItem.getMenuItemId())
-								.findFirst().orElse(null);
+						OrderItem existingOrderItem = tempCart.stream().filter(orderItem -> orderItem.getMenuItem()
+								.getMenuItemId() == selectedMenuItem.getMenuItemId()).findFirst().orElse(null);
 
 						if (existingOrderItem != null) {
 							// If the item is already in the cart, update the quantity
@@ -276,18 +297,21 @@ public class CustomerPanel extends Stage {
 
 						}
 					}
-					else if(newQuantity < 0) {
+					// jika quantity < 0 , kasi alert
+					else if (newQuantity < 0) {
 						showAlert("Add Order Item", "Item Quantity Must Be Positive");
 					}
-					
+
 					formClear();
 					tableMenuItem.getSelectionModel().clearSelection();
 
 				}
-				else if(ItemQuantity.getText().equals("0")) {
+				// jika form kosong, maka beri tahu suru isi
+				else if (ItemQuantity.getText().equals("0")) {
 					showAlert("Add Menu Item", "Please Add Quantity");
 				}
 
+				// jika tidak mengselect menu item apa-apa, maka alert pilih terlebih dahulu
 				else {
 					showAlert("Add Menu Item", "Please Select Menu Item From The Table");
 				}
@@ -313,7 +337,7 @@ public class CustomerPanel extends Stage {
 					Label totalLabel = new Label("Total Price: 0");
 					root2.getChildren().set(root2.getChildren().size() - 1, totalLabel);
 
-					showAlert("Make Order", "Success Make Order");
+					showAlert("Make Order", "Succes Make Order");
 
 					TableView<Order> tableOrdered = createOrderedTable(user);
 					tableOrdered
@@ -349,6 +373,10 @@ public class CustomerPanel extends Stage {
 	}
 
 	// =========================================================
+
+	// =========================================================
+
+	// =========================================================
 	// Customer Panel untuk View Ordered / History Order
 
 	// Berisi Tabel Order List,
@@ -362,20 +390,27 @@ public class CustomerPanel extends Stage {
 		// buat tampilan baru
 		root1.getChildren().add(tableOrdered);
 
-		// Menampilkan label petunjuk jika belum ada pesanan yang dipilih
+		// viewOrdered menampilkan order yang dimiliki customer yg login , ambil dr id
+		// nya
+		// Menampilkan label petunjuk jika belum ada order yang dipilih
 		if (tableOrdered.getSelectionModel().isEmpty()) {
 			Label selectOrderLabel = new Label("Select an order from the table to see order details.");
 			root2.getChildren().add(selectOrderLabel);
 		} else {
-			// Jika ada pesanan yang dipilih, tampilkan detail pesanan
+			// Jika ada order yang dipilih, tampilkan detail pesanan
 			selectedOrder = tableOrdered.getSelectionModel().getSelectedItem();
 			showOrderDetails(selectedOrder, tableOrdered, user);
+			// showOrderDetails menampilkan order item yang dimiliki order yang diselect
+			// dari table
+			// lalu ada form untuk mengupdate quantity dan juga
+			// bisa pilih menuitem di kanan
 		}
 
 	}
 
 	private Order selectedOrder;
 
+	// method untuk membuat table order yang dimiliki oleh user
 	private TableView<Order> createOrderedTable(User user) {
 
 		// TODO Auto-generated method stunt
@@ -416,6 +451,8 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 
+	// method buat nampilin tabel yang berisi data order item yang memiliki order id
+	// yang terselect
 	private TableView<OrderItem> createOrdersByOrderIdTable(Order OrderId) {
 		TableView<OrderItem> table = new TableView<>();
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -441,7 +478,6 @@ public class CustomerPanel extends Stage {
 		itemTotalPrice.setPrefWidth(50);
 
 		ArrayList<OrderItem> orderItem = OrderItemController.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
-// 	   System.out.println("Number of order items: " + orderItem.size());
 		table.setItems(FXCollections.observableArrayList(orderItem));
 
 		table.getColumns().addAll(List.of(itemName, itemDesc, itemQuantity, itemTotalPrice));
@@ -449,10 +485,15 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 
+	// untuk nyimpen label agar di add di vbox root
 	Label totalUpdateLabel;
 	Label orderDetailLabel;
 	Label chooseItemLabel;
 
+	// showOrderDetails menampilkan order item yang dimiliki order yang diselect
+	// dari table
+	// lalu ada form untuk mengupdate quantity dan juga
+	// bisa pilih menuitem di kanan
 	private void showOrderDetails(Order selectedOrder, TableView<Order> tableOrdered, User user) {
 		TableView<OrderItem> orderItemTable = null;
 		orderDetailLabel = new Label("Order Details");
@@ -466,6 +507,9 @@ public class CustomerPanel extends Stage {
 
 			orderItemTable = createOrdersByOrderIdTable(selectedOrder);
 			TableView<MenuItem> tableMenuItem = createMenuItemTable();
+
+			// jika status masi pending, user bisa nambahin update order denganmbahkan atau
+			// update order item
 			if (selectedOrder.getOrderStatus().equals("Pending")) {
 
 				root2.getChildren().add(orderItemTable);
@@ -481,6 +525,9 @@ public class CustomerPanel extends Stage {
 				root3.getChildren().add(chooseItemLabel);
 				root3.getChildren().add(tableMenuItem);
 
+				// jika status sudah served, prepared, paid . maka hanya akan menampilkan order
+				// item di order id tersebut saka
+				// tidak bisa mengupdate
 			} else if (selectedOrder.getOrderStatus().equals("Served")
 					|| selectedOrder.getOrderStatus().equals("Prepared")
 					|| selectedOrder.getOrderStatus().equals("Paid")) {
@@ -515,6 +562,7 @@ public class CustomerPanel extends Stage {
 	private TextField UpdateItemPrice = new TextField();
 	private TextField UpdateItemQuantity = new TextField();
 
+//Membuat form dan update
 	private GridPane createUpdateOrderForm(Order selectedOrder, TableView<OrderItem> orderItemTable,
 			TableView<MenuItem> tableMenuItem, TableView<Order> tableOrdered, User user) {
 		GridPane form = new GridPane();
@@ -569,88 +617,87 @@ public class CustomerPanel extends Stage {
 				OrderItem selectedOrderItem = orderItemTable.getSelectionModel().getSelectedItem();
 				MenuItem selectedMenuItem = tableMenuItem.getSelectionModel().getSelectedItem();
 
+				// select dari tabel order item
 				if (selectedOrderItem != null) {
 					int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
-//					System.out.println(selectedOrderItem.getOrderId());
-//					System.out.println(selectedOrderItem.getMenuItemId());
 
+					// If the new quantity is 0, delete the order item
 					if (newQuantity == 0) {
-						// If the new quantity is 0, delete the order item
 						OrderItemController.deleteOrderItem(selectedOrderItem.getOrderId(),
 								selectedOrderItem.getMenuItemId());
 
 						// Refresh the orderItemTable
 						orderItemTable.getItems().remove(selectedOrderItem);
 
-						totalUpdateLabel.setText(
-								"Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+						totalUpdateLabel
+								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
 						tableOrdered.setItems(FXCollections
 								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
 
 						showAlert("Remove Order Item", "Selected Order Item Has Been Removed");
 
-					} else if(newQuantity > 0){
+						// jika quantity lebih dari 0, maka update quantity baru
+					} else if (newQuantity > 0) {
 						// Update the selected order item with the new quantity
 						selectedOrderItem.setQuantity(newQuantity);
-						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(),
-								selectedOrderItem.getMenuItem(), newQuantity);
+						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
+								newQuantity);
 
 						// Refresh the orderItemTable
 						orderItemTable.refresh();
 
-						totalUpdateLabel.setText(
-								"Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+						totalUpdateLabel
+								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
 						tableOrdered.setItems(FXCollections
 								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
-						showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
+						showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
 					}
+					// jika quantity <0 maka input quantity harus lebih dari 1
 					else {
 						showAlert("Update Order Item", "Quantity Must Be Positive");
 					}
 
 					// Refresh the orderItemTable
 					orderItemTable.refresh();
-					
+
 					// Update the total label
-					totalUpdateLabel
-							.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+					totalUpdateLabel.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
 					formClear();
 
 					orderItemTable.getSelectionModel().clearSelection();
 					tableMenuItem.getSelectionModel().clearSelection();
-				} else if (selectedMenuItem != null ) {
+
+					// select tabel menu item yang terview di bagian kanan tampilan
+				} else if (selectedMenuItem != null) {
 					// Cek apakah item sudah ada dalam orderItemList
 					boolean itemExists = false;
 					int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
 					for (OrderItem existingOrderItem : orderItemTable.getItems()) {
 						if (existingOrderItem.getMenuItemId() == selectedMenuItem.getMenuItemId()) {
 							// Jika sudah ada, update quantity-nya
-					
-							
-							//check quantity 
-							if(OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
+
+							// check quantity
+							if (OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
 									existingOrderItem.getMenuItem(), newQuantity)) {
 								existingOrderItem.setQuantity(newQuantity);
-								showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
+								showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
 
-							}else {
-								showAlert("Update Order Item Error","Failed quantity must be more than 0");
+							} else {
+								showAlert("Update Order Item Error", "Failed quantity must be more than 0");
 							}
-//							OrderItem.updateOrderItem(existingOrderItem.getOrderId(),
-//									existingOrderItem.getMenuItem(), existingOrderItem.getQuantity());
 
 							// Refresh orderItemTable
 							orderItemTable.refresh();
 
 							// Refresh total label
-							totalUpdateLabel.setText(
-									"Total Price: " + Order.getTotalByOrderId(existingOrderItem.getOrderId()));
+							totalUpdateLabel
+									.setText("Total Price: " + Order.getTotalByOrderId(existingOrderItem.getOrderId()));
 
 							// Refresh ordered table
 //                            refreshOrderedTable();
-							
+
 							itemExists = true;
 							break;
 						}
@@ -658,33 +705,30 @@ public class CustomerPanel extends Stage {
 
 					// Jika item belum ada dalam orderItemList, tambahkan item baru ke dalam order
 					if (!itemExists && selectedMenuItem != null) {
-			
 
 						OrderItem newOrderItem = new OrderItem(selectedOrder.getOrderId(), selectedMenuItem,
 								newQuantity);
-						
-						if(OrderItemController.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity)) {
-							
+
+						if (OrderItemController.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem,
+								newQuantity)) {
+
 							showAlert("Update Order Item", "Success Add New Order Item");
 							// Refresh orderItemTable
 							orderItemTable.getItems().add(newOrderItem);
 
-						}else {
+						} else {
 							showAlert("Update Order Item Failed", "Failed: Quantity must be more than 0");
 						}
 //						OrderItem.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity);
 
-						
-
 						// Refresh total label
-						totalUpdateLabel
-								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrder.getOrderId()));
+						totalUpdateLabel.setText("Total Price: " + Order.getTotalByOrderId(selectedOrder.getOrderId()));
 
 						// Refresh ordered table
 						tableOrdered.setItems(
 								FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
 
-//						showAlert("Update Order Item", "Success Add New Order Item");
+//						showAlert("Update Order Item", "Succes Add New Order Item");
 					}
 
 					// Clear form fields dan selection
@@ -694,7 +738,7 @@ public class CustomerPanel extends Stage {
 					orderItemTable.refresh();
 					orderItemTable.getSelectionModel().clearSelection();
 					tableMenuItem.getSelectionModel().clearSelection();
-					
+
 				} else {
 					showAlert("Update Order Item", "Please Select An Order Item or Menu Item To Update Order");
 				}
@@ -703,6 +747,7 @@ public class CustomerPanel extends Stage {
 		return form;
 	}
 
+	// method untuk mengclear smw text field pada form
 	public void formClear() {
 
 		ItemName.clear();
@@ -716,6 +761,7 @@ public class CustomerPanel extends Stage {
 		UpdateItemDesc.clear();
 	}
 
+	// untuk menampilkan validasi
 	private void showAlert(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);

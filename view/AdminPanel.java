@@ -49,7 +49,7 @@ public class AdminPanel extends Stage {
 
 		borderPane.setTop(menuBar);
 
-		userManagement(user);
+		menuManagement(user);
 
 		// Menu untuk Management MenuItem
 		menuManagementItem.setOnAction(e -> {
@@ -78,6 +78,8 @@ public class AdminPanel extends Stage {
 		root3.setAlignment(Pos.CENTER);
 		root3.setPadding(new Insets(20));
 
+		// jika klik clos (x), maka akan terlogout dan teralihkan ke Authentication Page
+		// (Login Register)
 		this.setOnCloseRequest(event -> {
 			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
 				Authentication authenticationPanel = new Authentication();
@@ -116,6 +118,7 @@ public class AdminPanel extends Stage {
 
 		TableColumn<User, String> userId = new TableColumn<>("ID");
 		userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
+		userId.setPrefWidth(50);
 
 		TableColumn<User, String> userName = new TableColumn<>("Name");
 		userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
@@ -134,7 +137,7 @@ public class AdminPanel extends Stage {
 		table.setPrefHeight(1200);
 
 		table.setMinHeight(700);
-		table.setMinWidth(400);
+		table.setMinWidth(450);
 
 		table.setItems(FXCollections.observableArrayList(UserController.getAllUsers()));
 
@@ -197,7 +200,7 @@ public class AdminPanel extends Stage {
 						showAlert("Update User", "Update Role The Same With The Current Role");
 
 					} else if (newRole.equals("Chef") || newRole.equals("Admin") || newRole.equals("Customer")
-							|| newRole.equals("Waiter") || newRole.equals("Chasier")) {
+							|| newRole.equals("Waiter") || newRole.equals("Cashier")) {
 						selectedUser.setUserRole(newRole);
 
 						UserController.updateUser(selectedUser.getUserId(), newRole, selectedUser.getUserName(),
@@ -237,7 +240,7 @@ public class AdminPanel extends Stage {
 					tableUser.setItems(FXCollections.observableArrayList(UserController.getAllUsers()));
 					tableUser.refresh();
 
-					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
 				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
@@ -383,7 +386,7 @@ public class AdminPanel extends Stage {
 						tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 						tableMenuItem.refresh();
 						tableMenuItem.getSelectionModel().clearSelection();
-						showAlert("Update Menu Item", "Success Add Menu Item");
+						showAlert("Update Menu Item", "Succes Add Menu Item");
 					}
 
 				}
@@ -444,7 +447,7 @@ public class AdminPanel extends Stage {
 									.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 							tableMenuItem.refresh();
 							tableMenuItem.getSelectionModel().clearSelection();
-							showAlert("Update Menu Item", "Success To Update Menu Item");
+							showAlert("Update Menu Item", "Succes To Update Menu Item");
 						}
 
 					}
@@ -483,7 +486,7 @@ public class AdminPanel extends Stage {
 					tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
 					tableMenuItem.refresh();
 
-					showAlert("Remove User", "Remove User Success, All Data related to User Has Been Deleted");
+					showAlert("Remove User", "Remove User Succes, All Data related to User Has Been Deleted");
 				} else {
 					showAlert("Remove User", "Please Select An User From Table");
 				}
