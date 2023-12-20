@@ -364,11 +364,6 @@ public class CustomerPanel extends Stage {
 			showOrderDetails(selectedOrder, tableOrdered, user);
 		}
 
-//     	GridPane form = createOrderForm(tableMenuItem);
-
-//    	root2.getChildren().addAll(form, createdCartTable, totalLabel );
-//    	updateTotalLabel();
-
 	}
 
 	private Order selectedOrder;
@@ -587,7 +582,7 @@ public class CustomerPanel extends Stage {
 
 						showAlert("Remove Order Item", "Selected Order Item Has Been Removed");
 
-					} else {
+					} else if(newQuantity > 0){
 						// Update the selected order item with the new quantity
 						selectedOrderItem.setQuantity(newQuantity);
 						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(),
@@ -603,28 +598,40 @@ public class CustomerPanel extends Stage {
 								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
 						showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
 					}
+					else {
+						showAlert("Update Order Item", "Quantity Must Be Positive");
+					}
 
 					// Refresh the orderItemTable
 					orderItemTable.refresh();
-
+					
 					// Update the total label
 					totalUpdateLabel
 							.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
-
 					formClear();
 
 					orderItemTable.getSelectionModel().clearSelection();
 					tableMenuItem.getSelectionModel().clearSelection();
-				} else if (selectedMenuItem != null && selectedOrderItem == null) {
+				} else if (selectedMenuItem != null ) {
 					// Cek apakah item sudah ada dalam orderItemList
 					boolean itemExists = false;
+					int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
 					for (OrderItem existingOrderItem : orderItemTable.getItems()) {
 						if (existingOrderItem.getMenuItemId() == selectedMenuItem.getMenuItemId()) {
 							// Jika sudah ada, update quantity-nya
-							int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
-							existingOrderItem.setQuantity(newQuantity);
-							OrderItem.updateOrderItem(existingOrderItem.getOrderId(),
-									existingOrderItem.getMenuItem(), existingOrderItem.getQuantity());
+					
+							
+							//check quantity 
+							if(OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
+									existingOrderItem.getMenuItem(), existingOrderItem.getQuantity())) {
+								existingOrderItem.setQuantity(newQuantity);
+								showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+
+							}else {
+								showAlert("Update Order Item Error","Failed quantity must be more than 0");
+							}
+//							OrderItem.updateOrderItem(existingOrderItem.getOrderId(),
+//									existingOrderItem.getMenuItem(), existingOrderItem.getQuantity());
 
 							// Refresh orderItemTable
 							orderItemTable.refresh();
@@ -635,7 +642,7 @@ public class CustomerPanel extends Stage {
 
 							// Refresh ordered table
 //                            refreshOrderedTable();
-							showAlert("Update Order Item", "Succes Update Selected Order Item's Quantity");
+							
 							itemExists = true;
 							break;
 						}
@@ -643,14 +650,23 @@ public class CustomerPanel extends Stage {
 
 					// Jika item belum ada dalam orderItemList, tambahkan item baru ke dalam order
 					if (!itemExists && selectedMenuItem != null) {
-						int newQuantity = Integer.parseInt(UpdateItemQuantity.getText());
+			
 
 						OrderItem newOrderItem = new OrderItem(selectedOrder.getOrderId(), selectedMenuItem,
 								newQuantity);
-						OrderItem.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity);
+						
+						if(OrderItemController.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity)) {
+							
+							showAlert("Update Order Item", "Success Add New Order Item");
+							// Refresh orderItemTable
+							orderItemTable.getItems().add(newOrderItem);
 
-						// Refresh orderItemTable
-						orderItemTable.getItems().add(newOrderItem);
+						}else {
+							showAlert("Update Order Item Failed", "Failed: Quantity must be more than 0");
+						}
+//						OrderItem.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity);
+
+						
 
 						// Refresh total label
 						totalUpdateLabel
@@ -660,7 +676,7 @@ public class CustomerPanel extends Stage {
 						tableOrdered.setItems(
 								FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
 
-						showAlert("Update Order Item", "Succes Add New Order Item");
+//						showAlert("Update Order Item", "Succes Add New Order Item");
 					}
 
 					// Clear form fields dan selection
@@ -669,6 +685,7 @@ public class CustomerPanel extends Stage {
 					formClear();
 					orderItemTable.getSelectionModel().clearSelection();
 					tableMenuItem.getSelectionModel().clearSelection();
+					
 				} else {
 					showAlert("Update Order Item", "Please Select An Order Item or Menu Item To Update Order");
 				}

@@ -7,12 +7,21 @@ import model.OrderItem;
 
 public class OrderItemController {
 	
-    public static void createOrderItem(int orderId, MenuItem menuItem, int quantity) {
+    public static boolean createOrderItem(int orderId, MenuItem menuItem, int quantity) {
+    	if(quantity <= 0) {
+    		return false;
+    	}
     	OrderItem.createOrderItem(orderId, menuItem, quantity);
+    	return true;
     }
     
-    public static void updateOrderItem(int orderId, MenuItem menuItem, int quantity) {
+    public static boolean updateOrderItem(int orderId, MenuItem menuItem, int quantity) {
+    	if(quantity < 0) {
+    		OrderItem.deleteOrderItem(orderId, menuItem.getMenuItemId());
+    		return false;
+    	}
     	OrderItem.updateOrderItem(orderId, menuItem, quantity);
+    	return true;
     }
     
     public static void deleteOrderItem(int orderId, int menuItemId) {
