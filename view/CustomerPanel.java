@@ -222,7 +222,8 @@ public class CustomerPanel extends Stage {
 		return table;
 	}
 
-	//Ini untuk validasi agar semua textfield harus diisi sebelum make order atau add order
+	// Ini untuk validasi agar semua textfield harus diisi sebelum make order atau
+	// add order
 	private boolean validateInput() {
 		if (ItemName.getText().isEmpty() || ItemPrice.getText().isEmpty() || ItemQuantity.getText().isEmpty()
 				|| !isNumeric(ItemPrice.getText()) || !isNumeric(ItemQuantity.getText())) {
@@ -366,8 +367,8 @@ public class CustomerPanel extends Stage {
 					showAlert("Make Order", "Success Make Order");
 
 					TableView<Order> tableOrdered = createOrderedTable(user);
-					tableOrdered
-							.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+					tableOrdered.setItems(
+							FXCollections.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 
 				} else {
 					showAlert("Make Order", "There Is No Item, Please Add Item First");
@@ -465,7 +466,7 @@ public class CustomerPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+		table.setItems(FXCollections.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -655,11 +656,11 @@ public class CustomerPanel extends Stage {
 						// Refresh the orderItemTable
 						orderItemTable.getItems().remove(selectedOrderItem);
 
-						totalUpdateLabel
-								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+						totalUpdateLabel.setText(
+								"Total Price: " + OrderController.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
 						tableOrdered.setItems(FXCollections
-								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+								.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 
 						showAlert("Remove Order Item", "Selected Order Item Has Been Removed");
 
@@ -667,17 +668,17 @@ public class CustomerPanel extends Stage {
 					} else if (newQuantity > 0) {
 						// Update the selected order item with the new quantity
 						selectedOrderItem.setQuantity(newQuantity);
-						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
-								newQuantity);
+						OrderItemController.updateOrderItem(selectedOrderItem.getOrderId(),
+								selectedOrderItem.getMenuItem(), newQuantity);
 
 						// Refresh the orderItemTable
 						orderItemTable.refresh();
 
-						totalUpdateLabel
-								.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+						totalUpdateLabel.setText(
+								"Total Price: " + OrderController.getTotalByOrderId(selectedOrderItem.getOrderId()));
 
 						tableOrdered.setItems(FXCollections
-								.observableArrayList(OrderController.getOrderByCustomerId(user.getUserId())));
+								.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 						showAlert("Update Order Item", "Success Update Selected Order Item's Quantity");
 					}
 					// jika quantity <0 maka input quantity harus lebih dari 1
@@ -689,7 +690,8 @@ public class CustomerPanel extends Stage {
 					orderItemTable.refresh();
 
 					// Update the total label
-					totalUpdateLabel.setText("Total Price: " + Order.getTotalByOrderId(selectedOrderItem.getOrderId()));
+					totalUpdateLabel.setText(
+							"Total Price: " + OrderController.getTotalByOrderId(selectedOrderItem.getOrderId()));
 					formClear();
 
 					orderItemTable.getSelectionModel().clearSelection();
@@ -718,8 +720,8 @@ public class CustomerPanel extends Stage {
 							orderItemTable.refresh();
 
 							// Refresh total label
-							totalUpdateLabel
-									.setText("Total Price: " + Order.getTotalByOrderId(existingOrderItem.getOrderId()));
+							totalUpdateLabel.setText("Total Price: "
+									+ OrderController.getTotalByOrderId(existingOrderItem.getOrderId()));
 
 							// Refresh ordered table
 //                            refreshOrderedTable();
@@ -745,21 +747,21 @@ public class CustomerPanel extends Stage {
 						} else {
 							showAlert("Update Order Item Failed", "Failed: Quantity must be more than 0");
 						}
-//						OrderItem.createOrderItem(selectedOrder.getOrderId(), selectedMenuItem, newQuantity);
 
 						// Refresh total label
-						totalUpdateLabel.setText("Total Price: " + Order.getTotalByOrderId(selectedOrder.getOrderId()));
+						totalUpdateLabel.setText(
+								"Total Price: " + OrderController.getTotalByOrderId(selectedOrder.getOrderId()));
 
 						// Refresh ordered table
-						tableOrdered.setItems(
-								FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+						tableOrdered.setItems(FXCollections
+								.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 
 //						showAlert("Update Order Item", "Succes Add New Order Item");
 					}
 
 					// Clear form fields dan selection
-					tableOrdered
-							.setItems(FXCollections.observableArrayList(Order.getOrdersByCustomerId(user.getUserId())));
+					tableOrdered.setItems(
+							FXCollections.observableArrayList(OrderController.getOrdersByCustomerId(user.getUserId())));
 					formClear();
 					orderItemTable.refresh();
 					orderItemTable.getSelectionModel().clearSelection();

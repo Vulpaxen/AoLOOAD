@@ -14,7 +14,7 @@ public class Receipt {
 	private int receiptPaymentAmount;
 	private Date receiptPaymentDate;
 	private String receiptPaymentType;
-	
+
 	public Receipt(int receiptId, int receiptOrderId, int receiptPaymentAmount, Date receiptPaymentDate,
 			String receiptPaymentType) {
 		super();
@@ -24,84 +24,84 @@ public class Receipt {
 		this.receiptPaymentDate = receiptPaymentDate;
 		this.receiptPaymentType = receiptPaymentType;
 	}
-	
-	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate, double receiptPaymentAmount) {
+
+	public static void createReceipt(int orderId, String receiptPaymentType, Date receiptPaymentDate,
+			double receiptPaymentAmount) {
 		String query = "INSERT INTO receipt (orderId, receiptPaymentType, receiptPaymentDate, receiptPaymentAmount) VALUES (?, ?, ?, ?)";
-    	try (Connection connection = Connect.getInstance().getConnection();
-    	  PreparedStatement ps = connection.prepareStatement(query)) { 
-    		ps.setInt(1, orderId);
-    		ps.setString(2, receiptPaymentType);
-    		ps.setDate(3, receiptPaymentDate);
-    		ps.setDouble(4, receiptPaymentAmount);
-    		ps.executeUpdate();
-    	} catch (SQLException e) {
-    	  e.printStackTrace();
-    	}
+		try (Connection connection = Connect.getInstance().getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setInt(1, orderId);
+			ps.setString(2, receiptPaymentType);
+			ps.setDate(3, receiptPaymentDate);
+			ps.setDouble(4, receiptPaymentAmount);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public static void deleteReceipt(Order orderId) {
-        String query = "DELETE FROM receipt WHERE orderId = ?";
-        try (Connection connection = Connect.getInstance().getConnection();
-         PreparedStatement ps = connection.prepareStatement(query)) {
-         ps.setInt(1, orderId.getOrderId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-	
+		String query = "DELETE FROM receipt WHERE orderId = ?";
+		try (Connection connection = Connect.getInstance().getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setInt(1, orderId.getOrderId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static Receipt getReceiptByid(int receiptId) {
 		Receipt receipt = null;
-		
-		try(Connection connection = Connect.getInstance().getConnection()){
+
+		try (Connection connection = Connect.getInstance().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM receipt WHERE receiptId = ?;");
-			ps.setInt(1,  receiptId);
+			ps.setInt(1, receiptId);
 			ResultSet resultSet = ps.executeQuery();
-			
-			if(resultSet.next()){
+
+			if (resultSet.next()) {
 				int id = resultSet.getInt("receiptId");
 				int orderId = resultSet.getInt("orderId");
 				int paymentAmount = resultSet.getInt("receiptPaymentAmount");
 				Date paymentDate = resultSet.getDate("receiptPaymentDate");
 				String paymentType = resultSet.getString("receiptPaymentType");
-				
+
 				receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
 			}
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return receipt;
 	}
-	
-	public static ArrayList<Receipt> getAllReceipts() {
-        ArrayList<Receipt> receiptList = new ArrayList<>();
-        String query = "SELECT * FROM receipt JOIN orders ON receipt.orderId = orders.orderId";
-        try (Connection connection = Connect.getInstance().getConnection()) {
-            PreparedStatement prep = connection.prepareStatement(query);
-//            ResultSet resultSet = prep.executeQuery();
-            
-            try (ResultSet resultSet = prep.executeQuery()){
-            	while (resultSet.next()) {
-            		int id = resultSet.getInt("receiptId");
-            		int orderId = resultSet.getInt("orderId");
-            		int paymentAmount = resultSet.getInt("receiptPaymentAmount");
-            		Date paymentDate = resultSet.getDate("receiptPaymentDate");
-            		String paymentType = resultSet.getString("receiptPaymentType");
 
-            		Receipt receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
-            		receiptList.add(receipt);
-            	}
-            }
-            
+	public static ArrayList<Receipt> getAllReceipts() {
+		ArrayList<Receipt> receiptList = new ArrayList<>();
+		String query = "SELECT * FROM receipt JOIN orders ON receipt.orderId = orders.orderId";
+		try (Connection connection = Connect.getInstance().getConnection()) {
+			PreparedStatement prep = connection.prepareStatement(query);
+//            ResultSet resultSet = prep.executeQuery();
+
+			try (ResultSet resultSet = prep.executeQuery()) {
+				while (resultSet.next()) {
+					int id = resultSet.getInt("receiptId");
+					int orderId = resultSet.getInt("orderId");
+					int paymentAmount = resultSet.getInt("receiptPaymentAmount");
+					Date paymentDate = resultSet.getDate("receiptPaymentDate");
+					String paymentType = resultSet.getString("receiptPaymentType");
+
+					Receipt receipt = new Receipt(id, orderId, paymentAmount, paymentDate, paymentType);
+					receiptList.add(receipt);
+				}
+			}
+
 //            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return receiptList;
-		
-    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return receiptList;
+
+	}
 
 	public int getReceiptId() {
 		return receiptId;

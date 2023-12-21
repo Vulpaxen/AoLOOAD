@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class OrderItem {
-	
+
 	private int orderId;
 	private int menuItemId;
 	private int quantity;
-	
+
 	private MenuItem menuItem;
 
 	public OrderItem(int orderId, MenuItem menuItem, int quantity) {
@@ -59,34 +59,34 @@ public class OrderItem {
 	}
 
 	public static ArrayList<OrderItem> getAllOrderItemsByOrderId(int orderId) {
-	    ArrayList<OrderItem> orderItemList = new ArrayList<>();
+		ArrayList<OrderItem> orderItemList = new ArrayList<>();
 
-	    String query = "SELECT * FROM orderitem "
-	    		+ "JOIN menuItem ON menuItem.menuItemid = orderItem.menuItemId WHERE orderId = ?";
+		String query = "SELECT * FROM orderitem "
+				+ "JOIN menuItem ON menuItem.menuItemid = orderItem.menuItemId WHERE orderId = ?";
 
-	    try (Connection connection = Connect.getInstance().getConnection();
-	         PreparedStatement ps = connection.prepareStatement(query)) {
+		try (Connection connection = Connect.getInstance().getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
 
-	        ps.setInt(1, orderId);
-	        
-	        try (ResultSet resultSet = ps.executeQuery()) {
-	            while (resultSet.next()) {
-	            	int id = resultSet.getInt("orderId");
+			ps.setInt(1, orderId);
+
+			try (ResultSet resultSet = ps.executeQuery()) {
+				while (resultSet.next()) {
+					int id = resultSet.getInt("orderId");
 					int menuItemId = resultSet.getInt("menuItemId");
 					int quantity = resultSet.getInt("quantity");
 					String menuItemName = resultSet.getString("menuItemName");
 					String menuItemDescription = resultSet.getString("menuItemDescription");
-		            double menuItemPrice = resultSet.getDouble("menuItemPrice");
-					
-					MenuItem menuItem = new MenuItem(menuItemId, menuItemName,menuItemDescription, menuItemPrice);
-					orderItemList.add(new OrderItem(id, menuItem, quantity));                
-	            }
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+					double menuItemPrice = resultSet.getDouble("menuItemPrice");
 
-	    return orderItemList;
+					MenuItem menuItem = new MenuItem(menuItemId, menuItemName, menuItemDescription, menuItemPrice);
+					orderItemList.add(new OrderItem(id, menuItem, quantity));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return orderItemList;
 	}
 
 	public int getOrderId() {
@@ -96,7 +96,7 @@ public class OrderItem {
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
-	
+
 	public int getMenuItemId() {
 		return menuItem.getMenuItemId();
 	}
@@ -104,14 +104,14 @@ public class OrderItem {
 	public void setMenuItemId(int menuItemId) {
 		this.menuItemId = menuItemId;
 	}
-	
+
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
 
 	public void setMenuItem(MenuItem menuItem) {
 		this.menuItem = MenuItem.getMenuItemById(menuItemId);
-	}	
+	}
 
 	public int getQuantity() {
 		return quantity;
@@ -120,13 +120,13 @@ public class OrderItem {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	
+
 	public String getMenuItemName() {
-	    return menuItem.getMenuItemName();
+		return menuItem.getMenuItemName();
 	}
-	
+
 	public String getMenuItemDesc() {
-	    return menuItem.getMenuItemDescription();
+		return menuItem.getMenuItemDescription();
 	}
 
 }

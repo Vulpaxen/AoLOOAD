@@ -57,11 +57,11 @@ public class Authentication extends Stage {
 			try {
 				String userEmail = emailField.getText();
 				String userPassword = passwordField.getText();
-				
+
 				// Mengambil user
 				User user = UserController.authenticateUser(userEmail, userPassword);
 
-				//Mengecek Role
+				// Mengecek Role
 				if (user != null) {
 					if (user.getUserRole().equals("Customer")) {
 						CustomerPanel customerPanel = new CustomerPanel(user);
@@ -74,7 +74,7 @@ public class Authentication extends Stage {
 						waiterPanel.show();
 					} else if (user.getUserRole().equals("Cashier")) {
 						CashierPanel cashierPanel = new CashierPanel();
-						 cashierPanel.show();
+						cashierPanel.show();
 					} else if (user.getUserRole().equals("Admin")) {
 						AdminPanel adminPanel = new AdminPanel(user);
 						adminPanel.show();
@@ -132,8 +132,9 @@ public class Authentication extends Stage {
 				String confirmPassword = confirmPasswordField.getText();
 
 				// Create User
-				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword,confirmPassword);
-				if(registrationResult.equals("User created successfully!")) {
+				String registrationResult = UserController.createUser(userRole, userName, userEmail, userPassword,
+						confirmPassword);
+				if (registrationResult.equals("User created successfully!")) {
 					showLoginPage();
 				}
 				statusLabel.setText(registrationResult);
@@ -142,7 +143,7 @@ public class Authentication extends Stage {
 			}
 		});
 
-		//Redirect ke Login
+		// Redirect ke Login
 		Label loginLink = new Label("I already have an account");
 		loginLink.setUnderline(true);
 		loginLink.setTextFill(Color.BLUE);

@@ -8,52 +8,51 @@ import model.OrderItem;
 import model.User;
 
 public class OrderController {
-	
-	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate, double orderTotal){
+
+	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate, double orderTotal) {
 		int orderId = Order.createOrder(orderUser, orderItem, orderDate, orderTotal);
 		return orderId;
 	}
-	
-	public static String updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus){
-	    if (!Order.orderExists(orderId) || orderId == 0) {
-	        return "Order ID does not exist in the database";
-	    } 
-	    else {
-	        Order.updateOrder(orderId, orderItems, orderStatus);
-	        return "Order Items Updated Successfully!";
-	    }
+
+	public static String updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
+		if (!Order.orderExists(orderId) || orderId == 0) {
+			return "Order ID does not exist in the database";
+		} else {
+			Order.updateOrder(orderId, orderItems, orderStatus);
+			return "Order Items Updated Successfully!";
+		}
 	}
-	
-	public static double getTotalByOrderId(int orderId){
+
+	public static double getTotalByOrderId(int orderId) {
 		return Order.getTotalByOrderId(orderId);
 	}
-	
-	public static ArrayList<Order> getOrderByCustomerId(int customerId){
+
+	public static ArrayList<Order> getOrdersByCustomerId(int customerId) {
 		return Order.getOrdersByCustomerId(customerId);
 	}
-	
-	public static void deleteOrder(int orderId){
+
+	public static void deleteOrder(int orderId) {
 		Order.deleteOrder(orderId);
 	}
-	
-	public static ArrayList<Order> getAllOrders(){
+
+	public static ArrayList<Order> getAllOrders() {
 		return Order.getAllOrders();
 	}
-	
-	public static Order getOrderByOrderId(int orderId){
+
+	public static Order getOrderByOrderId(int orderId) {
 		return Order.getOrderByOrderId(orderId);
 	}
-	
+
 	public static ArrayList<Order> getAllPendingOrders() {
-	    return Order.getAllPendingOrders();
+		return Order.getAllPendingOrders();
 	}
-	
+
 	public static ArrayList<Order> getAllPreparedOrders() {
-	    return Order.getAllPreparedOrders();
+		return Order.getAllPreparedOrders();
 	}
-	
+
 	public static ArrayList<Order> getAllServedOrders() {
-	    return Order.getAllPreparedOrders();
+		return Order.getAllPreparedOrders();
 	}
 
 }

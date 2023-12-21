@@ -6,13 +6,13 @@ import view.Authentication;
 
 public class Main extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 
-    @Override
-    public void start(Stage primaryStage) {
-        Authentication authentication = new Authentication();
-        authentication.show();
-    }
+	@Override
+	public void start(Stage primaryStage) {
+		Authentication authentication = new Authentication();
+		authentication.show();
+	}
 }

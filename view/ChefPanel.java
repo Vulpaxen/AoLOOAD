@@ -341,7 +341,7 @@ public class ChefPanel extends Stage {
 
 					} else if (newQuantity > 0) {
 						selectedOrderItem.setQuantity(newQuantity);
-						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
+						OrderItemController.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
 								newQuantity);
 
 						// refresh orderItemTable
@@ -374,7 +374,8 @@ public class ChefPanel extends Stage {
 						if (existingOrderItem.getMenuItemId() == selectedMenuItem.getMenuItemId()) {
 
 							// ini untuk cek quantitynya yg harus lebih dari 0
-							if (OrderItemController.updateOrderItem(existingOrderItem.getOrderId(),
+							if (OrderItemController.updateOrderItem(
+									existingOrderItem.getOrderId(),
 									existingOrderItem.getMenuItem(), newQuantity)) {
 								existingOrderItem.setQuantity(newQuantity);
 								showAlert("Update Order Item", "Successfully updated the quantity");

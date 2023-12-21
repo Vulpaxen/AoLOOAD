@@ -78,7 +78,8 @@ public class AdminPanel extends Stage {
 		root3.setAlignment(Pos.CENTER);
 		root3.setPadding(new Insets(20));
 
-		// jika klik close (x), maka akan terlogout dan teralihkan ke Authentication Page
+		// jika klik close (x), maka akan terlogout dan teralihkan ke Authentication
+		// Page
 		// (Login Register)
 		this.setOnCloseRequest(event -> {
 			if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
@@ -354,57 +355,56 @@ public class AdminPanel extends Stage {
 
 		// Untuk add Item
 		addItemButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		        String newName = ItemName.getText();
-		        String newDesc = ItemDesc.getText();
-		        String priceText = ItemPrice.getText();
+			@Override
+			public void handle(ActionEvent event) {
+				String newName = ItemName.getText();
+				String newDesc = ItemDesc.getText();
+				String priceText = ItemPrice.getText();
 
-		        if (newName.isEmpty() || newDesc.isEmpty() || priceText.isEmpty()) {
-		            showAlert("Add Menu Item", "Please fill in all the fields.");
-		            return;
-		        }
+				if (newName.isEmpty() || newDesc.isEmpty() || priceText.isEmpty()) {
+					showAlert("Add Menu Item", "Please fill in all the fields.");
+					return;
+				}
 
-		        double newPrice;
+				double newPrice;
 
-		        try {
-		            newPrice = Double.parseDouble(priceText);
-		        } catch (NumberFormatException e) {
-		            showAlert("Add Menu Item", "Invalid price format. Please enter a valid number.");
-		            return;
-		        }
+				try {
+					newPrice = Double.parseDouble(priceText);
+				} catch (NumberFormatException e) {
+					showAlert("Add Menu Item", "Invalid price format. Please enter a valid number.");
+					return;
+				}
 
-		        boolean checkUnique = true;
-		        for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
-		            if (menuItem.getMenuItemName().equals(newName)) {
-		                checkUnique = false;
-		                break;
-		            }
-		        }
+				boolean checkUnique = true;
+				for (MenuItem menuItem : MenuItemController.getAllMenuItems()) {
+					if (menuItem.getMenuItemName().equals(newName)) {
+						checkUnique = false;
+						break;
+					}
+				}
 
-		        if (!checkUnique) {
-		            showAlert("Add Menu Item", "Menu Item Name Must Be Unique");
-		        } else {
-		            if (newDesc.length() <= 10) {
-		                showAlert("Add Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
-		            } else if (newPrice <= 2.5) {
-		                showAlert("Add Menu Item", "Menu Item Price Must Be Greater Than or Equal to 2.5 ");
-		            } else {
-		                MenuItemController.createMenuItem(newName, newDesc, newPrice);
+				if (!checkUnique) {
+					showAlert("Add Menu Item", "Menu Item Name Must Be Unique");
+				} else {
+					if (newDesc.length() <= 10) {
+						showAlert("Add Menu Item", "Menu Item Desc Must Be More Than 10 chars ");
+					} else if (newPrice <= 2.5) {
+						showAlert("Add Menu Item", "Menu Item Price Must Be Greater Than or Equal to 2.5 ");
+					} else {
+						MenuItemController.createMenuItem(newName, newDesc, newPrice);
 
-		                tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
-		                tableMenuItem.refresh();
-		                tableMenuItem.getSelectionModel().clearSelection();
-		                showAlert("Add Menu Item", "Success Add Menu Item");
-		            }
-		        }
+						tableMenuItem.setItems(FXCollections.observableArrayList(MenuItemController.getAllMenuItems()));
+						tableMenuItem.refresh();
+						tableMenuItem.getSelectionModel().clearSelection();
+						showAlert("Add Menu Item", "Success Add Menu Item");
+					}
+				}
 
-		        ItemName.clear();
-		        ItemDesc.clear();
-		        ItemPrice.clear();
-		    }
+				ItemName.clear();
+				ItemDesc.clear();
+				ItemPrice.clear();
+			}
 		});
-
 
 		// Untuk update item
 		updateItemButton.setOnAction(new EventHandler<ActionEvent>() {

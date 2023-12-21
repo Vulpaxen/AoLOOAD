@@ -341,7 +341,7 @@ public class WaiterPanel extends Stage {
 
 					} else if (newQuantity > 0) {
 						selectedOrderItem.setQuantity(newQuantity);
-						OrderItem.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
+						OrderItemController.updateOrderItem(selectedOrderItem.getOrderId(), selectedOrderItem.getMenuItem(),
 								newQuantity);
 
 						// refresh orderItemTable

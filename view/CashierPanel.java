@@ -149,7 +149,7 @@ public class CashierPanel extends Stage {
 		table.setMinHeight(700);
 		table.setMinWidth(400);
 
-		table.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
+		table.setItems(FXCollections.observableArrayList(OrderController.getAllServedOrders()));
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -225,53 +225,53 @@ public class CashierPanel extends Stage {
 		form.add(processOrderButton, 0, 2);
 
 		processOrderButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		        if (selectedOrder != null) {
-		            // Check paymenttype
-		            try {
-		                String payment = paymentType.getText();
-		                String amountText = paymentAmount.getText();
+			@Override
+			public void handle(ActionEvent event) {
+				if (selectedOrder != null) {
+					// Check paymenttype
+					try {
+						String payment = paymentType.getText();
+						String amountText = paymentAmount.getText();
 
-		                if (payment.isEmpty() || amountText.isEmpty()) {
-		                    showAlert("Empty Fields", "Please fill in both Payment Type and Payment Amount.");
-		                    return;
-		                }
+						if (payment.isEmpty() || amountText.isEmpty()) {
+							showAlert("Empty Fields", "Please fill in both Payment Type and Payment Amount.");
+							return;
+						}
 
-		                double amount = Double.parseDouble(amountText);
+						double amount = Double.parseDouble(amountText);
 
-		                double totalPrice = 0;
-		                if (selectedOrder.getOrderItem() != null) {
-		                    for (OrderItem oi : selectedOrder.getOrderItem()) {
-		                        totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
-		                    }
-		                }
+						double totalPrice = 0;
+						if (selectedOrder.getOrderItem() != null) {
+							for (OrderItem oi : selectedOrder.getOrderItem()) {
+								totalPrice += (oi.getMenuItem().getMenuItemPrice() * oi.getQuantity());
+							}
+						}
 
-		                ArrayList<OrderItem> orderItems = OrderItemController
-		                        .getAllOrderItemsByOrderId(selectedOrder.getOrderId());
-		                if (amount < totalPrice) {
-		                    showAlert("Insufficient payment", "Please input more than payment");
-		                } else if (payment.equals("Cash") || payment.equals("Debit") || payment.equals("Credit")) {
+						ArrayList<OrderItem> orderItems = OrderItemController
+								.getAllOrderItemsByOrderId(selectedOrder.getOrderId());
+						if (amount < totalPrice) {
+							showAlert("Insufficient payment", "Please input more than payment");
+						} else if (payment.equals("Cash") || payment.equals("Debit") || payment.equals("Credit")) {
 
-		                    OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");
-		                    refreshOrderedTable();
-		                    refreshReceipt();
-		                    showAlert("Order Paid", "Selected order has been paid.");
+							OrderController.updateOrder(selectedOrder.getOrderId(), orderItems, "Paid");
+							refreshOrderedTable();
+							refreshReceipt();
+							showAlert("Order Paid", "Selected order has been paid.");
 
-		                    Date date = new Date(System.currentTimeMillis());
-		                    ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, totalPrice);
-		                } else {
-		                    showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
-		                }
-		            } catch (NumberFormatException ex) {
-		                showAlert("Invalid Amount", "Please enter a valid number for Payment Amount.");
-		            }
+							Date date = new Date(System.currentTimeMillis());
+							ReceiptController.createReceipt(selectedOrder.getOrderId(), payment, date, totalPrice);
+						} else {
+							showAlert("Payment Type Invalid", "Please select either Cash/Credit/Debit");
+						}
+					} catch (NumberFormatException ex) {
+						showAlert("Invalid Amount", "Please enter a valid number for Payment Amount.");
+					}
 
-		        } else {
-		            showAlert("No Order Selected", "Please select a pending order to prepare.");
-		        }
-		        viewOrderCashier();
-		    }
+				} else {
+					showAlert("No Order Selected", "Please select a pending order to prepare.");
+				}
+				viewOrderCashier();
+			}
 		});
 
 		return form;
@@ -279,7 +279,7 @@ public class CashierPanel extends Stage {
 
 	// Refresh Table
 	private void refreshOrderedTable() {
-		servedOrders.setItems(FXCollections.observableArrayList(Order.getServedOrders()));
+		servedOrders.setItems(FXCollections.observableArrayList(OrderController.getAllServedOrders()));
 	}
 
 	// Receipt
@@ -289,7 +289,7 @@ public class CashierPanel extends Stage {
 
 	// refresh Receipt
 	private void refreshReceipt() {
-		tableReceipt.setItems(FXCollections.observableArrayList(Receipt.getAllReceipts()));
+		tableReceipt.setItems(FXCollections.observableArrayList(ReceiptController.getAllReceipts()));
 	}
 
 	// View receipt semua untuk cashier
@@ -312,7 +312,7 @@ public class CashierPanel extends Stage {
 		tableReceipt = new TableView<>();
 		tableReceipt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-		ObservableList<Receipt> receiptData = FXCollections.observableArrayList(Receipt.getAllReceipts());
+		ObservableList<Receipt> receiptData = FXCollections.observableArrayList(ReceiptController.getAllReceipts());
 
 		TableColumn<Receipt, Integer> receiptId = new TableColumn<>("Receipt ID");
 		receiptId.setCellValueFactory(new PropertyValueFactory<>("receiptId"));

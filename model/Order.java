@@ -26,36 +26,35 @@ public class Order {
 	}
 
 	public static int createOrder(User orderUser, ArrayList<OrderItem> orderItem, Date orderDate, double OrderTotal) {
-	    String query = "INSERT INTO orders (userId, orderStatus, orderDate, orderTotal) VALUES (?, ?, ?, ?);";
+		String query = "INSERT INTO orders (userId, orderStatus, orderDate, orderTotal) VALUES (?, ?, ?, ?);";
 
-	    try (Connection connection = Connect.getInstance().getConnection();
-	         PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-	        ps.setInt(1, orderUser.getUserId());
-	        ps.setString(2, "Pending");
-	        ps.setDate(3, orderDate);
-	        ps.setDouble(4, OrderTotal);
+		try (Connection connection = Connect.getInstance().getConnection();
+				PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			ps.setInt(1, orderUser.getUserId());
+			ps.setString(2, "Pending");
+			ps.setDate(3, orderDate);
+			ps.setDouble(4, OrderTotal);
 
-	        int affectedRows = ps.executeUpdate();
+			int affectedRows = ps.executeUpdate();
 
-	        if (affectedRows == 0) {
-	            throw new SQLException("Creating order failed, no rows affected.");
-	        }
+			if (affectedRows == 0) {
+				throw new SQLException("Creating order failed, no rows affected.");
+			}
 
-	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-	            if (generatedKeys.next()) {
-	                int orderId = generatedKeys.getInt(1);
-	                return orderId;
-	            } else {
-	                throw new SQLException("Creating order failed, no ID obtained.");
-	            }
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+			try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					int orderId = generatedKeys.getInt(1);
+					return orderId;
+				} else {
+					throw new SQLException("Creating order failed, no ID obtained.");
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-	    return -1;
+		return -1;
 	}
-
 
 	public static ArrayList<Order> getOrdersByCustomerId(int customerId) {
 		ArrayList<Order> order = new ArrayList<Order>();
@@ -76,14 +75,13 @@ public class Order {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		for (Order orders : order)
-		{
+
+		for (Order orders : order) {
 			orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
 			orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
 			orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
 		}
-		
+
 		return order;
 	}
 
@@ -130,34 +128,28 @@ public class Order {
 		}
 		return order;
 	}
-	
-	public static double getTotalByOrderId(int orderId)
-	{
+
+	public static double getTotalByOrderId(int orderId) {
 		double orderTotalPrice = 0;
 		String query = "SELECT * FROM orderitem JOIN menuitem ON orderitem.menuItemId = menuitem.menuItemId WHERE orderitem.orderId = ?;";
-		  
-		try (Connection connection = Connect.getInstance().getConnection())
-		{
+
+		try (Connection connection = Connect.getInstance().getConnection()) {
 			PreparedStatement prep = connection.prepareStatement(query);
 			prep.setInt(1, orderId);
 			ResultSet resultSet = prep.executeQuery();
-			
-			while(resultSet.next())
-			{
+
+			while (resultSet.next()) {
 				int quantity = resultSet.getInt("quantity");
 				double menuItemPrice = resultSet.getDouble("menuItemPrice");
 				orderTotalPrice += (double) quantity * menuItemPrice;
 			}
 			resultSet.close();
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return orderTotalPrice;
 	}
 
-	
 	public static void updateOrder(int orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
 		String statusQuery = "UPDATE orders SET orderStatus = ? WHERE orderId = ?;";
 		try (Connection connection = Connect.getInstance().getConnection()) {
@@ -181,27 +173,26 @@ public class Order {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean orderExists(int orderId) {
-	    String query = "SELECT COUNT(*) FROM orders WHERE orderId = ?";
-	    try (Connection connection = Connect.getInstance().getConnection();
-	         PreparedStatement ps = connection.prepareStatement(query)) {
+		String query = "SELECT COUNT(*) FROM orders WHERE orderId = ?";
+		try (Connection connection = Connect.getInstance().getConnection();
+				PreparedStatement ps = connection.prepareStatement(query)) {
 
-	        ps.setInt(1, orderId);
+			ps.setInt(1, orderId);
 
-	        try (ResultSet resultSet = ps.executeQuery()) {
-	            if (resultSet.next()) {
-	                int count = resultSet.getInt(1);
-	                return count > 0;
-	            }
-	        }
+			try (ResultSet resultSet = ps.executeQuery()) {
+				if (resultSet.next()) {
+					int count = resultSet.getInt(1);
+					return count > 0;
+				}
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
-	
 
 	public int getOrderId() {
 		return orderId;
@@ -260,62 +251,59 @@ public class Order {
 	}
 
 	public static ArrayList<Order> getAllPendingOrders() {
-        ArrayList<Order> pendingOrders = new ArrayList<>();
+		ArrayList<Order> pendingOrders = new ArrayList<>();
 
-        ArrayList<Order> allOrders = getAllOrders();
-
-        for (Order order : allOrders) {
-            if ("Pending".equals(order.getOrderStatus())) {
-            	pendingOrders.add(order);
-            }
-        }
-
-        for (Order orders : pendingOrders)
-        {
-            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
-            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
-            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
-        }
-        return pendingOrders;
-    }
-	
-	public static ArrayList<Order> getAllPreparedOrders() {
-        ArrayList<Order> preparedOrders = new ArrayList<>();
-
-        ArrayList<Order> allOrders = getAllOrders();
-
-        for (Order order : allOrders) {
-            if ("Prepared".equals(order.getOrderStatus())) {
-                preparedOrders.add(order);
-            }
-        }
-
-        for (Order orders : preparedOrders)
-        {
-            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
-            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
-            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
-        }
-        return preparedOrders;
-    }
-	
-	public static ArrayList<Order> getServedOrders() {
-		ArrayList<Order> servedOrders = new ArrayList<>();
-	    
 		ArrayList<Order> allOrders = getAllOrders();
 
-        for (Order order : allOrders) {
-            if ("Served".equals(order.getOrderStatus())) {
-            	servedOrders.add(order);
-            }
-        }
+		for (Order order : allOrders) {
+			if ("Pending".equals(order.getOrderStatus())) {
+				pendingOrders.add(order);
+			}
+		}
 
-        for (Order orders : servedOrders)
-        {
-            orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
-            orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
-            orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
-        }
-        return servedOrders;
-    }
+		for (Order orders : pendingOrders) {
+			orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+			orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+			orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+		}
+		return pendingOrders;
+	}
+
+	public static ArrayList<Order> getAllPreparedOrders() {
+		ArrayList<Order> preparedOrders = new ArrayList<>();
+
+		ArrayList<Order> allOrders = getAllOrders();
+
+		for (Order order : allOrders) {
+			if ("Prepared".equals(order.getOrderStatus())) {
+				preparedOrders.add(order);
+			}
+		}
+
+		for (Order orders : preparedOrders) {
+			orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+			orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+			orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+		}
+		return preparedOrders;
+	}
+
+	public static ArrayList<Order> getAllServedOrders() {
+		ArrayList<Order> servedOrders = new ArrayList<>();
+
+		ArrayList<Order> allOrders = getAllOrders();
+
+		for (Order order : allOrders) {
+			if ("Served".equals(order.getOrderStatus())) {
+				servedOrders.add(order);
+			}
+		}
+
+		for (Order orders : servedOrders) {
+			orders.setOrderUser(User.getUserById(orders.getOrderUserId()));
+			orders.setOrderItem(OrderItem.getAllOrderItemsByOrderId(orders.getOrderId()));
+			orders.setOrderTotal(Order.getTotalByOrderId(orders.getOrderId()));
+		}
+		return servedOrders;
+	}
 }
