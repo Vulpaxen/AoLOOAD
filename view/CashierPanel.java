@@ -366,7 +366,6 @@ public class CashierPanel extends Stage {
 			root2.getChildren().add(tableDetail);
 
 			Order order = OrderController.getOrderByOrderId(selectedReceipt.getReceiptOrderId());
-			System.out.println(order.getOrderId());
 			totalPrice = new Label("Total Paid: " + selectedReceipt.getReceiptPaymentAmount());
 
 			root2.getChildren().add(totalPrice);
